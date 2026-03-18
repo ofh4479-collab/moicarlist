@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Selection | Premium Lounge</title>
+    <style>
+        :root { --bg: #050505; --card: #121212; --gold: #c5a059; --white: #ffffff; --green: #00ff88; }
+        body { background: var(--bg); color: var(--white); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+        
+        /* Header */
+        header { text-align: center; padding: 50px 20px; border-bottom: 1px solid #222; }
+        header h1 { color: var(--gold); font-size: 28px; letter-spacing: 4px; margin: 0; text-transform: uppercase; }
+        header p { color: #666; font-size: 14px; margin-top: 10px; letter-spacing: 1px; }
+
+        /* Area Selection */
+        .section-title { padding: 20px; color: var(--gold); font-size: 14px; text-transform: uppercase; letter-spacing: 2px; }
+        .area-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 20px 30px; }
+        .area-box { background: #1a1a1a; height: 80px; display: flex; align-items: center; justify-content: center; border: 1px solid #333; border-radius: 4px; color: var(--white); text-decoration: none; font-weight: 600; font-size: 15px; transition: 0.3s; }
+        .area-box:active { border-color: var(--gold); color: var(--gold); background: #222; }
+
+        /* Girl Card */
+        .list-container { padding: 0 15px 100px; }
+        .card { background: var(--card); border-radius: 15px; margin-bottom: 25px; overflow: hidden; border: 1px solid #222; position: relative; }
+        .badge-new { position: absolute; top: 15px; left: 15px; background: var(--gold); color: black; padding: 4px 10px; font-size: 11px; font-weight: bold; border-radius: 3px; z-index: 10; }
+        .girl-photo { width: 100%; height: 400px; object-fit: cover; filter: brightness(0.9); }
+        .card-info { padding: 20px; }
+        .name-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .name { font-size: 24px; font-weight: bold; }
+        .status { color: var(--green); font-size: 13px; display: flex; align-items: center; }
+        .status::before { content: "●"; margin-right: 5px; }
+        .tags { color: #888; font-size: 14px; margin-bottom: 15px; line-height: 1.5; }
+        .price-box { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #222; padding-top: 15px; }
+        .price { font-size: 20px; font-weight: bold; color: var(--gold); }
+        .wa-link { background: #25D366; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 14px; }
+        
+        /* Mobile Sticky Footer */
+        .footer { position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.95); padding: 15px; text-align: center; border-top: 1px solid #333; backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>VELVET ROOM</h1>
+        <p>Premium Selection Available Tonight</p>
+    </header>
+
+    <div class="section-title">Select Area</div>
+    <div class="area-container">
+        <a href="#kl" class="area-box">Kuala Lumpur</a>
+        <a href="#selangor" class="area-box">Selangor</a>
+        <a href="#penang" class="area-box">Penang</a>
+        <a href="#johor" class="area-box">Johor</a>
+    </div>
+
+    <div class="section-title">Today's Top Pick</div>
+    <div class="list-container">
+        
+        <div class="card">
+            <div class="badge-new">NEW GIRL</div>
+            <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=1000&auto=format&fit=crop" class="girl-photo">
+            <div class="card-info">
+                <div class="name-row">
+                    <div class="name">YUKI</div>
+                    <div class="status">Available Now</div>
+                </div>
+                <div class="tags">
+                    23岁 · 165cm · 48kg<br>
+                    ✨ Sweet Girlfriend Type · Friendly · Sexy
+                </div>
+                <div class="price-box">
+                    <div class="price">RM 400 / 1H</div>
+                    <a href="https://wa.me/60123456789?text=Hi,I want to book YUKI" class="wa-link">Book Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1000&auto=format&fit=crop" class="girl-photo">
+            <div class="card-info">
+                <div class="name-row">
+                    <div class="name">MIKA</div>
+                    <div class="status" style="color:#aaa">● Busy Now</div>
+                </div>
+                <div class="tags">
+                    21岁 · 160cm · 45kg<br>
+                    ✨ GFE Experience · Playful · Cute
+                </div>
+                <div class="price-box">
+                    <div class="price">RM 350 / 1H</div>
+                    <a href="https://wa.me/60123456789?text=Hi,I want to book MIKA" class="wa-link" style="background:#555">Inquiry</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <span style="color:#888; font-size:12px;">© 2026 VELVET ROOM | All Rights Reserved</span>
+    </div>
+
+</body>
+</html>
