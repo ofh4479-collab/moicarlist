@@ -1,0 +1,1178 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Companions - Premium Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .gradient-gold {
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .available {
+            background: #10b981;
+            color: white;
+        }
+
+        .busy {
+            background: #ef4444;
+            color: white;
+        }
+
+        .coming-later {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .area-button {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 2px solid #d4af37;
+            transition: all 0.3s ease;
+        }
+
+        .area-button:hover {
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .photo-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+        .photo-carousel img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: #d4af37;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        .whatsapp-button {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th {
+            background: #1a1a1a;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #d4af37;
+            color: #d4af37;
+        }
+
+        .admin-table td {
+            padding: 12px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .admin-table tr:hover {
+            background: #1a1a1a;
+        }
+
+        .filter-button {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #d4af37;
+            background: transparent;
+            color: #d4af37;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-button.active,
+        .filter-button:hover {
+            background: #d4af37;
+            color: #0a0a0a;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            color: white;
+            margin-top: 8px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .photo-carousel img {
+                height: 300px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+
+        .kuse-branding {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        .kuse-branding:hover {
+            color: #d4af37;
+        }
+
+        .kuse-branding svg {
+            height: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav style="background: #1a1a1a; padding: 16px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 24px; font-weight: 700; color: #d4af37; cursor: pointer;" onclick="navigateTo('home')">
+                Elite Companions
+            </div>
+            <div style="display: flex; gap: 24px; align-items: center;">
+                <a onclick="navigateTo('home')" style="cursor: pointer; color: #cccccc; transition: color 0.3s;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='#cccccc'">Home</a>
+                <a onclick="showAdminLogin()" style="cursor: pointer; color: #cccccc; transition: color 0.3s;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='#cccccc'">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 80px 20px; text-align: center;">
+            <h1 style="font-size: 48px; font-weight: 700; color: #d4af37; margin-bottom: 16px;">Welcome to Elite Companions</h1>
+            <p style="font-size: 18px; color: #cccccc; max-width: 600px; margin: 0 auto;">Premium companionship service across Singapore's finest locations</p>
+        </div>
+
+        <!-- Today Available -->
+        <div style="max-width: 1200px; margin: 60px auto; padding: 0 20px;">
+            <h2 style="font-size: 32px; font-weight: 600; color: #d4af37; margin-bottom: 32px; text-align: center;">✨ Available Today</h2>
+            <div id="todayAvailable" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;"></div>
+        </div>
+
+        <!-- New Girls -->
+        <div style="max-width: 1200px; margin: 60px auto; padding: 0 20px;">
+            <h2 style="font-size: 32px; font-weight: 600; color: #d4af37; margin-bottom: 32px; text-align: center;">🌟 New Girls</h2>
+            <div id="newGirls" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;"></div>
+        </div>
+
+        <!-- Area Selection -->
+        <div style="max-width: 1200px; margin: 80px auto; padding: 0 20px;">
+            <h2 style="font-size: 32px; font-weight: 600; color: #d4af37; margin-bottom: 32px; text-align: center;">Select Your Location</h2>
+            <div id="areaButtons" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- Area Page -->
+    <div id="areaPage" class="page">
+        <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+            <!-- Breadcrumb -->
+            <div style="margin-bottom: 24px; color: #cccccc;">
+                <span onclick="navigateTo('home')" style="cursor: pointer; color: #d4af37;">Home</span> / <span id="currentArea" style="color: white;"></span>
+            </div>
+
+            <!-- Area Title & Filters -->
+            <div style="margin-bottom: 32px;">
+                <h1 id="areaTitle" style="font-size: 36px; font-weight: 700; color: #d4af37; margin-bottom: 24px;"></h1>
+                
+                <!-- Filters -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;">
+                    <select id="priceFilter" class="filter-button" style="width: auto;" onchange="applyFilters()">
+                        <option value="">All Prices</option>
+                        <option value="low">Under $300</option>
+                        <option value="mid">$300 - $500</option>
+                        <option value="high">Above $500</option>
+                    </select>
+                    <select id="ageFilter" class="filter-button" style="width: auto;" onchange="applyFilters()">
+                        <option value="">All Ages</option>
+                        <option value="young">18-23</option>
+                        <option value="mid">24-28</option>
+                        <option value="mature">29+</option>
+                    </select>
+                    <select id="statusFilter" class="filter-button" style="width: auto;" onchange="applyFilters()">
+                        <option value="">All Status</option>
+                        <option value="available">Available Now</option>
+                        <option value="busy">Busy</option>
+                        <option value="later">Coming Later</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Girls Grid -->
+            <div id="areaGirls" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;"></div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profilePage" class="page">
+        <div style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
+            <!-- Back Button -->
+            <button onclick="history.back()" style="background: transparent; border: 1px solid #d4af37; color: #d4af37; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 24px; transition: all 0.3s;" onmouseover="this.style.background='#d4af37'; this.style.color='#0a0a0a'" onmouseout="this.style.background='transparent'; this.style.color='#d4af37'">
+                ← Back
+            </button>
+
+            <!-- Photo Carousel -->
+            <div id="photoCarousel" class="photo-carousel" style="margin-bottom: 32px;"></div>
+
+            <!-- Profile Info -->
+            <div id="profileInfo" style="background: #1a1a1a; padding: 32px; border-radius: 16px; margin-bottom: 24px;"></div>
+
+            <!-- Price Packages -->
+            <div id="pricePackages" style="background: #1a1a1a; padding: 32px; border-radius: 16px; margin-bottom: 100px;"></div>
+
+            <!-- WhatsApp Contact Button -->
+            <div id="whatsappContact" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 400px; z-index: 1001;"></div>
+        </div>
+    </div>
+
+    <!-- Admin Page -->
+    <div id="adminPage" class="page">
+        <div style="max-width: 1400px; margin: 40px auto; padding: 0 20px;">
+            <!-- Dashboard -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
+                <div style="background: #1a1a1a; padding: 24px; border-radius: 12px; border: 2px solid #d4af37;">
+                    <div style="color: #cccccc; font-size: 14px; margin-bottom: 8px;">Total Girls</div>
+                    <div id="totalGirls" style="font-size: 32px; font-weight: 700; color: #d4af37;">0</div>
+                </div>
+                <div style="background: #1a1a1a; padding: 24px; border-radius: 12px; border: 2px solid #10b981;">
+                    <div style="color: #cccccc; font-size: 14px; margin-bottom: 8px;">Available Now</div>
+                    <div id="availableCount" style="font-size: 32px; font-weight: 700; color: #10b981;">0</div>
+                </div>
+                <div style="background: #1a1a1a; padding: 24px; border-radius: 12px; border: 2px solid #f59e0b;">
+                    <div style="color: #cccccc; font-size: 14px; margin-bottom: 8px;">New Girls</div>
+                    <div id="newGirlsCount" style="font-size: 32px; font-weight: 700; color: #f59e0b;">0</div>
+                </div>
+                <div style="background: #1a1a1a; padding: 24px; border-radius: 12px; border: 2px solid #d4af37;">
+                    <div style="color: #cccccc; font-size: 14px; margin-bottom: 8px;">Today's Picks</div>
+                    <div id="topPicksCount" style="font-size: 32px; font-weight: 700; color: #d4af37;">0</div>
+                </div>
+            </div>
+
+            <!-- Add New Girl Button -->
+            <div style="margin-bottom: 24px;">
+                <button onclick="openAddGirlModal()" class="gradient-gold" style="border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; color: #0a0a0a; transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    + Add New Girl
+                </button>
+                <button onclick="logout()" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-left: 12px; transition: all 0.3s;" onmouseover="this.style.background='#ef4444'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#ef4444'">
+                    Logout
+                </button>
+            </div>
+
+            <!-- Girls Management Table -->
+            <div style="background: #1a1a1a; border-radius: 12px; overflow: hidden;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Photo</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Area</th>
+                            <th>Status</th>
+                            <th>Price</th>
+                            <th>Tags</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminGirlsList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Girl Modal -->
+    <div id="girlModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle" style="font-size: 24px; font-weight: 700; color: #d4af37; margin-bottom: 24px;">Add New Girl</h2>
+            
+            <form id="girlForm">
+                <input type="hidden" id="girlId">
+                
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">Name</label>
+                    <input type="text" id="girlName" required="">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="color: #cccccc; font-size: 14px;">Age</label>
+                        <input type="number" id="girlAge" required="" min="18" max="99">
+                    </div>
+                    <div>
+                        <label style="color: #cccccc; font-size: 14px;">Height (cm)</label>
+                        <input type="number" id="girlHeight" min="140" max="200">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="color: #cccccc; font-size: 14px;">Weight (kg)</label>
+                        <input type="number" id="girlWeight" min="40" max="100">
+                    </div>
+                    <div>
+                        <label style="color: #cccccc; font-size: 14px;">Area</label>
+                        <select id="girlArea" required="">
+                            <option value="Orchard">Orchard</option>
+                            <option value="Marina Bay">Marina Bay</option>
+                            <option value="Sentosa">Sentosa</option>
+                            <option value="Clarke Quay">Clarke Quay</option>
+                            <option value="Bugis">Bugis</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">Description</label>
+                    <textarea id="girlDescription" rows="3" required=""></textarea>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">Languages (comma separated)</label>
+                    <input type="text" id="girlLanguages" placeholder="English, Mandarin, Malay">
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">Location Details</label>
+                    <input type="text" id="girlLocation" placeholder="Near Mall / Condo Area">
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">Service Hours</label>
+                    <input type="text" id="girlHours" placeholder="10 AM - 2 AM">
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">Status</label>
+                    <select id="girlStatus" required="">
+                        <option value="available">Available Now</option>
+                        <option value="busy">Busy</option>
+                        <option value="later">Coming Later</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">Price (1 Hour)</label>
+                    <input type="number" id="girlPrice" required="" min="0">
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">Tags (comma separated)</label>
+                    <input type="text" id="girlTags" placeholder="Sweet, GF Type, Sexy">
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: flex; align-items: center; gap: 8px; color: #cccccc;">
+                        <input type="checkbox" id="girlTopPick" style="width: auto;">
+                        Today's Top Pick
+                    </label>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: flex; align-items: center; gap: 8px; color: #cccccc;">
+                        <input type="checkbox" id="girlNewGirl" style="width: auto;">
+                        New Girl
+                    </label>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">WhatsApp Number</label>
+                    <input type="text" id="girlWhatsapp" placeholder="+65 1234 5678">
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="color: #cccccc; font-size: 14px;">Photo URLs (one per line)</label>
+                    <textarea id="girlPhotos" rows="4" placeholder="https://example.com/photo1.jpg
+https://example.com/photo2.jpg"></textarea>
+                    <div style="font-size: 12px; color: #999; margin-top: 4px;">Enter image URLs, one per line</div>
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button type="submit" class="gradient-gold" style="flex: 1; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; color: #0a0a0a;">
+                        Save Girl
+                    </button>
+                    <button type="button" onclick="closeGirlModal()" style="flex: 1; background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <h2 style="font-size: 24px; font-weight: 700; color: #d4af37; margin-bottom: 24px; text-align: center;">Admin Login</h2>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div style="margin-bottom: 16px;">
+                    <label style="color: #cccccc; font-size: 14px;">Password</label>
+                    <input type="password" id="adminPassword" required="" placeholder="Enter admin password">
+                </div>
+
+                <button type="submit" class="gradient-gold" style="width: 100%; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; color: #0a0a0a;">
+                    Login
+                </button>
+
+                <div style="margin-top: 12px; text-align: center; font-size: 12px; color: #999;">
+                    Default password: admin123
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Kuse Branding -->
+    <a href="https://kuse.ai" target="_blank" class="kuse-branding">
+        <span>made with</span>
+        <svg viewBox="0,0,160,44" xmlns="http://www.w3.org/2000/svg"><path d="m.01,20.65C-.43,8.25,9.3-2.03,22.04.34,34.78,2.72,43.29,8.32,43.29,22.9s-8.66,19.01-22.03,20.3C7.9,44.5.46,33.05.01,20.65z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="m146.76,7.94c8.07,0,13.24,6.15,13.24,14.58v1.39h-20.75c.45,4.05,3.51,7.37,8.57,7.37,2.62,0,5.73-1.05,7.62-2.94l2.67,3.83c-2.67,2.55-6.62,3.88-10.9,3.88-8.07,0-14.08-5.6-14.08-14.08,0-7.76,5.67-14.02,13.63-14.02zm0,4.77c-5.01,0-7.29,3.83-7.57,7.1h15.13c-.11-3.16-2.28-7.1-7.57-7.1z" fill="currentColor"></path><path d="m86.64,24.49c0,4.15,2.39,6.84,6.84,6.84,4.4,0,6.84-2.69,6.84-6.84V8.55h5.37v16.33c0,6.7-4.06,11.14-12.21,11.14-8.21,0-12.21-4.5-12.21-11.09V8.55h5.37v15.94zm32.99-16.55c4.49,0,8.06,1.47,10.6,3.86l-2.59,3.81c-2.05-2-5.28-3.08-8.06-3.08-2.88,0-4.84,1.37-4.84,3.32,0,1.91,2.64,2.54,5.81,3.27,4.59,1.08,10.26,2.4,10.26,8.46,0,4.94-3.76,8.41-11.14,8.41-4.98,0-8.94-1.76-11.24-4.11l2.54-4.11c1.86,1.91,5.18,3.67,8.84,3.67,3.91,0,5.57-1.66,5.57-3.62,0-2.3-2.88-2.98-6.21-3.76-4.54-1.08-9.87-2.3-9.87-8.06,0-4.5,4.2-8.06,10.31-8.06zM60.79,20.82,71.44,8.55h6.5L66.46,21.26,78.82,35.44h-6.5l-9.28-11.1-2.25,2.49v8.6h-5.33V8.55h5.33v12.27z" fill="currentColor"></path></svg>
+    </a>
+
+    <script>
+        // Data Storage
+        let girls = [];
+        let currentArea = ``;
+        let currentGirlId = null;
+        let isLoggedIn = false;
+
+        // Navigation
+        function navigateTo(page) {
+            document.querySelectorAll(`.page`).forEach(p => p.classList.remove(`active`));
+            document.getElementById(page).classList.add(`active`);
+            window.scrollTo(0, 0);
+        }
+
+        function showArea(area) {
+            currentArea = area;
+            document.getElementById(`currentArea`).textContent = area;
+            document.getElementById(`areaTitle`).textContent = area;
+            renderAreaGirls();
+            navigateTo(`areaPage`);
+        }
+
+        function showProfile(girlId) {
+            currentGirlId = girlId;
+            const girl = girls.find(g => g.id === girlId);
+            if (!girl) return;
+
+            renderPhotoCarousel(girl);
+            renderProfileInfo(girl);
+            renderPricePackages(girl);
+            renderWhatsAppButton(girl);
+            navigateTo(`profilePage`);
+        }
+
+        // Render Functions
+        function renderGirlCard(girl) {
+            const statusClass = girl.status === `available` ? `available` : girl.status === `busy` ? `busy` : `coming-later`;
+            const statusText = girl.status === `available` ? `Available Now` : girl.status === `busy` ? `Busy` : `Coming Later`;
+
+            return `
+                <div class="card-hover" style="background: #1a1a1a; border-radius: 16px; overflow: hidden; cursor: pointer;" onclick="showProfile('${girl.id}')">
+                    <img src="${girl.photos[0]}" alt="${girl.name}" style="width: 100%; height: 280px; object-fit: cover;">
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3 style="font-size: 20px; font-weight: 600; color: white;">${girl.name}</h3>
+                            <span style="color: #cccccc;">${girl.age} yrs</span>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
+                            ${girl.tags.map(tag => `<span style="background: rgba(212, 175, 55, 0.2); color: #d4af37; padding: 4px 8px; border-radius: 12px; font-size: 12px;">${tag}</span>`).join(``)}
+                        </div>
+                        <div style="font-size: 24px; font-weight: 700; color: #d4af37; margin-bottom: 12px;">
+                            $${girl.price}/hr
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                            <span style="color: #d4af37; font-size: 14px;">View Details →</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAreaButtons() {
+            const areas = [`Orchard`, `Marina Bay`, `Sentosa`, `Clarke Quay`, `Bugis`];
+            const icons = [`🌆`, `🏙️`, `🏖️`, `🌃`, `🏪`];
+            
+            document.getElementById(`areaButtons`).innerHTML = areas.map((area, i) => `
+                <button class="area-button" onclick="showArea('${area}')" style="padding: 40px 20px; border-radius: 16px; cursor: pointer; text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 12px;">${icons[i]}</div>
+                    <div style="font-size: 20px; font-weight: 600; color: white;">${area}</div>
+                    <div style="font-size: 14px; color: #cccccc; margin-top: 8px;">${girls.filter(g => g.area === area).length} girls available</div>
+                </button>
+            `).join(``);
+        }
+
+        function renderTodayAvailable() {
+            const todayGirls = girls.filter(g => g.topPick).slice(0, 4);
+            document.getElementById(`todayAvailable`).innerHTML = todayGirls.map(renderGirlCard).join(``);
+        }
+
+        function renderNewGirls() {
+            const newGirls = girls.filter(g => g.newGirl).slice(0, 4);
+            document.getElementById(`newGirls`).innerHTML = newGirls.map(renderGirlCard).join(``);
+        }
+
+        function renderAreaGirls() {
+            let filteredGirls = girls.filter(g => g.area === currentArea);
+            
+            const priceFilter = document.getElementById(`priceFilter`).value;
+            const ageFilter = document.getElementById(`ageFilter`).value;
+            const statusFilter = document.getElementById(`statusFilter`).value;
+
+            if (priceFilter === `low`) filteredGirls = filteredGirls.filter(g => g.price < 300);
+            if (priceFilter === `mid`) filteredGirls = filteredGirls.filter(g => g.price >= 300 && g.price <= 500);
+            if (priceFilter === `high`) filteredGirls = filteredGirls.filter(g => g.price > 500);
+
+            if (ageFilter === `young`) filteredGirls = filteredGirls.filter(g => g.age >= 18 && g.age <= 23);
+            if (ageFilter === `mid`) filteredGirls = filteredGirls.filter(g => g.age >= 24 && g.age <= 28);
+            if (ageFilter === `mature`) filteredGirls = filteredGirls.filter(g => g.age >= 29);
+
+            if (statusFilter) filteredGirls = filteredGirls.filter(g => g.status === statusFilter);
+
+            document.getElementById(`areaGirls`).innerHTML = filteredGirls.map(renderGirlCard).join(``);
+        }
+
+        function applyFilters() {
+            renderAreaGirls();
+        }
+
+        function renderPhotoCarousel(girl) {
+            let currentPhotoIndex = 0;
+            
+            const carouselHTML = `
+                <div style="position: relative;">
+                    <img id="carouselImage" src="${girl.photos[0]}" alt="${girl.name}" style="width: 100%; height: 400px; object-fit: cover; border-radius: 16px;">
+                    ${girl.photos.length > 1 ? `
+                        <button onclick="changePhoto(-1)" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.7); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px;">‹</button>
+                        <button onclick="changePhoto(1)" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.7); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px;">›</button>
+                        <div class="carousel-dots">
+                            ${girl.photos.map((_, i) => `<div class="carousel-dot ${i === 0 ? `active` : ``}" onclick="goToPhoto(${i})"></div>`).join(``)}
+                        </div>
+                    ` : ``}
+                </div>
+            `;
+            
+            document.getElementById(`photoCarousel`).innerHTML = carouselHTML;
+            
+            window.changePhoto = function(direction) {
+                currentPhotoIndex = (currentPhotoIndex + direction + girl.photos.length) % girl.photos.length;
+                document.getElementById(`carouselImage`).src = girl.photos[currentPhotoIndex];
+                document.querySelectorAll(`.carousel-dot`).forEach((dot, i) => {
+                    dot.classList.toggle(`active`, i === currentPhotoIndex);
+                });
+            };
+            
+            window.goToPhoto = function(index) {
+                currentPhotoIndex = index;
+                document.getElementById(`carouselImage`).src = girl.photos[currentPhotoIndex];
+                document.querySelectorAll(`.carousel-dot`).forEach((dot, i) => {
+                    dot.classList.toggle(`active`, i === currentPhotoIndex);
+                });
+            };
+        }
+
+        function renderProfileInfo(girl) {
+            const statusClass = girl.status === `available` ? `available` : girl.status === `busy` ? `busy` : `coming-later`;
+            const statusText = girl.status === `available` ? `Available Now` : girl.status === `busy` ? `Busy` : `Coming Later`;
+
+            document.getElementById(`profileInfo`).innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px;">
+                    <div>
+                        <h1 style="font-size: 32px; font-weight: 700; color: white; margin-bottom: 8px;">${girl.name}</h1>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                            ${girl.topPick ? `<span style="background: #d4af37; color: #0a0a0a; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">⭐ TOP PICK</span>` : ``}
+                            ${girl.newGirl ? `<span style="background: #f59e0b; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">🌟 NEW</span>` : ``}
+                        </div>
+                    </div>
+                    <div style="font-size: 36px; font-weight: 700; color: #d4af37;">
+                        $${girl.price}/hr
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div>
+                        <div style="color: #999; font-size: 14px; margin-bottom: 4px;">Age</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">${girl.age} years</div>
+                    </div>
+                    ${girl.height ? `
+                    <div>
+                        <div style="color: #999; font-size: 14px; margin-bottom: 4px;">Height</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">${girl.height} cm</div>
+                    </div>
+                    ` : ``}
+                    ${girl.weight ? `
+                    <div>
+                        <div style="color: #999; font-size: 14px; margin-bottom: 4px;">Weight</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">${girl.weight} kg</div>
+                    </div>
+                    ` : ``}
+                    <div>
+                        <div style="color: #999; font-size: 14px; margin-bottom: 4px;">Location</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">${girl.area}</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="color: #d4af37; font-size: 16px; font-weight: 600; margin-bottom: 8px;">About Me</div>
+                    <p style="color: #cccccc; line-height: 1.6;">${girl.description}</p>
+                </div>
+
+                ${girl.languages ? `
+                <div style="margin-bottom: 20px;">
+                    <div style="color: #d4af37; font-size: 16px; font-weight: 600; margin-bottom: 8px;">Languages</div>
+                    <div style="color: #cccccc;">${girl.languages}</div>
+                </div>
+                ` : ``}
+
+                ${girl.location ? `
+                <div style="margin-bottom: 20px;">
+                    <div style="color: #d4af37; font-size: 16px; font-weight: 600; margin-bottom: 8px;">📍 Location Details</div>
+                    <div style="color: #cccccc;">${girl.location}</div>
+                </div>
+                ` : ``}
+
+                ${girl.hours ? `
+                <div style="margin-bottom: 20px;">
+                    <div style="color: #d4af37; font-size: 16px; font-weight: 600; margin-bottom: 8px;">🕐 Service Hours</div>
+                    <div style="color: #cccccc;">${girl.hours}</div>
+                </div>
+                ` : ``}
+
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    ${girl.tags.map(tag => `<span style="background: rgba(212, 175, 55, 0.2); color: #d4af37; padding: 6px 12px; border-radius: 16px; font-size: 14px;">${tag}</span>`).join(``)}
+                </div>
+            `;
+        }
+
+        function renderPricePackages(girl) {
+            const packages = [
+                { duration: `1 Hour`, price: girl.price },
+                { duration: `2 Hours`, price: Math.round(girl.price * 1.8) },
+                { duration: `3 Hours`, price: Math.round(girl.price * 2.5) },
+                { duration: `Overnight`, price: Math.round(girl.price * 4) }
+            ];
+
+            document.getElementById(`pricePackages`).innerHTML = `
+                <h2 style="font-size: 24px; font-weight: 700; color: #d4af37; margin-bottom: 20px;">💰 Price Packages</h2>
+                <div style="display: grid; gap: 12px;">
+                    ${packages.map(pkg => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: #0a0a0a; border-radius: 8px; border: 1px solid #2a2a2a;">
+                            <span style="color: white; font-size: 16px; font-weight: 500;">${pkg.duration}</span>
+                            <span style="color: #d4af37; font-size: 20px; font-weight: 700;">$${pkg.price}</span>
+                        </div>
+                    `).join(``)}
+                </div>
+                <div style="margin-top: 16px; padding: 12px; background: rgba(212, 175, 55, 0.1); border-radius: 8px; border: 1px solid #d4af37;">
+                    <div style="color: #d4af37; font-size: 14px; font-weight: 600; margin-bottom: 4px;">💎 VIP Package Available</div>
+                    <div style="color: #cccccc; font-size: 13px;">Contact us for exclusive VIP rates and special arrangements</div>
+                </div>
+            `;
+        }
+
+        function renderWhatsAppButton(girl) {
+            const whatsappNumber = girl.whatsapp || `+6512345678`;
+            const message = encodeURIComponent(`Hi, I'm interested in booking ${girl.name}. Is she available?`);
+            
+            document.getElementById(`whatsappContact`).innerHTML = `
+                <a href="https://wa.me/${whatsappNumber.replace(/[^0-9]/g, ``)}?text=${message}" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); padding: 16px 24px; border-radius: 12px; text-decoration: none; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    </svg>
+                    <span style="color: white; font-size: 18px; font-weight: 600;">Book via WhatsApp</span>
+                </a>
+            `;
+        }
+
+        // Admin Functions
+        function showAdminLogin() {
+            if (isLoggedIn) {
+                navigateTo(`adminPage`);
+                updateAdminDashboard();
+                renderAdminGirlsList();
+            } else {
+                document.getElementById(`loginModal`).classList.add(`active`);
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const password = document.getElementById(`adminPassword`).value;
+            
+            if (password === `admin123`) {
+                isLoggedIn = true;
+                document.getElementById(`loginModal`).classList.remove(`active`);
+                navigateTo(`adminPage`);
+                updateAdminDashboard();
+                renderAdminGirlsList();
+            } else {
+                alert(`Incorrect password`);
+            }
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            navigateTo(`home`);
+        }
+
+        function updateAdminDashboard() {
+            document.getElementById(`totalGirls`).textContent = girls.length;
+            document.getElementById(`availableCount`).textContent = girls.filter(g => g.status === `available`).length;
+            document.getElementById(`newGirlsCount`).textContent = girls.filter(g => g.newGirl).length;
+            document.getElementById(`topPicksCount`).textContent = girls.filter(g => g.topPick).length;
+        }
+
+        function renderAdminGirlsList() {
+            const tbody = document.getElementById(`adminGirlsList`);
+            tbody.innerHTML = girls.map(girl => `
+                <tr>
+                    <td><img src="${girl.photos[0]}" alt="${girl.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;"></td>
+                    <td style="font-weight: 600;">${girl.name}</td>
+                    <td>${girl.age}</td>
+                    <td>${girl.area}</td>
+                    <td><span class="status-badge ${girl.status === `available` ? `available` : girl.status === `busy` ? `busy` : `coming-later`}">${girl.status}</span></td>
+                    <td style="color: #d4af37; font-weight: 600;">$${girl.price}</td>
+                    <td>
+                        ${girl.topPick ? `<span style="background: #d4af37; color: #0a0a0a; padding: 2px 6px; border-radius: 8px; font-size: 11px; margin-right: 4px;">TOP</span>` : ``}
+                        ${girl.newGirl ? `<span style="background: #f59e0b; color: white; padding: 2px 6px; border-radius: 8px; font-size: 11px;">NEW</span>` : ``}
+                    </td>
+                    <td>
+                        <button onclick="editGirl('${girl.id}')" style="background: #d4af37; border: none; padding: 6px 12px; border-radius: 6px; color: #0a0a0a; cursor: pointer; margin-right: 8px; font-weight: 600;">Edit</button>
+                        <button onclick="deleteGirl('${girl.id}')" style="background: #ef4444; border: none; padding: 6px 12px; border-radius: 6px; color: white; cursor: pointer; font-weight: 600;">Delete</button>
+                    </td>
+                </tr>
+            `).join(``);
+        }
+
+        function openAddGirlModal() {
+            document.getElementById(`modalTitle`).textContent = `Add New Girl`;
+            document.getElementById(`girlForm`).reset();
+            document.getElementById(`girlId`).value = ``;
+            document.getElementById(`girlModal`).classList.add(`active`);
+        }
+
+        function editGirl(girlId) {
+            const girl = girls.find(g => g.id === girlId);
+            if (!girl) return;
+
+            document.getElementById(`modalTitle`).textContent = `Edit Girl`;
+            document.getElementById(`girlId`).value = girl.id;
+            document.getElementById(`girlName`).value = girl.name;
+            document.getElementById(`girlAge`).value = girl.age;
+            document.getElementById(`girlHeight`).value = girl.height || ``;
+            document.getElementById(`girlWeight`).value = girl.weight || ``;
+            document.getElementById(`girlArea`).value = girl.area;
+            document.getElementById(`girlDescription`).value = girl.description;
+            document.getElementById(`girlLanguages`).value = girl.languages || ``;
+            document.getElementById(`girlLocation`).value = girl.location || ``;
+            document.getElementById(`girlHours`).value = girl.hours || ``;
+            document.getElementById(`girlStatus`).value = girl.status;
+            document.getElementById(`girlPrice`).value = girl.price;
+            document.getElementById(`girlTags`).value = girl.tags.join(`, `);
+            document.getElementById(`girlTopPick`).checked = girl.topPick;
+            document.getElementById(`girlNewGirl`).checked = girl.newGirl;
+            document.getElementById(`girlWhatsapp`).value = girl.whatsapp || ``;
+            document.getElementById(`girlPhotos`).value = girl.photos.join(`\n`);
+
+            document.getElementById(`girlModal`).classList.add(`active`);
+        }
+
+        function deleteGirl(girlId) {
+            if (confirm(`Are you sure you want to delete this girl?`)) {
+                girls = girls.filter(g => g.id !== girlId);
+                saveData();
+                renderAdminGirlsList();
+                updateAdminDashboard();
+                renderAll();
+            }
+        }
+
+        function closeGirlModal() {
+            document.getElementById(`girlModal`).classList.remove(`active`);
+        }
+
+        document.getElementById(`girlForm`).addEventListener(`submit`, function(e) {
+            e.preventDefault();
+            
+            const girlId = document.getElementById(`girlId`).value;
+            const girlData = {
+                id: girlId || `girl_` + Date.now(),
+                name: document.getElementById(`girlName`).value,
+                age: parseInt(document.getElementById(`girlAge`).value),
+                height: parseInt(document.getElementById(`girlHeight`).value) || null,
+                weight: parseInt(document.getElementById(`girlWeight`).value) || null,
+                area: document.getElementById(`girlArea`).value,
+                description: document.getElementById(`girlDescription`).value,
+                languages: document.getElementById(`girlLanguages`).value,
+                location: document.getElementById(`girlLocation`).value,
+                hours: document.getElementById(`girlHours`).value,
+                status: document.getElementById(`girlStatus`).value,
+                price: parseInt(document.getElementById(`girlPrice`).value),
+                tags: document.getElementById(`girlTags`).value.split(`,`).map(t => t.trim()).filter(t => t),
+                topPick: document.getElementById(`girlTopPick`).checked,
+                newGirl: document.getElementById(`girlNewGirl`).checked,
+                whatsapp: document.getElementById(`girlWhatsapp`).value,
+                photos: document.getElementById(`girlPhotos`).value.split(`\n`).map(p => p.trim()).filter(p => p)
+            };
+
+            if (girlId) {
+                const index = girls.findIndex(g => g.id === girlId);
+                girls[index] = girlData;
+            } else {
+                girls.push(girlData);
+            }
+
+            saveData();
+            closeGirlModal();
+            renderAdminGirlsList();
+            updateAdminDashboard();
+            renderAll();
+        });
+
+        // Data Management
+        function saveData() {
+            localStorage.setItem(`eliteCompanionsData`, JSON.stringify(girls));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem(`eliteCompanionsData`);
+            if (saved) {
+                girls = JSON.parse(saved);
+            } else {
+                initializeSampleData();
+            }
+        }
+
+        function initializeSampleData() {
+            girls = [
+                {
+                    id: `girl1`,
+                    name: `Sophia`,
+                    age: 22,
+                    height: 165,
+                    weight: 50,
+                    area: `Orchard`,
+                    description: `Sweet and friendly personality. Perfect girlfriend experience with genuine warmth and care. I love meeting new people and creating memorable moments.`,
+                    languages: `English, Mandarin`,
+                    location: `Near ION Orchard Mall`,
+                    hours: `11 AM - 2 AM`,
+                    status: `available`,
+                    price: 350,
+                    tags: [`Sweet`, `GF Type`, `Friendly`],
+                    topPick: true,
+                    newGirl: false,
+                    whatsapp: `+6512345678`,
+                    photos: [`https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800`, `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800`]
+                },
+                {
+                    id: `girl2`,
+                    name: `Isabella`,
+                    age: 24,
+                    height: 170,
+                    weight: 52,
+                    area: `Marina Bay`,
+                    description: `Sophisticated and elegant. I enjoy fine dining and meaningful conversations. Let me be your perfect companion for any occasion.`,
+                    languages: `English, French`,
+                    location: `Marina Bay Sands Area`,
+                    hours: `2 PM - 3 AM`,
+                    status: `available`,
+                    price: 450,
+                    tags: [`Elegant`, `Sophisticated`, `Classy`],
+                    topPick: true,
+                    newGirl: false,
+                    whatsapp: `+6512345679`,
+                    photos: [`https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800`, `https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800`]
+                },
+                {
+                    id: `girl3`,
+                    name: `Mia`,
+                    age: 21,
+                    height: 162,
+                    weight: 48,
+                    area: `Sentosa`,
+                    description: `Fun-loving and adventurous! I love the beach and outdoor activities. Let's create exciting memories together by the sea.`,
+                    languages: `English, Malay`,
+                    location: `Sentosa Cove`,
+                    hours: `10 AM - 12 AM`,
+                    status: `later`,
+                    price: 320,
+                    tags: [`Fun`, `Adventurous`, `Bubbly`],
+                    topPick: false,
+                    newGirl: true,
+                    whatsapp: `+6512345680`,
+                    photos: [`https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=800`, `https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800`]
+                },
+                {
+                    id: `girl4`,
+                    name: `Emma`,
+                    age: 26,
+                    height: 168,
+                    weight: 53,
+                    area: `Clarke Quay`,
+                    description: `Sexy and confident. I know how to make you feel special and appreciated. Perfect for those who appreciate genuine connection.`,
+                    languages: `English, Mandarin, Japanese`,
+                    location: `Clarke Quay Central`,
+                    hours: `6 PM - 4 AM`,
+                    status: `busy`,
+                    price: 400,
+                    tags: [`Sexy`, `Confident`, `Passionate`],
+                    topPick: true,
+                    newGirl: false,
+                    whatsapp: `+6512345681`,
+                    photos: [`https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800`, `https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800`]
+                },
+                {
+                    id: `girl5`,
+                    name: `Olivia`,
+                    age: 23,
+                    height: 166,
+                    weight: 51,
+                    area: `Bugis`,
+                    description: `Cute and playful with a warm smile. I love making people happy and ensuring you have the best time. Let's have fun together!`,
+                    languages: `English, Korean`,
+                    location: `Bugis Junction Area`,
+                    hours: `12 PM - 2 AM`,
+                    status: `available`,
+                    price: 330,
+                    tags: [`Cute`, `Playful`, `Sweet`],
+                    topPick: false,
+                    newGirl: true,
+                    whatsapp: `+6512345682`,
+                    photos: [`https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800`, `https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=800`]
+                },
+                {
+                    id: `girl6`,
+                    name: `Ava`,
+                    age: 25,
+                    height: 172,
+                    weight: 54,
+                    area: `Orchard`,
+                    description: `Tall, elegant and charming. I enjoy intellectual conversations and fine experiences. Your perfect companion for upscale events.`,
+                    languages: `English, Italian`,
+                    location: `Orchard Central`,
+                    hours: `3 PM - 3 AM`,
+                    status: `available`,
+                    price: 480,
+                    tags: [`Tall`, `Elegant`, `Charming`],
+                    topPick: true,
+                    newGirl: false,
+                    whatsapp: `+6512345683`,
+                    photos: [`https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=800`, `https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=800`]
+                },
+                {
+                    id: `girl7`,
+                    name: `Charlotte`,
+                    age: 20,
+                    height: 160,
+                    weight: 47,
+                    area: `Marina Bay`,
+                    description: `Young, fresh and energetic. I bring youthful enthusiasm and genuine excitement to every encounter. Let's make beautiful memories!`,
+                    languages: `English, Thai`,
+                    location: `Marina Square`,
+                    hours: `1 PM - 1 AM`,
+                    status: `available`,
+                    price: 300,
+                    tags: [`Young`, `Fresh`, `Energetic`],
+                    topPick: false,
+                    newGirl: true,
+                    whatsapp: `+6512345684`,
+                    photos: [`https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=800`, `https://images.unsplash.com/photo-1506634572416-48cdfe530110?w=800`]
+                },
+                {
+                    id: `girl8`,
+                    name: `Amelia`,
+                    age: 27,
+                    height: 169,
+                    weight: 55,
+                    area: `Clarke Quay`,
+                    description: `Mature and experienced. I understand what gentlemen truly desire and know how to deliver exceptional experiences every time.`,
+                    languages: `English, Spanish, Mandarin`,
+                    location: `Riverside Point`,
+                    hours: `5 PM - 4 AM`,
+                    status: `later`,
+                    price: 420,
+                    tags: [`Mature`, `Experienced`, `Professional`],
+                    topPick: false,
+                    newGirl: false,
+                    whatsapp: `+6512345685`,
+                    photos: [`https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=800`, `https://images.unsplash.com/photo-1515077678510-ce3bdf418862?w=800`]
+                },
+                {
+                    id: `girl9`,
+                    name: `Luna`,
+                    age: 22,
+                    height: 164,
+                    weight: 49,
+                    area: `Bugis`,
+                    description: `Mysterious and alluring with an exotic charm. I love creating intimate connections and unforgettable moments that you'll cherish.`,
+                    languages: `English, Vietnamese`,
+                    location: `Bugis Street`,
+                    hours: `12 PM - 2 AM`,
+                    status: `available`,
+                    price: 340,
+                    tags: [`Mysterious`, `Exotic`, `Alluring`],
+                    topPick: false,
+                    newGirl: true,
+                    whatsapp: `+6512345686`,
+                    photos: [`https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=800`, `https://images.unsplash.com/photo-1496440737103-cd596325d314?w=800`]
+                },
+                {
+                    id: `girl10`,
+                    name: `Grace`,
+                    age: 24,
+                    height: 167,
+                    weight: 52,
+                    area: `Sentosa`,
+                    description: `Graceful and sophisticated with natural beauty. I enjoy romantic settings and creating magical moments by the beautiful Sentosa beaches.`,
+                    languages: `English, Mandarin, Cantonese`,
+                    location: `Sentosa Resort Area`,
+                    hours: `11 AM - 1 AM`,
+                    status: `available`,
+                    price: 380,
+                    tags: [`Graceful`, `Romantic`, `Beautiful`],
+                    topPick: true,
+                    newGirl: false,
+                    whatsapp: `+6512345687`,
+                    photos: [`https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=800`, `https://images.unsplash.com/photo-1516726817505-f5ed825624d8?w=800`]
+                }
+            ];
+            saveData();
+        }
+
+        function renderAll() {
+            renderAreaButtons();
+            renderTodayAvailable();
+            renderNewGirls();
+        }
+
+        // Initialize
+        loadData();
+        renderAll();
+    </script>
+
+    <script src="https://cdn.kuse.ai/sdk.prd.js"></script>
+
+</body></html>
