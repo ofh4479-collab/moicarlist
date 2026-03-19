@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GirlCarList | Trilingual</title>
+    <title>MoiCarList | Professional Services</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -12,7 +12,10 @@
         
         nav { background: rgba(26, 26, 26, 0.95); padding: 12px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
         .nav-link { display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s; color: #aaa; font-size: 12px; font-weight: 600; text-transform: uppercase; text-decoration: none; }
-        .nav-link:hover, .nav-link.active-lang { color: var(--gold); }
+        .nav-link:hover { color: var(--gold); }
+
+        /* 语言按钮样式 */
+        .lang-toggle { background: #222; border: 1px solid #444; padding: 4px 12px; border-radius: 6px; color: var(--gold); font-size: 11px; }
 
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 60px 20px; text-align: center; border-bottom: 1px solid #222; }
         .area-button { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 2px solid #d4af37; transition: all 0.3s ease; cursor: pointer; }
@@ -32,82 +35,53 @@
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         input, select, textarea { background: #222; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; width: 100%; margin: 5px 0; }
+        
+        .admin-group-title { background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border-left: 4px solid var(--gold); margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: var(--gold); display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
     <script>
-        // 1. 语言字典配置
         const i18n = {
-            en: {
-                welcome: "Welcome to GirlCarList",
-                sub: "Your Trusted Choice for Professional Companionship and Massage in Malaysia",
-                selectLoc: "Select Your Location",
-                available: "✨ Available Today",
-                back: "← BACK TO LIST",
-                book: "WHATSAPP BOOKING NOW",
-                about: "About Her",
-                admin: "ADMIN",
-                home: "HOME"
-            },
-            cn: {
-                welcome: "欢迎来到 GirlCarList",
-                sub: "马来西亚您最信赖的专业按摩与陪伴服务",
-                selectLoc: "选择您的地区",
-                available: "✨ 今日在位",
-                back: "← 返回列表",
-                book: "立即 WhatsApp 预约",
-                about: "关于她",
-                admin: "管理后台",
-                home: "首页"
-            },
-            bm: {
-                welcome: "Selamat Datang ke GirlCarList",
-                sub: "Pilihan Dipercayai Anda untuk Peneman Profesional & Urutan di Malaysia",
-                selectLoc: "Pilih Lokasi Anda",
-                available: "✨ Tersedia Hari Ini",
-                back: "← KEMBALI",
-                book: "TEMPAH WHATSAPP SEKARANG",
-                about: "Mengenai Dia",
-                admin: "ADMIN",
-                home: "UTAMA"
-            }
+            en: { label: "EN", welcome: "Welcome to MoiCarList", sub: "Your Trusted Choice for Professional Companionship and Massage in Malaysia", selectLoc: "Select Your Location", available: "✨ Available Today", back: "← BACK", book: "WHATSAPP BOOKING NOW", about: "About Her", admin: "ADMIN", home: "HOME" },
+            cn: { label: "中", welcome: "欢迎来到 MoiCarList", sub: "马来西亚您最信赖的专业按摩与陪伴服务", selectLoc: "选择您的地区", available: "✨ 今日在位", back: "← 返回列表", book: "立即 WhatsApp 预约", about: "关于她", admin: "管理后台", home: "首页" },
+            bm: { label: "BM", welcome: "Selamat Datang ke MoiCarList", sub: "Pilihan Dipercayai Anda untuk Peneman Profesional & Urutan di Malaysia", selectLoc: "Pilih Lokasi Anda", available: "✨ Tersedia Hari Ini", back: "← KEMBALI", book: "TEMPAH WHATSAPP SEKARANG", about: "Mengenai Dia", admin: "ADMIN", home: "UTAMA" }
         };
 
-        let currentLang = 'en'; // 默认语言
-        const myTelegramChannelUrl = "https://t.me/your_channel_username";
+        let langSequence = ['en', 'cn', 'bm'];
+        let currentLangIndex = 0;
+        const myTelegramChannelUrl = "https://t.me/MoiCarList";
 
-        function changeLang(lang) {
-            currentLang = lang;
-            document.querySelectorAll('.nav-lang').forEach(el => el.classList.remove('active-lang'));
-            document.getElementById('lang-' + lang).classList.add('active-lang');
-            updateUI();
+        function toggleLang() {
+            currentLangIndex = (currentLangIndex + 1) % langSequence.length;
+            const lang = langSequence[currentLangIndex];
+            document.getElementById('btn-lang-toggle').innerText = "Language: " + i18n[lang].label;
+            updateUI(lang);
         }
 
-        function updateUI() {
-            const t = i18n[currentLang];
+        function updateUI(lang) {
+            const t = i18n[lang];
             document.getElementById('txt-welcome').innerText = t.welcome;
             document.getElementById('txt-sub').innerText = t.sub;
             document.getElementById('txt-selectLoc').innerText = t.selectLoc;
             document.getElementById('txt-available').innerText = t.available;
             document.getElementById('nav-home').innerText = t.home;
             document.getElementById('nav-admin').innerText = t.admin;
-            // 重新渲染地区和主列表以刷新语言
             renderAreaButtons();
         }
     </script>
 
     <nav>
         <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-            <div class="text-[#d4af37] font-bold text-2xl" onclick="navigateTo('home')">GirlCarList</div>
+            <div class="text-[#d4af37] font-bold text-2xl cursor-pointer" onclick="navigateTo('home')">MoiCarList</div>
             <div class="flex gap-4 items-center">
                 <a id="nav-home" onclick="navigateTo('home')" class="nav-link">HOME</a>
-                <div class="flex border-x border-[#333] px-3 gap-2">
-                    <span id="lang-cn" onclick="changeLang('cn')" class="nav-link nav-lang text-[10px]">CN</span>
-                    <span id="lang-en" onclick="changeLang('en')" class="nav-link nav-lang active-lang text-[10px]">EN</span>
-                    <span id="lang-bm" onclick="changeLang('bm')" class="nav-link nav-lang text-[10px]">BM</span>
-                </div>
-                <a href="#" onclick="window.open(myTelegramChannelUrl, '_blank'); return false;" class="nav-link text-[#0088cc]">TG</a>
+                
+                <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle font-bold">Language: EN</button>
+
+                <a href="#" onclick="window.open(myTelegramChannelUrl, '_blank'); return false;" class="nav-link text-[#0088cc]">
+                    <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.12 7.14-.14.72-.41.96-.66.98-.56.05-1-.38-1.54-.74-.83-.57-1.3-1.07-2.12-1.6-.94-.61-.33-.95.21-1.5.14-.14 2.53-2.32 2.58-2.52.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.48.94-4.18 2.76-.39.27-.75.4-1.07.39-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.28-.36.77-.55 3.02-1.31 5.03-2.18 6.04-2.6.96-.4 1.99-.48 2.65-.48.14 0 .47.03.68.16.19.11.26.27.28.42.02.16.02.32.01.48z"/></svg>
+                </a>
                 <a id="nav-admin" onclick="showAdmin()" class="nav-link">ADMIN</a>
             </div>
         </div>
@@ -115,33 +89,31 @@
 
     <div id="home" class="page active">
         <div class="hero-section">
-            <h1 id="txt-welcome" class="text-4xl md:text-5xl font-bold text-[#d4af37] mb-4">Welcome to GirlCarList</h1>
+            <h1 id="txt-welcome" class="text-4xl md:text-5xl font-bold text-[#d4af37] mb-4">Welcome to MoiCarList</h1>
             <p id="txt-sub" class="text-gray-400 max-w-2xl mx-auto">Your Trusted Choice for Professional Companionship and Massage in Malaysia</p>
         </div>
-
         <div class="max-w-6xl mx-auto px-6 py-10">
             <h2 id="txt-selectLoc" class="text-center text-xl mb-6 font-semibold">Select Your Location</h2>
             <div id="areaButtons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12"></div>
-
             <h2 id="txt-available" class="text-2xl font-bold mb-8 text-[#d4af37]">✨ Available Today</h2>
             <div id="displayList" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
         </div>
     </div>
 
     <div id="detailPage" class="page">
-        <div class="max-w-2xl mx-auto p-6 pb-20">
-            <div id="txt-back" class="mb-6 text-[#d4af37] font-bold cursor-pointer" onclick="navigateTo('home')">← BACK</div>
+        <div class="max-w-2xl mx-auto p-6 pb-20 text-center">
+            <div id="txt-back-btn" class="mb-6 text-[#d4af37] font-bold cursor-pointer text-left" onclick="navigateTo('home')">← BACK</div>
             <div id="detailContent"></div>
         </div>
     </div>
 
     <div id="adminPage" class="page">
         <div class="max-w-4xl mx-auto p-6">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold text-[#d4af37]">Cloud Panel</h2>
-                <button onclick="openModal()" class="bg-[#d4af37] text-black px-6 py-2 rounded-full font-bold">+ Add Profile</button>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-[#d4af37]">Cloud Control Panel</h2>
+                <button onclick="openModal()" class="bg-[#d4af37] text-black px-6 py-2 rounded-full font-bold shadow-lg">+ Add Profile</button>
             </div>
-            <div id="adminList" class="space-y-4"></div>
+            <div id="adminList"></div>
         </div>
     </div>
 
@@ -150,23 +122,12 @@
             <h3 class="text-[#d4af37] font-bold text-xl mb-4">Manage Profile</h3>
             <input type="text" id="gName" placeholder="Name">
             <input type="number" id="gAge" placeholder="Age">
-            <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="gCup" placeholder="Cup Size">
-                <input type="text" id="gHeight" placeholder="Height">
-            </div>
-            <select id="gArea">
-                <option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option>
-            </select>
-            <select id="gStatus">
-                <option value="available">Available Now</option><option value="busy">Busy</option>
-            </select>
-            <input type="number" id="gPrice1" placeholder="1shot RM">
-            <input type="number" id="gPrice2" placeholder="2shot RM">
-            <input type="number" id="gPrice3" placeholder="3Hours RM">
-            <input type="text" id="gPhoto" placeholder="Photo URL">
-            <input type="text" id="gWhatsapp" placeholder="WhatsApp Number">
-            <textarea id="gDesc" placeholder="Bio/Description" rows="3"></textarea>
-            <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-xl mt-6">SAVE</button>
+            <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup Size"><input type="text" id="gHeight" placeholder="Height"></div>
+            <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
+            <select id="gStatus"><option value="available">Available Now</option><option value="busy">Busy</option></select>
+            <input type="number" id="gPrice1" placeholder="1shot RM"><input type="number" id="gPrice2" placeholder="2shot RM"><input type="number" id="gPrice3" placeholder="3Hours RM">
+            <input type="text" id="gPhoto" placeholder="Photo URL"><input type="text" id="gWhatsapp" placeholder="WhatsApp Number"><textarea id="gDesc" placeholder="Bio/Description" rows="3"></textarea>
+            <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-xl mt-6">SAVE TO CLOUD</button>
             <button onclick="closeModal()" class="w-full text-gray-500 mt-4 text-xs">CANCEL</button>
         </div>
     </div>
@@ -188,6 +149,7 @@
         const db = getFirestore(app);
         const colRef = collection(db, "girls");
         let allData = [];
+        const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
 
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -235,14 +197,14 @@
 
         window.showDetail = function(id) {
             const g = allData.find(x => x.id === id);
-            const t = i18n[currentLang];
+            const langKey = langSequence[currentLangIndex];
+            const t = i18n[langKey];
             navigateTo('detailPage');
-            document.getElementById('txt-back').innerText = t.back;
+            document.getElementById('txt-back-btn').innerText = t.back;
             document.getElementById('detailContent').innerHTML = `
                 <img src="${g.photo}" class="w-full rounded-2xl mb-8 shadow-2xl border border-[#333]">
-                <h1 class="text-4xl font-bold text-white">${g.name}</h1>
-                <p class="text-[#d4af37] text-xl font-semibold mt-2">${g.age}Y | ${g.cup} | ${g.height}</p>
-                
+                <h1 class="text-4xl font-bold text-white text-left">${g.name}</h1>
+                <p class="text-[#d4af37] text-xl font-semibold mt-2 text-left">${g.age}Y | ${g.cup} | ${g.height}</p>
                 <div class="grid gap-3 mt-8 mb-8">
                     <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center">
                         <span class="text-gray-400">1shot (45min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p1}</span>
@@ -254,25 +216,16 @@
                         <span class="text-gray-400">3Hours</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p3}</span>
                     </div>
                 </div>
-
                 <div class="bg-[#111] p-6 rounded-2xl border-l-4 border-[#d4af37] mb-10 text-left">
                     <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">${t.about}</h4>
                     <p class="text-gray-300 leading-relaxed">${g.desc}</p>
                 </div>
-
-                <a href="https://wa.me/${g.whatsapp}" class="btn-whatsapp">
-                    ${t.book}
-                </a>
+                <a href="https://wa.me/${g.whatsapp}" class="btn-whatsapp">${t.book}</a>
             `;
         };
 
         window.renderAreaButtons = function() {
-            const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
-            document.getElementById('areaButtons').innerHTML = areas.map(a => `
-                <div class="area-button p-4 rounded-xl text-center font-bold text-sm" onclick="filterArea('${a}')">
-                    ${a}
-                </div>
-            `).join('');
+            document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button p-4 rounded-xl text-center font-bold text-sm" onclick="filterArea('${a}')">${a}</div>`).join('');
         };
 
         window.filterArea = function(area) {
@@ -282,15 +235,25 @@
         };
 
         window.renderAdmin = function(data) {
-            document.getElementById('adminList').innerHTML = data.map(g => `
-                <div class="flex items-center justify-between bg-[#111] p-4 rounded-xl border border-[#222]">
-                    <div class="flex items-center gap-4 text-left">
-                        <img src="${g.photo}" class="w-12 h-12 rounded-full object-cover">
-                        <div><div class="font-bold">${g.name}</div><div class="text-xs text-gray-500">${g.area}</div></div>
-                    </div>
-                    <button onclick="handleDelete('${g.id}')" class="text-red-500 font-bold">Delete</button>
-                </div>
-            `).join('');
+            let html = "";
+            areas.forEach(area => {
+                const areaProfiles = data.filter(g => g.area === area);
+                html += `
+                    <div class="admin-group">
+                        <div class="admin-group-title"><span>📍 ${area}</span><span class="text-xs opacity-60">${areaProfiles.length} Profiles</span></div>
+                        <div class="space-y-3">
+                            ${areaProfiles.length > 0 ? areaProfiles.map(g => `
+                                <div class="flex items-center justify-between bg-[#111] p-4 rounded-xl border border-[#222]">
+                                    <div class="flex items-center gap-4 text-left">
+                                        <img src="${g.photo}" class="w-12 h-12 rounded-full object-cover border border-[#333]">
+                                        <div><div class="font-bold text-white">${g.name}</div><div class="text-[10px] text-gray-500">${g.age}Y | ${g.cup}</div></div>
+                                    </div>
+                                    <button onclick="handleDelete('${g.id}')" class="text-red-500 text-xs font-bold px-3 py-1 bg-red-900/20 rounded">Delete</button>
+                                </div>`).join('') : '<p class="text-gray-600 text-xs italic pl-4">Empty</p>'}
+                        </div>
+                    </div>`;
+            });
+            document.getElementById('adminList').innerHTML = html;
         };
     </script>
 
@@ -300,7 +263,7 @@
             document.getElementById(id).classList.add('active');
             window.scrollTo(0,0);
         }
-        function showAdmin() { if(prompt("Password") === "admin123") navigateTo('adminPage'); }
+        function showAdmin() { if(prompt("Admin Password") === "admin123") navigateTo('adminPage'); }
         function openModal() { document.getElementById('girlModal').classList.add('active'); }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
     </script>
