@@ -38,19 +38,21 @@
         input, select, textarea { background: #222; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; width: 100%; margin: 5px 0; }
         .admin-group-title { background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border-left: 4px solid var(--gold); margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: var(--gold); display: flex; justify-content: space-between; }
         
-        /* 统计卡片样式 */
         .stat-card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 12px; text-align: center; }
         .stat-val { font-size: 24px; font-weight: bold; color: var(--gold); }
         .stat-label { font-size: 10px; color: #888; text-transform: uppercase; }
+
+        /* 国籍标签样式 */
+        .nation-tag { font-size: 10px; background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.3); }
     </style>
 </head>
 <body>
 
     <script>
         const i18n = {
-            en: { label: "EN", welcome: "Welcome to MoiCarList", sub: "Your Trusted Choice for Professional Companionship and Massage in Malaysia", selectLoc: "Select Your Location", available: "✨ Available Today", back: "← BACK", book: "WHATSAPP BOOKING NOW", about: "About Her", admin: "ADMIN", home: "HOME" },
-            cn: { label: "中", welcome: "欢迎来到 MoiCarList", sub: "马来西亚您最信赖的专业按摩与陪伴服务", selectLoc: "选择您的地区", available: "✨ 今日在位", back: "← 返回列表", book: "立即 WhatsApp 预约", about: "关于她", admin: "管理后台", home: "首页" },
-            bm: { label: "BM", welcome: "Selamat Datang ke MoiCarList", sub: "Pilihan Dipercayai Anda untuk Peneman Profesional & Urutan di Malaysia", selectLoc: "Pilih Lokasi Anda", available: "✨ Tersedia Hari Ini", back: "← KEMBALI", book: "TEMPAH WHATSAPP SEKARANG", about: "Mengenai Dia", admin: "ADMIN", home: "UTAMA" }
+            en: { label: "EN", welcome: "Welcome to MoiCarList", sub: "Your Trusted Choice for Professional Companionship and Massage in Malaysia", selectLoc: "Select Your Location", available: "✨ Available Today", back: "← BACK", book: "WHATSAPP BOOKING NOW", about: "About Her", admin: "ADMIN", home: "HOME", nation: "Nationality" },
+            cn: { label: "中", welcome: "欢迎来到 MoiCarList", sub: "马来西亚您最信赖的专业按摩与陪伴服务", selectLoc: "选择您的地区", available: "✨ 今日在位", back: "← 返回列表", book: "立即 WhatsApp 预约", about: "关于她", admin: "管理后台", home: "首页", nation: "国籍" },
+            bm: { label: "BM", welcome: "Selamat Datang ke MoiCarList", sub: "Pilihan Dipercayai Anda untuk Peneman Profesional & Urutan di Malaysia", selectLoc: "Pilih Lokasi Anda", available: "✨ Tersedia Hari Ini", back: "← KEMBALI", book: "TEMPAH WHATSAPP SEKARANG", about: "Mengenai Dia", admin: "ADMIN", home: "UTAMA", nation: "Warganegara" }
         };
 
         let langSequence = ['en', 'cn', 'bm'];
@@ -114,7 +116,6 @@
                 <h2 class="text-2xl font-bold text-[#d4af37]">Cloud Control Panel</h2>
                 <button onclick="openModal()" class="bg-[#d4af37] text-black px-6 py-2 rounded-full font-bold shadow-lg">+ Add Profile</button>
             </div>
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
                 <div class="stat-card">
                     <div id="stat-totalViews" class="stat-val">0</div>
@@ -125,7 +126,6 @@
                     <div class="stat-label">Total Profiles Across Malaysia</div>
                 </div>
             </div>
-
             <div id="adminList"></div>
         </div>
     </div>
@@ -135,6 +135,9 @@
             <h3 class="text-[#d4af37] font-bold text-xl mb-4">Manage Profile</h3>
             <input type="text" id="gName" placeholder="Name">
             <input type="number" id="gAge" placeholder="Age">
+            
+            <input type="text" id="gNation" placeholder="Nationality (e.g. Malaysia, Thailand)">
+            
             <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup Size"><input type="text" id="gHeight" placeholder="Height"></div>
             <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
             <select id="gStatus"><option value="available">Available Now</option><option value="busy">Busy</option></select>
@@ -146,9 +149,7 @@
         </div>
     </div>
 
-    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
-        <img id="lightboxImg" src="" alt="Full size image">
-    </div>
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightboxImg" src="" alt="Full size image"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -166,50 +167,35 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const colRef = collection(db, "girls");
-        const statsRef = doc(db, "system", "stats"); // 浏览统计文档路径
+        const statsRef = doc(db, "system", "stats");
         let allData = [];
         const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
 
-        // 1. 初始化和增加网页浏览统计
         async function trackSiteView() {
             try {
-                // 如果系统统计文档不存在，先创建它
                 const docSnap = await getDoc(statsRef);
-                if (!docSnap.exists()) {
-                    await setDoc(statsRef, { views: 0 });
-                }
-                // 增加浏览量 +1
+                if (!docSnap.exists()) { await setDoc(statsRef, { views: 0 }); }
                 await updateDoc(statsRef, { views: increment(1) });
             } catch (e) { console.error("Error tracking view", e); }
         }
-        trackSiteView(); // 页面加载时执行
+        trackSiteView();
 
-        // 2. 监听数据库（包括统计和小姐资料）
-        onSnapshot(statsRef, (doc) => {
-            if(doc.exists()) {
-                document.getElementById('stat-totalViews').innerText = doc.data().views || 0;
-            }
-        });
+        onSnapshot(statsRef, (doc) => { if(doc.exists()) { document.getElementById('stat-totalViews').innerText = doc.data().views || 0; } });
 
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
             renderMain(allData);
             renderAdmin(allData);
             renderAreaButtons();
-            // 更新后台统计人数
             document.getElementById('stat-totalGirls').innerText = allData.length;
         });
 
-        // 3. 核心统计：记录小姐点击预约次数
         window.trackGirlClick = async function(id) {
             try {
                 const girlRef = doc(db, "girls", id);
                 await updateDoc(girlRef, { clicks: increment(1) });
-                // 点击后跳转到 WhatsApp（使用该小姐绑定的号码）
                 const girl = allData.find(x => x.id === id);
-                if (girl && girl.whatsapp) {
-                    window.open(`https://wa.me/${girl.whatsapp}`, '_blank');
-                }
+                if (girl && girl.whatsapp) { window.open(`https://wa.me/${girl.whatsapp}`, '_blank'); }
             } catch (e) { console.error("Error tracking click", e); }
         }
 
@@ -217,6 +203,7 @@
             const data = {
                 name: document.getElementById('gName').value,
                 age: document.getElementById('gAge').value,
+                nation: document.getElementById('gNation').value || "Local", // 默认显示 Local
                 cup: document.getElementById('gCup').value,
                 height: document.getElementById('gHeight').value,
                 p1: document.getElementById('gPrice1').value,
@@ -227,7 +214,7 @@
                 photo: document.getElementById('gPhoto').value,
                 whatsapp: document.getElementById('gWhatsapp').value,
                 desc: document.getElementById('gDesc').value,
-                clicks: 0 // 初始化点击次数为0
+                clicks: 0
             };
             await addDoc(colRef, data);
             closeModal();
@@ -244,7 +231,10 @@
                             <span class="font-bold text-2xl text-white">${g.name}</span>
                             <span class="status-badge ${g.status}">${g.status}</span>
                         </div>
-                        <div class="text-gray-400 text-sm mb-3 font-medium">${g.age}Y | ${g.cup} | ${g.height}</div>
+                        <div class="flex gap-2 items-center mb-3">
+                            <span class="nation-tag">${g.nation}</span>
+                            <span class="text-gray-400 text-sm font-medium">${g.age}Y | ${g.cup} | ${g.height}</span>
+                        </div>
                         <div class="text-[#d4af37] font-bold text-xl">RM ${g.p1}</div>
                     </div>
                 </div>
@@ -259,8 +249,13 @@
             document.getElementById('txt-back-btn').innerText = t.back;
             document.getElementById('detailContent').innerHTML = `
                 <img src="${g.photo}" class="w-full rounded-2xl mb-8 shadow-2xl border border-[#333] cursor-pointer" onclick="openLightbox('${g.photo}')">
-                <h1 class="text-4xl font-bold text-white text-left">${g.name}</h1>
-                <p class="text-[#d4af37] text-xl font-semibold mt-2 text-left">${g.age}Y | ${g.cup} | ${g.height}</p>
+                <div class="text-left">
+                    <div class="flex items-center gap-3 mb-2">
+                        <h1 class="text-4xl font-bold text-white">${g.name}</h1>
+                        <span class="nation-tag text-sm py-1 px-3">${g.nation}</span>
+                    </div>
+                    <p class="text-[#d4af37] text-xl font-semibold">${g.age}Y | ${g.cup} | ${g.height}</p>
+                </div>
                 <div class="grid gap-3 mt-8 mb-8">
                     <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center">
                         <span class="text-gray-400">1shot (45min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p1}</span>
@@ -303,7 +298,7 @@
                                     <div class="flex items-center gap-4 text-left">
                                         <img src="${g.photo}" class="w-12 h-12 rounded-full object-cover border border-[#333]">
                                         <div>
-                                            <div class="font-bold text-white">${g.name}</div>
+                                            <div class="font-bold text-white">${g.name} <span class="text-[9px] text-gray-500">(${g.nation})</span></div>
                                             <div class="text-[10px] text-gray-500">${g.age}Y | ${g.cup} | <span class="text-[#d4af37] font-bold">${g.clicks || 0} Clicks</span></div>
                                         </div>
                                     </div>
@@ -325,15 +320,11 @@
         function showAdmin() { if(prompt("Admin Password") === "KAR#1999") navigateTo('adminPage'); }
         function openModal() { document.getElementById('girlModal').classList.add('active'); }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
-        
-        // Lightbox 逻辑
         function openLightbox(imgUrl) {
             document.getElementById('lightboxImg').src = imgUrl;
             document.getElementById('lightbox').classList.add('active');
         }
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('active');
-        }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
     </script>
 </body>
 </html>
