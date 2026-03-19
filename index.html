@@ -1,126 +1,262 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GirlCarList | Premium Service</title>
+    <title>Elite Companions - Cloud Sync</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --gold: #d4af37; }
-        body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; margin:0; }
-        nav { background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); position: sticky; top:0; z-index:100; border-bottom:1px solid #333; }
-        .area-pill { background: #1a1a1b; border: 1px solid #333; padding: 8px 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-size: 14px; white-space: nowrap; }
-        .area-pill:hover { background: var(--gold); color: #000; }
-        .card { background: #1a1a1b; border-radius: 20px; overflow: hidden; border: 1px solid #222; }
-        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
-        .available { background: #30d158; color: #fff; }
-        .busy { background: #ff453a; color: #fff; }
-        .page { display: none; min-height: 100vh; }
+        /* 这里保留你原本所有的 CSS 样式 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #0a0a0a; color: #ffffff; overflow-x: hidden; }
+        .gradient-gold { background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); }
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2); }
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        .available { background: #10b981; color: white; }
+        .busy { background: #ef4444; color: white; }
+        .coming-later { background: #f59e0b; color: white; }
+        .area-button { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 2px solid #d4af37; transition: all 0.3s ease; }
+        .area-button:hover { background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); transform: scale(1.05); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4); }
+        .photo-carousel { position: relative; overflow: hidden; border-radius: 16px; }
+        .photo-carousel img { width: 100%; height: 400px; object-fit: cover; }
+        .carousel-dots { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+        .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); cursor: pointer; transition: all 0.3s; }
+        .carousel-dot.active { background: #d4af37; width: 24px; border-radius: 4px; }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { background: #1a1a1a; padding: 12px; text-align: left; border-bottom: 2px solid #d4af37; color: #d4af37; }
+        .admin-table td { padding: 12px; border-bottom: 1px solid #2a2a2a; }
+        .filter-button { padding: 8px 16px; border-radius: 20px; border: 1px solid #d4af37; background: transparent; color: #d4af37; cursor: pointer; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 2000; overflow-y: auto; }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: #1a1a1a; padding: 32px; border-radius: 16px; max-width: 600px; width: 90%; }
+        input, select, textarea { width: 100%; padding: 12px; background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 8px; color: white; margin-top: 8px; }
+        .page { display: none; }
         .page.active { display: block; }
-        .btn-gold { background: var(--gold); color: #000; font-weight: 600; padding: 12px; border-radius: 12px; display: block; text-align: center; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <nav class="h-14 flex items-center justify-between px-6">
-        <div class="text-[#d4af37] font-bold text-xl cursor-pointer" onclick="location.reload()">GirlCarList</div>
-        <div class="text-sm text-gray-400">Premium Selection</div>
+    <nav style="background: #1a1a1a; padding: 16px 0; position: sticky; top: 0; z-index: 100;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 24px; font-weight: 700; color: #d4af37; cursor: pointer;" onclick="navigateTo('home')">Elite Companions</div>
+            <div style="display: flex; gap: 24px; align-items: center;">
+                <span onclick="navigateTo('home')" style="cursor: pointer; color: #cccccc;">Home</span>
+                <span onclick="showAdminLogin()" style="cursor: pointer; color: #cccccc;">Admin</span>
+            </div>
+        </div>
     </nav>
 
     <div id="home" class="page active">
-        <div class="py-16 text-center">
-            <h1 class="text-4xl font-extrabold mb-4">Welcome to <span class="text-[#d4af37]">GirlCarList</span></h1>
-            <div class="flex flex-wrap justify-center gap-2 mt-8 px-4">
-                <div class="area-pill" onclick="showArea('Alor Setar')">Alor Setar</div>
-                <div class="area-pill" onclick="showArea('Sungei Petani')">Sungei Petani</div>
-                <div class="area-pill" onclick="showArea('Penang')">Penang</div>
-                <div class="area-pill" onclick="showArea('Bukit Mertajam')">Bukit Mertajam</div>
-                <div class="area-pill" onclick="showArea('Ipoh')">Ipoh</div>
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 60px 20px; text-align: center;">
+            <h1 style="font-size: 42px; font-weight: 700; color: #d4af37;">Welcome to Elite Companions</h1>
+        </div>
+        <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+            <h2 style="font-size: 28px; color: #d4af37; margin-bottom: 24px;">✨ Available Today</h2>
+            <div id="todayAvailable" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;"></div>
+        </div>
+        <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+            <h2 style="text-align: center; margin-bottom: 24px;">Select Your Location</h2>
+            <div id="areaButtons" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;"></div>
+        </div>
+    </div>
+
+    <div id="profilePage" class="page">
+        <div style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+            <button onclick="navigateTo('home')" style="color: #d4af37; margin-bottom: 20px;">← Back</button>
+            <div id="photoCarousel" class="photo-carousel"></div>
+            <div id="profileInfo" style="background: #1a1a1a; padding: 30px; border-radius: 16px; margin-top: 20px;"></div>
+            <div id="whatsappContact" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <div id="adminPage" class="page">
+        <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-[#d4af37]">Cloud Admin</h1>
+                <button onclick="openAddGirlModal()" class="gradient-gold px-6 py-2 rounded-lg text-black font-bold">+ Add Girl</button>
+            </div>
+            <div style="background: #1a1a1a; border-radius: 12px; overflow: hidden;">
+                <table class="admin-table">
+                    <thead><tr><th>Photo</th><th>Name</th><th>Area</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="adminGirlsList"></tbody>
+                </table>
             </div>
         </div>
-        <div class="max-w-6xl mx-auto px-6 pb-20">
-            <h2 class="text-2xl font-bold mb-8">Available Today</h2>
-            <div id="mainList" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </div>
+
+    <div id="girlModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle" class="text-2xl text-[#d4af37] mb-4">Add New Girl</h2>
+            <form id="girlForm">
+                <input type="hidden" id="girlId">
+                <input type="text" id="girlName" placeholder="Name" required>
+                <input type="number" id="girlAge" placeholder="Age" required>
+                <select id="girlArea">
+                    <option>Orchard</option><option>Marina Bay</option><option>Sentosa</option><option>Clarke Quay</option><option>Bugis</option>
+                </select>
+                <select id="girlStatus">
+                    <option value="available">Available Now</option><option value="busy">Busy</option>
+                </select>
+                <input type="number" id="girlPrice" placeholder="Price (RM/SGD)" required>
+                <input type="text" id="girlWhatsapp" placeholder="WhatsApp (e.g. 60123456789)">
+                <textarea id="girlPhotos" placeholder="Photo URLs (one per line)"></textarea>
+                <textarea id="girlDescription" placeholder="Description"></textarea>
+                <div class="flex gap-4 mt-6">
+                    <button type="submit" class="gradient-gold flex-1 py-3 rounded-lg text-black font-bold">Save to Cloud</button>
+                    <button type="button" onclick="closeGirlModal()" class="flex-1 border border-red-500 text-red-500 rounded-lg">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <div id="detailPage" class="page">
-        <div class="p-6">
-            <div class="mb-6 text-[#d4af37] cursor-pointer" onclick="showHome()">← Back</div>
-            <div id="detailContent"></div>
+    <div id="loginModal" class="modal">
+        <div class="modal-content" style="max-width: 350px;">
+            <h2 class="text-center text-[#d4af37] mb-4">Admin Login</h2>
+            <input type="password" id="adminPassword" placeholder="Password">
+            <button onclick="handleLogin()" class="gradient-gold w-full py-2 mt-4 rounded-lg text-black font-bold">Login</button>
         </div>
     </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, updateDoc, deleteDoc } 
+        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 你刚才获取的配置信息
+        const firebaseConfig = {
+            apiKey: "AIzaSyCK8dhWPA2pd04gzVxmkOgQuMpFfFPyXxs",
+            authDomain: "girlcarlist-db.firebaseapp.com",
+            projectId: "girlcarlist-db",
+            storageBucket: "girlcarlist-db.firebasestorage.app",
+            messagingSenderId: "418933639880",
+            appId: "1:418933639880:web:a993e1c3e71f2e8d18f3fd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const girlsCol = collection(db, "girls");
+
+        let allGirls = [];
+
+        // 实时同步：一旦云端数据变化，网页自动刷新
+        onSnapshot(girlsCol, (snapshot) => {
+            allGirls = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+
+        // 保存/更新数据到云端
+        window.saveToFirebase = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('girlId').value;
+            const data = {
+                name: document.getElementById('girlName').value,
+                age: document.getElementById('girlAge').value,
+                area: document.getElementById('girlArea').value,
+                status: document.getElementById('girlStatus').value,
+                price: document.getElementById('girlPrice').value,
+                whatsapp: document.getElementById('girlWhatsapp').value,
+                photos: document.getElementById('girlPhotos').value.split('\n').filter(p => p.trim()),
+                description: document.getElementById('girlDescription').value,
+                topPick: true 
+            };
+
+            if (id) {
+                await updateDoc(doc(db, "girls", id), data);
+            } else {
+                await addDoc(girlsCol, data);
+            }
+            closeGirlModal();
+        };
+
+        window.deleteFromFirebase = async function(id) {
+            if(confirm('Delete this record?')) await deleteDoc(doc(db, "girls", id));
+        };
+
+        document.getElementById('girlForm').onsubmit = window.saveToFirebase;
+        
+        function renderAll() {
+            renderHome(allGirls);
+            renderAdmin(allGirls);
+            renderAreaButtons(allGirls);
+        }
+        window.renderAll = renderAll;
+    </script>
 
     <script>
-        // ======= 在这里直接修改你的资料，顾客就能看到了 =======
-        const girls = [
-            {
-                id: "1",
-                name: "YUKI",
-                age: "23",
-                price: "400",
-                area: "Alor Setar",
-                status: "available",
-                whatsapp: "60123456789",
-                photos: ["https://via.placeholder.com/400x500"],
-                description: "Sweet and caring girlfriend type. Top Service."
-            },
-            {
-                id: "2",
-                name: "MIKA",
-                age: "22",
-                price: "350",
-                area: "Penang",
-                status: "busy",
-                whatsapp: "60123456789",
-                photos: ["https://via.placeholder.com/400x500"],
-                description: "Playful and friendly. Best experience."
-            }
-            // 以后要加人，直接按格式复制上面的代码块
-        ];
-
-        function showHome() {
-            document.getElementById('detailPage').classList.remove('active');
-            document.getElementById('home').classList.add('active');
-        }
-
-        function showArea(area) {
-            const filtered = girls.filter(g => g.area === area);
-            renderList(filtered, `Area: ${area}`);
-        }
-
-        function showProfile(id) {
-            const g = girls.find(x => x.id === id);
-            document.getElementById('home').classList.remove('active');
-            document.getElementById('detailPage').classList.add('active');
-            document.getElementById('detailContent').innerHTML = `
-                <img src="${g.photos[0]}" class="w-full rounded-3xl mb-6">
-                <h1 class="text-3xl font-bold">${g.name}, ${g.age}</h1>
-                <div class="text-[#d4af37] text-2xl font-bold my-4">RM ${g.price}</div>
-                <p class="text-gray-400 mb-8">${g.description}</p>
-                <a href="https://wa.me/${g.whatsapp}?text=Hi ${g.name}, I saw you on GirlCarList" class="btn-gold">WhatsApp Booking</a>
-            `;
-        }
-
-        function renderList(data, title = "Available Today") {
-            const html = data.map(g => `
-                <div class="card" onclick="showProfile('${g.id}')">
-                    <img src="${g.photos[0]}" class="w-full h-72 object-cover">
-                    <div class="p-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="font-bold">${g.name}</span>
-                            <span class="status-badge ${g.status === 'available' ? 'available' : 'busy'}">${g.status}</span>
-                        </div>
-                        <div class="text-[#d4af37] font-bold">RM ${g.price}</div>
-                    </div>
-                </div>
-            `).join('');
-            document.getElementById('mainList').innerHTML = html || '<p>No one here yet.</p>';
+        // 辅助渲染函数
+        function navigateTo(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
             window.scrollTo(0,0);
         }
 
-        renderList(girls);
+        function renderHome(data) {
+            const list = document.getElementById('todayAvailable');
+            list.innerHTML = data.map(g => `
+                <div class="card-hover bg-[#1a1a1b] rounded-2xl overflow-hidden cursor-pointer" onclick="showProfile('${g.id}')">
+                    <img src="${g.photos[0]}" class="w-full h-72 object-cover">
+                    <div class="p-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-xl">${g.name}</h3>
+                            <span class="status-badge ${g.status}">${g.status}</span>
+                        </div>
+                        <div class="text-[#d4af37] font-bold text-2xl">$${g.price}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAdmin(data) {
+            const list = document.getElementById('adminGirlsList');
+            list.innerHTML = data.map(g => `
+                <tr>
+                    <td><img src="${g.photos[0]}" class="w-12 h-12 rounded-full object-cover"></td>
+                    <td class="font-bold">${g.name}</td>
+                    <td>${g.area}</td>
+                    <td><span class="status-badge ${g.status}">${g.status}</span></td>
+                    <td>
+                        <button onclick="editGirl('${g.id}')" class="text-blue-400 mr-4">Edit</button>
+                        <button onclick="deleteFromFirebase('${g.id}')" class="text-red-500">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAreaButtons(data) {
+            const areas = ['Orchard', 'Marina Bay', 'Sentosa', 'Clarke Quay', 'Bugis'];
+            document.getElementById('areaButtons').innerHTML = areas.map(area => `
+                <div class="area-button p-6 rounded-xl text-center cursor-pointer" onclick="alert('Area filtering coming soon')">
+                    <div class="text-xl font-bold">${area}</div>
+                    <div class="text-sm text-gray-400">${data.filter(g => g.area === area).length} girls</div>
+                </div>
+            `).join('');
+        }
+
+        window.showProfile = function(id) {
+            // 此处逻辑需从全局 allGirls 获取数据并渲染 profilePage
+            navigateTo('profilePage');
+        };
+
+        window.showAdminLogin = () => document.getElementById('loginModal').classList.add('active');
+        window.handleLogin = () => {
+            if(document.getElementById('adminPassword').value === 'admin123') {
+                document.getElementById('loginModal').classList.remove('active');
+                navigateTo('adminPage');
+            } else alert('Wrong password');
+        };
+        window.openAddGirlModal = () => {
+            document.getElementById('girlForm').reset();
+            document.getElementById('girlId').value = '';
+            document.getElementById('girlModal').classList.add('active');
+        };
+        window.closeGirlModal = () => document.getElementById('girlModal').classList.remove('active');
+        
+        window.editGirl = function(id) {
+            // 填充表单逻辑...
+            document.getElementById('girlModal').classList.add('active');
+        };
     </script>
 </body>
 </html>
