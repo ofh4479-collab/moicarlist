@@ -10,13 +10,11 @@
         :root { --gold: #d4af37; --whatsapp: #25D366; }
         body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; margin:0; }
         
-        /* 找回之前的精美样式 */
         nav { background: rgba(26, 26, 26, 0.95); padding: 16px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 60px 20px; text-align: center; border-bottom: 1px solid #222; }
         .area-button { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 2px solid #d4af37; transition: all 0.3s ease; cursor: pointer; }
         .area-button:hover { background: var(--gold); color: #000; transform: scale(1.05); }
         
-        /* 卡片与按钮 */
         .card { background: #111; border-radius: 20px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; }
         .card:hover { border-color: var(--gold); transform: translateY(-5px); }
         .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
@@ -26,7 +24,6 @@
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
         
-        /* WhatsApp 绿色按钮样式 */
         .btn-whatsapp { background: #25D366; color: white; font-weight: 700; padding: 14px; border-radius: 15px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-top: 20px; transition: 0.3s; }
         .btn-whatsapp:hover { background: #1ebe57; transform: scale(1.02); }
         
@@ -55,7 +52,7 @@
 
         <div class="max-w-6xl mx-auto px-6 py-10">
             <h2 class="text-center text-xl mb-6 font-semibold">Select Your Location</h2>
-            <div id="areaButtons" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12"></div>
+            <div id="areaButtons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12"></div>
 
             <h2 id="listTitle" class="text-2xl font-bold mb-8 text-[#d4af37]">✨ Available Today</h2>
             <div id="displayList" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
@@ -85,13 +82,17 @@
         <div class="bg-[#1c1c1e] p-8 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-[#333]">
             <h3 class="text-[#d4af37] font-bold text-xl mb-4">Manage Profile</h3>
             <input type="text" id="gName" placeholder="Name (e.g. Cindy)">
-            <input type="number" id="gAge" placeholder="Age">
+            <input type="number" id="gAge" placeholder="Age (e.g. 24)">
             <div class="grid grid-cols-2 gap-2">
                 <input type="text" id="gCup" placeholder="Cup Size (e.g. 38C)">
                 <input type="text" id="gHeight" placeholder="Height (e.g. 158cm)">
             </div>
             <select id="gArea">
-                <option>Alor Setar</option><option>Sungei Petani</option><option>Penang</option><option>Ipoh</option>
+                <option>Alor Setar</option>
+                <option>Sungei Petani</option>
+                <option>Bukit Mertajam</option>
+                <option>Penang</option>
+                <option>Ipoh</option>
             </select>
             <select id="gStatus">
                 <option value="available">Available Now</option><option value="busy">Busy</option>
@@ -102,7 +103,7 @@
             <input type="number" id="gPrice2" placeholder="2shot Price (90min)">
             <input type="number" id="gPrice3" placeholder="3Hours Price">
 
-            <input type="text" id="gPhoto" placeholder="Photo URL (Direct Link from Postimages)">
+            <input type="text" id="gPhoto" placeholder="Photo URL (Direct Link)">
             <input type="text" id="gWhatsapp" placeholder="WhatsApp Number (e.g. 60123456789)">
             <textarea id="gDesc" placeholder="Bio/Description" rows="3"></textarea>
             
@@ -155,7 +156,7 @@
             closeModal();
         };
 
-        window.handleDelete = async id => { if(confirm('Delete this profile permanently?')) await deleteDoc(doc(db, "girls", id)); };
+        window.handleDelete = async id => { if(confirm('Delete permanently?')) await deleteDoc(doc(db, "girls", id)); };
 
         window.renderMain = function(data, title = "✨ Available Today") {
             document.getElementById('listTitle').innerText = title;
@@ -164,10 +165,12 @@
                     <img src="${g.photo}" class="w-full h-80 object-cover border-b border-[#222]">
                     <div class="p-5">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="font-bold text-xl">${g.name} | ${g.age}Y</span>
+                            <span class="font-bold text-2xl text-white">${g.name}</span>
                             <span class="status-badge ${g.status}">${g.status}</span>
                         </div>
-                        <div class="text-gray-400 text-sm mb-3">${g.cup || '-'} | ${g.height || '-'}</div>
+                        <div class="text-gray-400 text-sm mb-3 font-medium">
+                            ${g.age}Y | ${g.cup || '-'} | ${g.height || '-'}
+                        </div>
                         <div class="text-[#d4af37] font-bold text-xl">RM ${g.p1 || '0'}</div>
                     </div>
                 </div>
@@ -179,8 +182,9 @@
             navigateTo('detailPage');
             document.getElementById('detailContent').innerHTML = `
                 <img src="${g.photo}" class="w-full rounded-2xl mb-8 shadow-2xl border border-[#333]">
-                <h1 class="text-3xl font-bold">${g.name} | ${g.age}Y</h1>
-                <p class="text-[#d4af37] text-xl font-medium mt-2">${g.cup} | ${g.height} | ${g.area}</p>
+                <h1 class="text-4xl font-bold text-white">${g.name}</h1>
+                <p class="text-[#d4af37] text-xl font-semibold mt-2">${g.age}Y | ${g.cup} | ${g.height}</p>
+                <p class="text-gray-500 text-sm mt-1 uppercase tracking-wider">${g.area}</p>
                 
                 <div class="grid gap-3 mt-8 mb-8">
                     <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center">
@@ -207,9 +211,9 @@
         };
 
         window.renderAreaButtons = function() {
-            const areas = ['Alor Setar', 'Sungei Petani', 'Penang', 'Ipoh'];
+            const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
             document.getElementById('areaButtons').innerHTML = areas.map(a => `
-                <div class="area-button p-4 rounded-xl text-center font-bold" onclick="filterArea('${a}')">
+                <div class="area-button p-4 rounded-xl text-center font-bold text-sm" onclick="filterArea('${a}')">
                     ${a}
                 </div>
             `).join('');
@@ -226,7 +230,7 @@
                 <div class="flex items-center justify-between bg-[#111] p-4 rounded-xl border border-[#222]">
                     <div class="flex items-center gap-4">
                         <img src="${g.photo}" class="w-12 h-12 rounded-full object-cover">
-                        <div><div class="font-bold">${g.name}</div><div class="text-xs text-gray-500">${g.area} | ${g.cup}</div></div>
+                        <div><div class="font-bold">${g.name}</div><div class="text-xs text-gray-500">${g.area} | ${g.age}Y | ${g.cup}</div></div>
                     </div>
                     <button onclick="handleDelete('${g.id}')" class="text-red-500 font-bold">Delete</button>
                 </div>
