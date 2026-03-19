@@ -7,10 +7,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --gold: #d4af37; --whatsapp: #25D366; }
+        :root { --gold: #d4af37; --whatsapp: #25D366; --telegram: #0088cc; }
         body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; margin:0; }
         
-        nav { background: rgba(26, 26, 26, 0.95); padding: 16px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
+        /* 导航栏样式更新 */
+        nav { background: rgba(26, 26, 26, 0.95); padding: 12px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
+        .nav-link { display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s; color: #aaa; font-size: 13px; font-weight: 600; text-transform: uppercase; text-decoration: none; }
+        .nav-link:hover { color: #fff; }
+        .nav-link.telegram-link { color: var(--telegram); }
+        .nav-link.telegram-link:hover { color: #fff; background: rgba(0, 136, 204, 0.1); padding: 4px 10px; border-radius: 20px; }
+
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 60px 20px; text-align: center; border-bottom: 1px solid #222; }
         .area-button { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 2px solid #d4af37; transition: all 0.3s ease; cursor: pointer; }
         .area-button:hover { background: var(--gold); color: #000; transform: scale(1.05); }
@@ -34,12 +40,23 @@
 </head>
 <body>
 
+    <script>
+        // 🛑 将这里换成你真实的 Telegram 频道链接 (记得保留引号)
+        const myTelegramChannelUrl = "https://t.me/your_channel_username"; 
+    </script>
+
     <nav>
         <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
             <div class="text-[#d4af37] font-bold text-2xl" onclick="navigateTo('home')">GirlCarList</div>
-            <div class="flex gap-6 text-sm text-gray-400 font-medium">
-                <span onclick="navigateTo('home')" class="cursor-pointer hover:text-white transition">HOME</span>
-                <span onclick="showAdmin()" class="cursor-pointer hover:text-white transition">ADMIN</span>
+            <div class="flex gap-5 items-center">
+                <a onclick="navigateTo('home')" class="nav-link">HOME</a>
+                
+                <a href="#" onclick="window.open(myTelegramChannelUrl, '_blank'); return false;" class="nav-link telegram-link">
+                    <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.12 7.14-.14.72-.41.96-.66.98-.56.05-1-.38-1.54-.74-.83-.57-1.3-1.07-2.12-1.6-.94-.61-.33-.95.21-1.5.14-.14 2.53-2.32 2.58-2.52.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.48.94-4.18 2.76-.39.27-.75.4-1.07.39-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.28-.36.77-.55 3.02-1.31 5.03-2.18 6.04-2.6.96-.4 1.99-.48 2.65-.48.14 0 .47.03.68.16.19.11.26.27.28.42.02.16.02.32.01.48z"/></svg>
+                    TELEGRAM
+                </a>
+
+                <a onclick="showAdmin()" class="nav-link">ADMIN</a>
             </div>
         </div>
     </nav>
@@ -47,7 +64,7 @@
     <div id="home" class="page active">
         <div class="hero-section">
             <h1 class="text-4xl md:text-5xl font-bold text-[#d4af37] mb-4">Welcome to GirlCarList</h1>
-            <p class="text-gray-400 max-w-2xl mx-auto">Discover elite companions and premium services across Malaysia.</p>
+            <p class="text-gray-400 max-w-2xl mx-auto">Your Trusted Choice for Professional Companionship and Massage.</p>
         </div>
 
         <div class="max-w-6xl mx-auto px-6 py-10">
