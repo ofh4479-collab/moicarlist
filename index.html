@@ -42,7 +42,6 @@
         .stat-val { font-size: 24px; font-weight: bold; color: var(--gold); }
         .stat-label { font-size: 10px; color: #888; text-transform: uppercase; }
 
-        /* 国籍标签样式 */
         .nation-tag { font-size: 10px; background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.3); }
     </style>
 </head>
@@ -50,9 +49,9 @@
 
     <script>
         const i18n = {
-            en: { label: "EN", welcome: "Welcome to MoiCarList", sub: "Your Trusted Choice for Professional Companionship and Massage in Malaysia", selectLoc: "Select Your Location", available: "✨ Available Today", back: "← BACK", book: "WHATSAPP BOOKING NOW", about: "About Her", admin: "ADMIN", home: "HOME", nation: "Nationality" },
-            cn: { label: "中", welcome: "欢迎来到 MoiCarList", sub: "马来西亚您最信赖的专业按摩与陪伴服务", selectLoc: "选择您的地区", available: "✨ 今日在位", back: "← 返回列表", book: "立即 WhatsApp 预约", about: "关于她", admin: "管理后台", home: "首页", nation: "国籍" },
-            bm: { label: "BM", welcome: "Selamat Datang ke MoiCarList", sub: "Pilihan Dipercayai Anda untuk Peneman Profesional & Urutan di Malaysia", selectLoc: "Pilih Lokasi Anda", available: "✨ Tersedia Hari Ini", back: "← KEMBALI", book: "TEMPAH WHATSAPP SEKARANG", about: "Mengenai Dia", admin: "ADMIN", home: "UTAMA", nation: "Warganegara" }
+            en: { label: "EN", welcome: "Welcome to MoiCarList", sub: "Your Trusted Choice for Professional Companionship and Massage in Malaysia", selectLoc: "Select Your Location", available: "✨ Available Today", back: "← BACK", book: "WHATSAPP BOOKING NOW", about: "About Her", admin: "ADMIN", home: "HOME" },
+            cn: { label: "中", welcome: "欢迎来到 MoiCarList", sub: "马来西亚您最信赖的专业按摩与陪伴服务", selectLoc: "选择您的地区", available: "✨ 今日在位", back: "← 返回列表", book: "立即 WhatsApp 预约", about: "关于她", admin: "管理后台", home: "首页" },
+            bm: { label: "BM", welcome: "Selamat Datang ke MoiCarList", sub: "Pilihan Dipercayai Anda untuk Peneman Profesional & Urutan di Malaysia", selectLoc: "Pilih Lokasi Anda", available: "✨ Tersedia Hari Ini", back: "← KEMBALI", book: "TEMPAH WHATSAPP SEKARANG", about: "Mengenai Dia", admin: "ADMIN", home: "UTAMA" }
         };
 
         let langSequence = ['en', 'cn', 'bm'];
@@ -117,14 +116,8 @@
                 <button onclick="openModal()" class="bg-[#d4af37] text-black px-6 py-2 rounded-full font-bold shadow-lg">+ Add Profile</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-                <div class="stat-card">
-                    <div id="stat-totalViews" class="stat-val">0</div>
-                    <div class="stat-label">Total Site Views</div>
-                </div>
-                <div class="stat-card col-span-2">
-                    <div id="stat-totalGirls" class="stat-val">0</div>
-                    <div class="stat-label">Total Profiles Across Malaysia</div>
-                </div>
+                <div class="stat-card"><div id="stat-totalViews" class="stat-val">0</div><div class="stat-label">Total Site Views</div></div>
+                <div class="stat-card col-span-2"><div id="stat-totalGirls" class="stat-val">0</div><div class="stat-label">Total Profiles Across Malaysia</div></div>
             </div>
             <div id="adminList"></div>
         </div>
@@ -136,13 +129,20 @@
             <input type="text" id="gName" placeholder="Name">
             <input type="number" id="gAge" placeholder="Age">
             
-            <input type="text" id="gNation" placeholder="Nationality (e.g. Malaysia, Thailand)">
+            <select id="gNation">
+                <option value="Malaysia">Malaysia</option>
+                <option value="Thailand">Thailand</option>
+                <option value="Vietnam">Vietnam</option>
+                <option value="Indonesia">Indonesia</option>
+                <option value="China">China</option>
+                <option value="Other">Other</option>
+            </select>
             
             <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup Size"><input type="text" id="gHeight" placeholder="Height"></div>
             <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
             <select id="gStatus"><option value="available">Available Now</option><option value="busy">Busy</option></select>
             <input type="number" id="gPrice1" placeholder="1shot RM"><input type="number" id="gPrice2" placeholder="2shot RM"><input type="number" id="gPrice3" placeholder="3Hours RM">
-            <input type="text" id="gPhoto" placeholder="Photo URL"><input type="text" id="gWhatsapp" placeholder="WhatsApp Number (e.g. 60123456789)">
+            <input type="text" id="gPhoto" placeholder="Photo URL"><input type="text" id="gWhatsapp" placeholder="WhatsApp (e.g. 60123456789)">
             <textarea id="gDesc" placeholder="Bio/Description" rows="3"></textarea>
             <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-xl mt-6">SAVE TO CLOUD</button>
             <button onclick="closeModal()" class="w-full text-gray-500 mt-4 text-xs">CANCEL</button>
@@ -203,7 +203,7 @@
             const data = {
                 name: document.getElementById('gName').value,
                 age: document.getElementById('gAge').value,
-                nation: document.getElementById('gNation').value || "Local", // 默认显示 Local
+                nation: document.getElementById('gNation').value,
                 cup: document.getElementById('gCup').value,
                 height: document.getElementById('gHeight').value,
                 p1: document.getElementById('gPrice1').value,
@@ -257,20 +257,11 @@
                     <p class="text-[#d4af37] text-xl font-semibold">${g.age}Y | ${g.cup} | ${g.height}</p>
                 </div>
                 <div class="grid gap-3 mt-8 mb-8">
-                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center">
-                        <span class="text-gray-400">1shot (45min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p1}</span>
-                    </div>
-                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center">
-                        <span class="text-gray-400">2shot (90min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p2}</span>
-                    </div>
-                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center">
-                        <span class="text-gray-400">3Hours</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p3}</span>
-                    </div>
+                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center"><span class="text-gray-400">1shot (45min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p1}</span></div>
+                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center"><span class="text-gray-400">2shot (90min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p2}</span></div>
+                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center"><span class="text-gray-400">3Hours</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p3}</span></div>
                 </div>
-                <div class="bg-[#111] p-6 rounded-2xl border-l-4 border-[#d4af37] mb-10 text-left">
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">${t.about}</h4>
-                    <p class="text-gray-300 leading-relaxed">${g.desc}</p>
-                </div>
+                <div class="bg-[#111] p-6 rounded-2xl border-l-4 border-[#d4af37] mb-10 text-left"><p class="text-gray-300 leading-relaxed">${g.desc}</p></div>
                 <button onclick="trackGirlClick('${g.id}')" class="btn-whatsapp">${t.book}</button>
             `;
         };
@@ -297,10 +288,7 @@
                                 <div class="flex items-center justify-between bg-[#111] p-4 rounded-xl border border-[#222]">
                                     <div class="flex items-center gap-4 text-left">
                                         <img src="${g.photo}" class="w-12 h-12 rounded-full object-cover border border-[#333]">
-                                        <div>
-                                            <div class="font-bold text-white">${g.name} <span class="text-[9px] text-gray-500">(${g.nation})</span></div>
-                                            <div class="text-[10px] text-gray-500">${g.age}Y | ${g.cup} | <span class="text-[#d4af37] font-bold">${g.clicks || 0} Clicks</span></div>
-                                        </div>
+                                        <div><div class="font-bold text-white">${g.name} <span class="text-[9px] text-gray-500">(${g.nation})</span></div><div class="text-[10px] text-gray-500">${g.age}Y | ${g.cup} | <span class="text-[#d4af37] font-bold">${g.clicks || 0} Clicks</span></div></div>
                                     </div>
                                     <button onclick="handleDelete('${g.id}')" class="text-red-500 text-xs font-bold px-3 py-1 bg-red-900/20 rounded">Delete</button>
                                 </div>`).join('') : '<p class="text-gray-600 text-xs italic pl-4">Empty</p>'}
@@ -317,6 +305,7 @@
             document.getElementById(id).classList.add('active');
             window.scrollTo(0,0);
         }
+        // 核心更新：更改为你的新密码
         function showAdmin() { if(prompt("Admin Password") === "KAR#1999") navigateTo('adminPage'); }
         function openModal() { document.getElementById('girlModal').classList.add('active'); }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
