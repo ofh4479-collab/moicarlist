@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GirlCarList | Professional</title>
+    <title>GirlCarList | Trilingual</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --gold: #d4af37; --whatsapp: #25D366; --telegram: #0088cc; }
         body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; margin:0; }
         
-        /* 导航栏样式更新 */
         nav { background: rgba(26, 26, 26, 0.95); padding: 12px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
-        .nav-link { display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s; color: #aaa; font-size: 13px; font-weight: 600; text-transform: uppercase; text-decoration: none; }
-        .nav-link:hover { color: #fff; }
-        .nav-link.telegram-link { color: var(--telegram); }
-        .nav-link.telegram-link:hover { color: #fff; background: rgba(0, 136, 204, 0.1); padding: 4px 10px; border-radius: 20px; }
+        .nav-link { display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s; color: #aaa; font-size: 12px; font-weight: 600; text-transform: uppercase; text-decoration: none; }
+        .nav-link:hover, .nav-link.active-lang { color: var(--gold); }
 
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 60px 20px; text-align: center; border-bottom: 1px solid #222; }
         .area-button { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 2px solid #d4af37; transition: all 0.3s ease; cursor: pointer; }
@@ -30,10 +27,9 @@
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
         
-        .btn-whatsapp { background: #25D366; color: white; font-weight: 700; padding: 14px; border-radius: 15px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-top: 20px; transition: 0.3s; }
-        .btn-whatsapp:hover { background: #1ebe57; transform: scale(1.02); }
+        .btn-whatsapp { background: #25D366; color: white; font-weight: 700; padding: 14px; border-radius: 15px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-top: 20px; }
         
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         input, select, textarea { background: #222; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; width: 100%; margin: 5px 0; }
     </style>
@@ -41,46 +37,100 @@
 <body>
 
     <script>
-        // 🛑 将这里换成你真实的 Telegram 频道链接 (记得保留引号)
-        const myTelegramChannelUrl = "https://t.me/MoiCarList"; 
+        // 1. 语言字典配置
+        const i18n = {
+            en: {
+                welcome: "Welcome to GirlCarList",
+                sub: "Your Trusted Choice for Professional Companionship and Massage in Malaysia",
+                selectLoc: "Select Your Location",
+                available: "✨ Available Today",
+                back: "← BACK TO LIST",
+                book: "WHATSAPP BOOKING NOW",
+                about: "About Her",
+                admin: "ADMIN",
+                home: "HOME"
+            },
+            cn: {
+                welcome: "欢迎来到 GirlCarList",
+                sub: "马来西亚您最信赖的专业按摩与陪伴服务",
+                selectLoc: "选择您的地区",
+                available: "✨ 今日在位",
+                back: "← 返回列表",
+                book: "立即 WhatsApp 预约",
+                about: "关于她",
+                admin: "管理后台",
+                home: "首页"
+            },
+            bm: {
+                welcome: "Selamat Datang ke GirlCarList",
+                sub: "Pilihan Dipercayai Anda untuk Peneman Profesional & Urutan di Malaysia",
+                selectLoc: "Pilih Lokasi Anda",
+                available: "✨ Tersedia Hari Ini",
+                back: "← KEMBALI",
+                book: "TEMPAH WHATSAPP SEKARANG",
+                about: "Mengenai Dia",
+                admin: "ADMIN",
+                home: "UTAMA"
+            }
+        };
+
+        let currentLang = 'en'; // 默认语言
+        const myTelegramChannelUrl = "https://t.me/your_channel_username";
+
+        function changeLang(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.nav-lang').forEach(el => el.classList.remove('active-lang'));
+            document.getElementById('lang-' + lang).classList.add('active-lang');
+            updateUI();
+        }
+
+        function updateUI() {
+            const t = i18n[currentLang];
+            document.getElementById('txt-welcome').innerText = t.welcome;
+            document.getElementById('txt-sub').innerText = t.sub;
+            document.getElementById('txt-selectLoc').innerText = t.selectLoc;
+            document.getElementById('txt-available').innerText = t.available;
+            document.getElementById('nav-home').innerText = t.home;
+            document.getElementById('nav-admin').innerText = t.admin;
+            // 重新渲染地区和主列表以刷新语言
+            renderAreaButtons();
+        }
     </script>
 
     <nav>
         <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
             <div class="text-[#d4af37] font-bold text-2xl" onclick="navigateTo('home')">GirlCarList</div>
-            <div class="flex gap-5 items-center">
-                <a onclick="navigateTo('home')" class="nav-link">HOME</a>
-                
-                <a href="#" onclick="window.open(myTelegramChannelUrl, '_blank'); return false;" class="nav-link telegram-link">
-                    <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.12 7.14-.14.72-.41.96-.66.98-.56.05-1-.38-1.54-.74-.83-.57-1.3-1.07-2.12-1.6-.94-.61-.33-.95.21-1.5.14-.14 2.53-2.32 2.58-2.52.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.48.94-4.18 2.76-.39.27-.75.4-1.07.39-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.28-.36.77-.55 3.02-1.31 5.03-2.18 6.04-2.6.96-.4 1.99-.48 2.65-.48.14 0 .47.03.68.16.19.11.26.27.28.42.02.16.02.32.01.48z"/></svg>
-                    TELEGRAM
-                </a>
-
-                <a onclick="showAdmin()" class="nav-link">ADMIN</a>
+            <div class="flex gap-4 items-center">
+                <a id="nav-home" onclick="navigateTo('home')" class="nav-link">HOME</a>
+                <div class="flex border-x border-[#333] px-3 gap-2">
+                    <span id="lang-cn" onclick="changeLang('cn')" class="nav-link nav-lang text-[10px]">CN</span>
+                    <span id="lang-en" onclick="changeLang('en')" class="nav-link nav-lang active-lang text-[10px]">EN</span>
+                    <span id="lang-bm" onclick="changeLang('bm')" class="nav-link nav-lang text-[10px]">BM</span>
+                </div>
+                <a href="#" onclick="window.open(myTelegramChannelUrl, '_blank'); return false;" class="nav-link text-[#0088cc]">TG</a>
+                <a id="nav-admin" onclick="showAdmin()" class="nav-link">ADMIN</a>
             </div>
         </div>
     </nav>
 
     <div id="home" class="page active">
         <div class="hero-section">
-            <h1 class="text-4xl md:text-5xl font-bold text-[#d4af37] mb-4">Welcome to GirlCarList</h1>
-            <p class="text-gray-400 max-w-2xl mx-auto">Your Trusted Choice for Professional Companionship and Massage.</p>
+            <h1 id="txt-welcome" class="text-4xl md:text-5xl font-bold text-[#d4af37] mb-4">Welcome to GirlCarList</h1>
+            <p id="txt-sub" class="text-gray-400 max-w-2xl mx-auto">Your Trusted Choice for Professional Companionship and Massage in Malaysia</p>
         </div>
 
         <div class="max-w-6xl mx-auto px-6 py-10">
-            <h2 class="text-center text-xl mb-6 font-semibold">Select Your Location</h2>
-            <div id="areaButtons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12"></div>
+            <h2 id="txt-selectLoc" class="text-center text-xl mb-6 font-semibold">Select Your Location</h2>
+            <div id="areaButtons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12"></div>
 
-            <h2 id="listTitle" class="text-2xl font-bold mb-8 text-[#d4af37]">✨ Available Today</h2>
+            <h2 id="txt-available" class="text-2xl font-bold mb-8 text-[#d4af37]">✨ Available Today</h2>
             <div id="displayList" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
         </div>
     </div>
 
     <div id="detailPage" class="page">
         <div class="max-w-2xl mx-auto p-6 pb-20">
-            <div class="mb-6 text-[#d4af37] font-bold cursor-pointer flex items-center gap-2" onclick="navigateTo('home')">
-                <span>← BACK TO LIST</span>
-            </div>
+            <div id="txt-back" class="mb-6 text-[#d4af37] font-bold cursor-pointer" onclick="navigateTo('home')">← BACK</div>
             <div id="detailContent"></div>
         </div>
     </div>
@@ -88,8 +138,8 @@
     <div id="adminPage" class="page">
         <div class="max-w-4xl mx-auto p-6">
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold text-[#d4af37]">Cloud Control Panel</h2>
-                <button onclick="openModal()" class="bg-[#d4af37] text-black px-6 py-2 rounded-full font-bold shadow-lg">+ Add Profile</button>
+                <h2 class="text-2xl font-bold text-[#d4af37]">Cloud Panel</h2>
+                <button onclick="openModal()" class="bg-[#d4af37] text-black px-6 py-2 rounded-full font-bold">+ Add Profile</button>
             </div>
             <div id="adminList" class="space-y-4"></div>
         </div>
@@ -98,33 +148,25 @@
     <div id="girlModal" class="modal">
         <div class="bg-[#1c1c1e] p-8 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-[#333]">
             <h3 class="text-[#d4af37] font-bold text-xl mb-4">Manage Profile</h3>
-            <input type="text" id="gName" placeholder="Name (e.g. Cindy)">
-            <input type="number" id="gAge" placeholder="Age (e.g. 24)">
+            <input type="text" id="gName" placeholder="Name">
+            <input type="number" id="gAge" placeholder="Age">
             <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="gCup" placeholder="Cup Size (e.g. 38C)">
-                <input type="text" id="gHeight" placeholder="Height (e.g. 158cm)">
+                <input type="text" id="gCup" placeholder="Cup Size">
+                <input type="text" id="gHeight" placeholder="Height">
             </div>
             <select id="gArea">
-                <option>Alor Setar</option>
-                <option>Sungei Petani</option>
-                <option>Bukit Mertajam</option>
-                <option>Penang</option>
-                <option>Ipoh</option>
+                <option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option>
             </select>
             <select id="gStatus">
                 <option value="available">Available Now</option><option value="busy">Busy</option>
             </select>
-            
-            <p class="text-xs text-gray-500 mt-4 mb-1 font-bold uppercase">Pricing (RM)</p>
-            <input type="number" id="gPrice1" placeholder="1shot Price (45min)">
-            <input type="number" id="gPrice2" placeholder="2shot Price (90min)">
-            <input type="number" id="gPrice3" placeholder="3Hours Price">
-
-            <input type="text" id="gPhoto" placeholder="Photo URL (Direct Link)">
-            <input type="text" id="gWhatsapp" placeholder="WhatsApp Number (e.g. 60123456789)">
+            <input type="number" id="gPrice1" placeholder="1shot RM">
+            <input type="number" id="gPrice2" placeholder="2shot RM">
+            <input type="number" id="gPrice3" placeholder="3Hours RM">
+            <input type="text" id="gPhoto" placeholder="Photo URL">
+            <input type="text" id="gWhatsapp" placeholder="WhatsApp Number">
             <textarea id="gDesc" placeholder="Bio/Description" rows="3"></textarea>
-            
-            <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-xl mt-6">SAVE TO CLOUD</button>
+            <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-xl mt-6">SAVE</button>
             <button onclick="closeModal()" class="w-full text-gray-500 mt-4 text-xs">CANCEL</button>
         </div>
     </div>
@@ -173,10 +215,9 @@
             closeModal();
         };
 
-        window.handleDelete = async id => { if(confirm('Delete permanently?')) await deleteDoc(doc(db, "girls", id)); };
+        window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
 
-        window.renderMain = function(data, title = "✨ Available Today") {
-            document.getElementById('listTitle').innerText = title;
+        window.renderMain = function(data) {
             document.getElementById('displayList').innerHTML = data.map(g => `
                 <div class="card shadow-lg" onclick="showDetail('${g.id}')">
                     <img src="${g.photo}" class="w-full h-80 object-cover border-b border-[#222]">
@@ -185,44 +226,42 @@
                             <span class="font-bold text-2xl text-white">${g.name}</span>
                             <span class="status-badge ${g.status}">${g.status}</span>
                         </div>
-                        <div class="text-gray-400 text-sm mb-3 font-medium">
-                            ${g.age}Y | ${g.cup || '-'} | ${g.height || '-'}
-                        </div>
-                        <div class="text-[#d4af37] font-bold text-xl">RM ${g.p1 || '0'}</div>
+                        <div class="text-gray-400 text-sm mb-3 font-medium">${g.age}Y | ${g.cup} | ${g.height}</div>
+                        <div class="text-[#d4af37] font-bold text-xl">RM ${g.p1}</div>
                     </div>
                 </div>
-            `).join('') || '<p class="col-span-full text-center text-gray-500 py-10">No profiles found in this area.</p>';
+            `).join('');
         };
 
         window.showDetail = function(id) {
             const g = allData.find(x => x.id === id);
+            const t = i18n[currentLang];
             navigateTo('detailPage');
+            document.getElementById('txt-back').innerText = t.back;
             document.getElementById('detailContent').innerHTML = `
                 <img src="${g.photo}" class="w-full rounded-2xl mb-8 shadow-2xl border border-[#333]">
                 <h1 class="text-4xl font-bold text-white">${g.name}</h1>
                 <p class="text-[#d4af37] text-xl font-semibold mt-2">${g.age}Y | ${g.cup} | ${g.height}</p>
-                <p class="text-gray-500 text-sm mt-1 uppercase tracking-wider">${g.area}</p>
                 
                 <div class="grid gap-3 mt-8 mb-8">
                     <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center">
-                        <span class="text-gray-400">1shot (45mint)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p1}</span>
+                        <span class="text-gray-400">1shot (45min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p1}</span>
                     </div>
                     <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center">
-                        <span class="text-gray-400">2shot (90mint)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p2}</span>
+                        <span class="text-gray-400">2shot (90min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p2}</span>
                     </div>
                     <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center">
                         <span class="text-gray-400">3Hours</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p3}</span>
                     </div>
                 </div>
 
-                <div class="bg-[#111] p-6 rounded-2xl border-l-4 border-[#d4af37] mb-10">
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">About Her</h4>
+                <div class="bg-[#111] p-6 rounded-2xl border-l-4 border-[#d4af37] mb-10 text-left">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">${t.about}</h4>
                     <p class="text-gray-300 leading-relaxed">${g.desc}</p>
                 </div>
 
                 <a href="https://wa.me/${g.whatsapp}" class="btn-whatsapp">
-                    <svg style="width:28px;height:28px" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42 1.55 1.56 2.41 3.63 2.41 5.82 0 4.54-3.7 8.24-8.24 8.24-1.54 0-3.05-.43-4.36-1.24l-.31-.19-3.24.85.86-3.15-.21-.34A8.192 8.192 0 0 1 3.71 11.9c0-4.53 3.7-8.23 8.24-8.23m-3.53 4.75c-.19 0-.52.07-.79.37-.27.3-.85.83-.85 2.02 0 1.19.87 2.33.99 2.5.12.16 1.71 2.61 4.14 3.66.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.15.2-.56.2-1.04.14-1.15-.06-.11-.22-.17-.47-.29s-1.44-.71-1.66-.8-.47-.13-.67.13c-.2.27-.76.95-.93 1.15-.17.19-.34.22-.6.1s-1.07-.4-2.04-1.27c-.75-.67-1.26-1.5-1.4-1.75-.15-.26-.02-.4.11-.53.11-.11.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.07-.13-.67-1.62-.91-2.22-.24-.59-.49-.51-.67-.52l-.57-.01Z"/></svg>
-                    WHATSAPP BOOKING NOW
+                    ${t.book}
                 </a>
             `;
         };
@@ -238,16 +277,16 @@
 
         window.filterArea = function(area) {
             const filtered = allData.filter(g => g.area === area);
-            renderMain(filtered, `Location: ${area}`);
+            renderMain(filtered);
             window.scrollTo({ top: 600, behavior: 'smooth' });
         };
 
         window.renderAdmin = function(data) {
             document.getElementById('adminList').innerHTML = data.map(g => `
                 <div class="flex items-center justify-between bg-[#111] p-4 rounded-xl border border-[#222]">
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-4 text-left">
                         <img src="${g.photo}" class="w-12 h-12 rounded-full object-cover">
-                        <div><div class="font-bold">${g.name}</div><div class="text-xs text-gray-500">${g.area} | ${g.age}Y | ${g.cup}</div></div>
+                        <div><div class="font-bold">${g.name}</div><div class="text-xs text-gray-500">${g.area}</div></div>
                     </div>
                     <button onclick="handleDelete('${g.id}')" class="text-red-500 font-bold">Delete</button>
                 </div>
@@ -261,7 +300,7 @@
             document.getElementById(id).classList.add('active');
             window.scrollTo(0,0);
         }
-        function showAdmin() { if(prompt("Enter Admin Password") === "KAR#1999") navigateTo('adminPage'); }
+        function showAdmin() { if(prompt("Password") === "admin123") navigateTo('adminPage'); }
         function openModal() { document.getElementById('girlModal').classList.add('active'); }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
     </script>
