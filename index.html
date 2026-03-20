@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoiCarList | Professional Services</title>
-    <meta property="og:title" content="MoiCarList | 专业服务预约">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=1000">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -15,29 +13,29 @@
         .nav-link { cursor: pointer; color: #aaa; font-size: 11px; font-weight: 600; text-transform: uppercase; transition: color 0.3s; }
         .nav-link:hover { color: var(--gold); }
         .lang-toggle { color: var(--gold); font-size: 12px; font-weight: bold; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; background: #111; min-width: 40px; }
-        
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 35px 20px; text-align: center; border-bottom: 1px solid #222; }
-        
         .area-button { background: #111; border: 1px solid var(--gold); transition: 0.2s; cursor: pointer; font-size: 12px; padding: 8px 4px; border-radius: 8px; }
         .area-button.active { background: var(--gold); color: #000; font-weight: bold; }
-
-        .card { background: #0a0a0a; border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; }
+        
+        /* 小姐框框优化 */
+        .card { background: #0a0a0a; border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: transform 0.3s ease; }
+        .card:hover { transform: translateY(-5px); border-color: var(--gold); }
         .card-img { width: 100%; height: 220px; object-fit: contain; background: #000; border-bottom: 1px solid #111; }
         
         .gold-text { color: var(--gold); font-weight: 600; }
         .white-name { color: #ffffff; font-weight: 700; font-size: 15px; } 
-        
         .status-mini { font-size: 9px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
         .available { background: var(--whatsapp); color: #fff; }
         .busy { background: #ff453a; color: #fff; }
         .nation-tag { font-size: 9px; background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        
+        /* 🔥 火热排行小标签 */
+        .hot-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #d4af37; font-size: 10px; padding: 3px 7px; border-radius: 20px; border: 1px solid #d4af37; font-weight: bold; display: flex; items-center; gap: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; }
 
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
-        
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; padding: 15px; }
         .modal.active { display: flex; }
-        
         input, select, textarea { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 6px; width: 100%; margin: 4px 0; font-size: 14px; }
         .btn-preset { background: #222; font-size: 10px; padding: 5px 8px; border-radius: 4px; color: var(--gold); border: 1px solid #444; }
         .admin-item { background: #0a0a0a; border-bottom: 1px solid #222; padding: 8px; display: flex; align-items: center; justify-content: space-between; }
@@ -46,37 +44,11 @@
 <body>
 
     <script>
-        // --- 核心语言配置 ---
         const translations = {
-            en: {
-                home: "HOME",
-                welcome: "Welcome to MoiCarList",
-                subtitle: "Your Trusted Choice for Professional Services",
-                available: "✨ Available Today",
-                allNations: "All Nations",
-                back: "← BACK",
-                booking: "WHATSAPP BOOKING"
-            },
-            cn: {
-                home: "首页",
-                welcome: "欢迎来到 MoiCarList",
-                subtitle: "您值得信赖的专业服务选择",
-                available: "✨ 今日在线",
-                allNations: "所有国籍",
-                back: "← 返回",
-                booking: "WHATSAPP 预约"
-            },
-            bm: {
-                home: "UTAMA",
-                welcome: "Selamat Datang ke MoiCarList",
-                subtitle: "Pilihan Dipercayai untuk Perkhidmatan Profesional",
-                available: "✨ Tersedia Hari Ini",
-                allNations: "Semua Negara",
-                back: "← KEMBALI",
-                booking: "TEMPAHAN WHATSAPP"
-            }
+            en: { home: "HOME", welcome: "Welcome to MoiCarList", subtitle: "Your Trusted Choice", available: "✨ Available Today", allNations: "All Nations", allCups: "All Cups", back: "← BACK", booking: "WHATSAPP BOOKING", hot: "HOT" },
+            cn: { home: "首页", welcome: "欢迎来到 MoiCarList", subtitle: "您值得信赖 Choice", available: "✨ 今日在线", allNations: "所有国籍", allCups: "所有胸围", back: "← 返回", booking: "WHATSAPP 预约", hot: "火热" },
+            bm: { home: "UTAMA", welcome: "Selamat Datang", subtitle: "Pilihan Dipercayai", available: "✨ Tersedia Hari Ini", allNations: "Semua Negara", allCups: "Semua Saiz", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT" }
         };
-
         const langLabels = { en: "EN", cn: "中", bm: "BM" };
         let currentLang = 'en';
 
@@ -87,9 +59,7 @@
             document.getElementById('hero-desc').innerText = t.subtitle;
             document.getElementById('section-title').innerText = t.available;
             document.getElementById('btn-lang-toggle').innerText = langLabels[currentLang];
-            
-            // 重新渲染主页以更新下拉框和详情页文字
-            if (typeof renderEverything === "function") renderEverything();
+            if (typeof window.renderEverything === "function") window.renderEverything();
         }
 
         function toggleLang() {
@@ -117,16 +87,18 @@
     <div id="home" class="page active">
         <div class="hero-section">
             <h1 id="hero-title" class="text-2xl md:text-4xl font-bold text-[#d4af37] mb-2">Welcome to MoiCarList</h1>
-            <p id="hero-desc" class="text-gray-400 text-xs md:text-sm">Your Trusted Choice for Professional Services</p>
+            <p id="hero-desc" class="text-gray-400 text-xs md:text-sm">Your Trusted Choice</p>
         </div>
 
         <div class="max-w-6xl mx-auto px-4 py-6">
             <div id="areaButtons" class="grid grid-cols-3 md:grid-cols-5 gap-2 mb-8 text-center"></div>
             
-            <div class="flex justify-between items-center mb-6">
-                <h2 id="section-title" class="text-lg font-bold gold-text flex items-center gap-2">✨ Available Today</h2>
-                <select id="nationFilter" onchange="selectNation(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] w-auto m-0 outline-none cursor-pointer">
-                </select>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-3">
+                <h2 id="section-title" class="text-lg font-bold gold-text">✨ Available Today</h2>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <select id="nationFilter" onchange="window.selectNation(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none cursor-pointer flex-1"></select>
+                    <select id="cupFilter" onchange="window.selectCup(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none cursor-pointer flex-1"></select>
+                </div>
             </div>
 
             <div id="displayList" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
@@ -143,7 +115,7 @@
     <div id="adminPage" class="page bg-[#050505]">
         <div class="max-w-4xl mx-auto p-4">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold gold-text">Admin Panel</h2>
+                <h2 class="text-xl font-bold gold-text">Admin Panel (Sorted by Clicks)</h2>
                 <button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add</button>
             </div>
             <div id="adminList" class="space-y-1"></div>
@@ -152,54 +124,41 @@
 
     <div id="girlModal" class="modal">
         <div class="bg-[#111] p-6 rounded-xl w-full max-w-sm max-h-[90vh] overflow-y-auto border border-[#222]">
-            <h3 id="modalTitle" class="gold-text font-bold mb-4">Add Profile</h3>
+            <h3 id="modalTitle" class="gold-text font-bold mb-4">Profile Info</h3>
             <input type="hidden" id="editId">
             <input type="text" id="gName" placeholder="Name">
             <div class="grid grid-cols-2 gap-2">
                 <input type="number" id="gAge" placeholder="Age">
                 <select id="gNation">
-                    <option value="Thailand">Thailand</option>
-                    <option value="Vietnam">Vietnam</option>
-                    <option value="Malaysia">Malaysia</option>
-                    <option value="Indonesia">Indonesia</option>
-                    <option value="Laos">Laos</option>
-                    <option value="China">China</option>
+                    <option>Thailand</option><option>Vietnam</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option>
                 </select>
             </div>
-            <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup"><input type="text" id="gHeight" placeholder="Height"></div>
+            <div class="grid grid-cols-2 gap-2">
+                <select id="gCup">
+                    <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option>
+                </select>
+                <input type="text" id="gHeight" placeholder="Height (e.g. 160cm)">
+            </div>
             <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
             <select id="gStatus"><option value="available">Available</option><option value="busy">Busy</option></select>
-            
-            <div class="flex gap-2 my-2">
-                <button onclick="setPrice(250)" class="btn-preset">Set 250/500/750</button>
-                <button onclick="setPrice(270)" class="btn-preset">Set 270/540/810</button>
+            <div class="flex gap-2 my-2"><button onclick="setPrice(250)" class="btn-preset">Set 250+</button><button onclick="setPrice(270)" class="btn-preset">Set 270+</button></div>
+            <div class="grid grid-cols-3 gap-1"><input type="number" id="gPrice1" placeholder="1s"><input type="number" id="gPrice2" placeholder="2s"><input type="number" id="gPrice3" placeholder="3h"></div>
+            <div class="mt-2 border border-[#333] p-2 rounded flex gap-2 items-center">
+                <input type="text" id="gPhoto" placeholder="Photo URL" class="m-0">
+                <input type="file" id="fileInput" class="hidden" accept="image/*">
+                <button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button>
             </div>
-            <div class="grid grid-cols-3 gap-1">
-                <input type="number" id="gPrice1" placeholder="1s">
-                <input type="number" id="gPrice2" placeholder="2s">
-                <input type="number" id="gPrice3" placeholder="3h">
-            </div>
-
-            <div class="mt-2 border border-[#333] p-2 rounded">
-                <div class="flex gap-2 items-center">
-                    <input type="text" id="gPhoto" placeholder="Photo URL" style="margin:0">
-                    <input type="file" id="fileInput" class="hidden" accept="image/*">
-                    <button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] font-bold text-white">UPLOAD</button>
-                </div>
-                <div id="uploadStatus" class="text-[10px] text-gray-500 mt-1">Ready</div>
-            </div>
-
-            <input type="text" id="gWhatsapp" placeholder="WhatsApp" value="601117917032">
+            <div id="uploadStatus" class="text-[10px] text-gray-500 mb-2">Ready</div>
+            <input type="text" id="gWhatsapp" placeholder="WhatsApp (60xxx)" value="601117917032">
             <textarea id="gDesc" placeholder="Bio" rows="2"></textarea>
-            
-            <button onclick="handleSave()" id="btnSave" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-lg mt-4 text-sm">SAVE DATA</button>
+            <button onclick="handleSave()" id="btnSave" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-lg mt-4 text-sm uppercase">Save</button>
             <button onclick="closeModal()" class="w-full text-gray-500 mt-3 text-xs">CANCEL</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCK8dhWPA2pd04gzVxmkOgQuMpFfFPyXxs",
@@ -215,67 +174,73 @@
         let allData = [];
         let currentArea = 'Alor Setar';
         let currentNation = 'All';
+        let currentCup = 'All';
 
-        // --- 图床配置 (记得填你的 KEY) ---
         const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b"; 
 
-        const fileInput = document.getElementById('fileInput');
-        fileInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const status = document.getElementById('uploadStatus');
-            status.innerText = "Uploading...";
-            const formData = new FormData();
-            formData.append('image', file);
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0]; if (!file) return;
+            const status = document.getElementById('uploadStatus'); status.innerText = "Uploading...";
+            const formData = new FormData(); formData.append('image', file);
             try {
-                const response = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (result.success) {
-                    document.getElementById('gPhoto').value = result.data.url;
-                    status.innerText = "Upload Success ✅";
-                    status.style.color = "#25D366";
-                }
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                const r = await res.json();
+                if (r.success) { document.getElementById('gPhoto').value = r.data.url; status.innerText = "Upload Success ✅"; status.style.color = "#25D366"; }
             } catch (err) { status.innerText = "Error!"; }
         });
 
         onSnapshot(colRef, (snapshot) => {
-            allData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            allData = snapshot.docs.map(d => ({ id: d.id, ...d.data(), clicks: d.data().clicks || 0 }));
             window.renderEverything();
         });
 
         window.renderEverything = () => {
             renderAreaButtons();
-            const filtered = allData.filter(g => g.area === currentArea);
-            const nations = ['All', ...new Set(filtered.map(g => g.nation))];
-            renderNationFilter(nations);
-            const finalData = currentNation === 'All' ? filtered : filtered.filter(g => g.nation === currentNation);
-            renderMain(finalData);
-            renderAdmin(allData);
+            const filteredByArea = allData.filter(g => g.area === currentArea);
             
-            // 确保返回按钮文字也更新
+            const nations = ['All', ...new Set(filteredByArea.map(g => g.nation))];
+            const cups = ['All', ...new Set(filteredByArea.map(g => g.cup))].sort();
+            renderFilters(nations, cups);
+
+            let finalData = filteredByArea;
+            if(currentNation !== 'All') finalData = finalData.filter(g => g.nation === currentNation);
+            if(currentCup !== 'All') finalData = finalData.filter(g => g.cup === currentCup);
+            
+            // 💡 首页排序逻辑：按点击量从高到低排列
+            const sortedFinalData = [...finalData].sort((a, b) => b.clicks - a.clicks);
+            
+            renderMain(sortedFinalData);
+            renderAdmin(allData);
             document.getElementById('back-btn-text').innerText = translations[currentLang].back;
         };
 
         window.renderAreaButtons = () => {
             const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
             document.getElementById('areaButtons').innerHTML = areas.map(a => `
-                <div class="area-button ${currentArea === a ? 'active' : ''}" onclick="selectArea('${a}')">${a}</div>
+                <div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>
             `).join('');
         };
 
-        window.selectArea = (a) => { currentArea = a; currentNation = 'All'; window.renderEverything(); };
+        window.selectArea = (a) => { currentArea = a; currentNation = 'All'; currentCup = 'All'; window.renderEverything(); };
 
-        function renderNationFilter(nations) {
-            const select = document.getElementById('nationFilter');
-            const allLabel = translations[currentLang].allNations;
-            select.innerHTML = nations.map(n => `<option value="${n}">${n === 'All' ? allLabel : n}</option>`).join('');
-            select.value = currentNation;
+        function renderFilters(nations, cups) {
+            const nSelect = document.getElementById('nationFilter');
+            nSelect.innerHTML = nations.map(n => `<option value="${n}">${n === 'All' ? translations[currentLang].allNations : n}</option>`).join('');
+            nSelect.value = currentNation;
+
+            const cSelect = document.getElementById('cupFilter');
+            cSelect.innerHTML = cups.map(c => `<option value="${c}">${c === 'All' ? translations[currentLang].allCups : c}</option>`).join('');
+            cSelect.value = currentCup;
         }
+
         window.selectNation = (n) => { currentNation = n; window.renderEverything(); };
+        window.selectCup = (c) => { currentCup = c; window.renderEverything(); };
 
         window.renderMain = (data) => {
-            document.getElementById('displayList').innerHTML = data.map(g => `
-                <div class="card shadow-lg" onclick="showDetail('${g.id}')">
+            const hotText = translations[currentLang].hot;
+            document.getElementById('displayList').innerHTML = data.map((g, index) => `
+                <div class="card shadow-lg" onclick="window.showDetail('${g.id}')">
+                    ${index < 3 && g.clicks > 0 ? `<div class="hot-badge"><span>🔥</span><span class="md:hidden">${hotText}</span><span class="hidden md:inline">${hotText} #${index+1}</span></div>` : ''}
                     <img src="${g.photo}" class="card-img">
                     <div class="p-2">
                         <div class="flex justify-between items-center mb-1 gap-1">
@@ -290,9 +255,11 @@
                 </div>`).join('');
         };
 
-        window.showDetail = (id) => {
+        window.showDetail = async (id) => {
             const g = allData.find(x => x.id === id);
-            navigateTo('detailPage');
+            await updateDoc(doc(db, "girls", id), { clicks: increment(1) });
+            
+            window.navigateTo('detailPage');
             const t = translations[currentLang];
             document.getElementById('detailContent').innerHTML = `
                 <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-xl">
@@ -303,11 +270,11 @@
                     </div>
                     <p class="gold-text text-sm mb-6">${g.age}Y | ${g.cup} | ${g.height}</p>
                     <div class="grid gap-2 mb-6">
-                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1shot (45min)</span><span class="gold-text font-bold">RM ${g.p1}</span></div>
-                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>2shot (90min)</span><span class="gold-text font-bold">RM ${g.p2}</span></div>
-                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot (3 Hours)</span><span class="gold-text font-bold">RM ${g.p3}</span></div>
+                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1shot</span><span class="gold-text font-bold">RM ${g.p1}</span></div>
+                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>2shot</span><span class="gold-text font-bold">RM ${g.p2}</span></div>
+                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot</span><span class="gold-text font-bold">RM ${g.p3}</span></div>
                     </div>
-                    <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs leading-relaxed border-l-2 border-[#d4af37]">${g.desc}</div>
+                    <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-[#d4af37]">${g.desc}</div>
                     <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center shadow-lg uppercase">${t.booking}</a>
                 </div>`;
         };
@@ -324,13 +291,13 @@
                 desc: document.getElementById('gDesc').value
             };
             if(id) await updateDoc(doc(db, "girls", id), data);
-            else await addDoc(colRef, data);
-            closeModal();
+            else { data.clicks = 0; await addDoc(colRef, data); }
+            window.closeModal();
         };
 
         window.handleEdit = (id) => {
             const g = allData.find(x => x.id === id);
-            openModal(true);
+            window.openModal(true);
             document.getElementById('editId').value = g.id;
             document.getElementById('gName').value = g.name;
             document.getElementById('gAge').value = g.age;
@@ -350,13 +317,14 @@
         window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
 
         window.renderAdmin = (data) => {
+            const sortedData = [...data].sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
             const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
             let html = "";
             areas.forEach(area => {
-                const list = data.filter(g => g.area === area);
-                html += `<div class="bg-[#111] px-3 py-1 text-[10px] gold-text mt-4 uppercase font-bold border-l-2 border-[#d4af37]">${area} (${list.length})</div>`;
+                const list = sortedData.filter(g => g.area === area);
+                html += `<div class="bg-[#111] px-3 py-1 text-[10px] gold-text mt-4 uppercase font-bold border-l-2 border-[#d4af37]">${area}</div>`;
                 list.forEach(g => {
-                    html += `<div class="admin-item"><div class="flex items-center gap-3 w-[70%]"><img src="${g.photo}" class="w-8 h-8 rounded-full object-cover border border-[#333]"><div class="text-xs truncate w-full"><div class="font-bold text-white truncate">${g.name}</div></div></div><div class="flex gap-2"><button onclick="handleEdit('${g.id}')" class="text-blue-400 text-[10px] font-bold px-2 py-1 bg-blue-900/20 rounded">Edit</button><button onclick="handleDelete('${g.id}')" class="text-red-500 text-[10px] font-bold px-2 py-1 bg-red-900/20 rounded">Del</button></div></div>`;
+                    html += `<div class="admin-item"><div class="flex items-center gap-3 w-[70%]"><img src="${g.photo}" class="w-8 h-8 rounded-full object-cover border border-[#333]"><div class="text-xs truncate"><div class="font-bold text-white">${g.name} <span class="text-[#d4af37] ml-2">🔥 ${g.clicks} clicks</span></div></div></div><div class="flex gap-2"><button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[10px] font-bold px-2 py-1 bg-blue-900/20 rounded">Edit</button><button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[10px] font-bold px-2 py-1 bg-red-900/20 rounded">Del</button></div></div>`;
                 });
             });
             document.getElementById('adminList').innerHTML = html;
@@ -374,6 +342,7 @@
                 document.getElementById('gName').value = "";
                 document.getElementById('gDesc').value = "";
                 document.getElementById('uploadStatus').innerText = "Ready";
+                document.getElementById('uploadStatus').style.color = "#6b7280";
             }
             document.getElementById('girlModal').classList.add('active'); 
         }
