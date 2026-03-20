@@ -105,6 +105,7 @@
     <div id="adminPage" class="page bg-[#050505]">
         <div class="max-w-4xl mx-auto p-4">
             <div class="flex justify-between items-center mb-6"><h2 class="text-xl font-bold gold-text">Admin Panel</h2><button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add</button></div>
+            <div id="site-stats-container"></div>
             <div id="adminList" class="space-y-1"></div>
         </div>
     </div>
@@ -150,7 +151,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, increment, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCK8dhWPA2pd04gzVxmkOgQuMpFfFPyXxs", authDomain: "girlcarlist-db.firebaseapp.com", projectId: "girlcarlist-db", storageBucket: "girlcarlist-db.firebasestorage.app", messagingSenderId: "418933639880", appId: "1:418933639880:web:a993e1c3e71f2e8d18f3fd" };
         const app = initializeApp(firebaseConfig);
@@ -161,7 +162,17 @@
         let currentNation = 'All';
         let currentCup = 'All';
 
-        // 💡 修复：补回图片上传的核心监听逻辑
+        // 📊 统计网站访客总数 (Site Stat Tracker)
+        async function trackVisitor() {
+            const statsRef = doc(db, "site_stats", "overall");
+            try {
+                await updateDoc(statsRef, { totalViews: increment(1) });
+            } catch (e) {
+                await setDoc(statsRef, { totalViews: 1 });
+            }
+        }
+        trackVisitor();
+
         const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b"; 
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0]; if (!file) return;
@@ -282,6 +293,20 @@
 
         window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
 
+        // 💡 实时从后台获取总访问人数
+        window.updateSiteStats = async () => {
+            const statsSnap = await getDoc(doc(db, "site_stats", "overall"));
+            const total = statsSnap.exists() ? statsSnap.data().totalViews : 0;
+            const container = document.getElementById('site-stats-container');
+            if(container) {
+                container.innerHTML = `
+                    <div class="bg-blue-900/20 border border-blue-500/30 p-4 rounded-xl mb-6 text-center shadow-lg">
+                        <div class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-1">🌐 全局访客统计</div>
+                        <div class="text-2xl font-bold text-white">${total.toLocaleString()} <span class="text-xs font-normal text-blue-300">次打开</span></div>
+                    </div>`;
+            }
+        };
+
         window.renderAdmin = (data) => {
             const sortedData = [...data].sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
             const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
@@ -298,27 +323,32 @@
 
         window.setPrice = (base) => {
             if(base === 250) {
-                document.getElementById('gPrice1').value = 250;
-                document.getElementById('gPrice2').value = 500;
-                document.getElementById('gPrice3').value = 750;
-                document.getElementById('gPriceOvn').value = 800;
+                document.getElementById('gPrice1').value = 250; document.getElementById('gPrice2').value = 500;
+                document.getElementById('gPrice3').value = 750; document.getElementById('gPriceOvn').value = 800;
             } else if(base === 270) {
-                document.getElementById('gPrice1').value = 270;
-                document.getElementById('gPrice2').value = 540;
-                document.getElementById('gPrice3').value = 810;
-                document.getElementById('gPriceOvn').value = 900;
+                document.getElementById('gPrice1').value = 270; document.getElementById('gPrice2').value = 540;
+                document.getElementById('gPrice3').value = 810; document.getElementById('gPriceOvn').value = 900;
             }
         };
     </script>
 
     <script>
-        function navigateTo(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+        function navigateTo(id) { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            window.scrollTo(0,0);
+            // 💡 如果进入管理员页面，刷新访问人数
+            if(id === 'adminPage') {
+                const checkModule = setInterval(() => {
+                    if (window.updateSiteStats) { window.updateSiteStats(); clearInterval(checkModule); }
+                }, 100);
+            }
+        }
         function showAdmin() { if(prompt("Pass") === "KAR#1999") navigateTo('adminPage'); }
         function openModal(isEdit = false) { 
             if(!isEdit) { 
                 document.getElementById('modalTitle').innerText = "Add Profile"; document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; document.getElementById('gName').value = ""; document.getElementById('gDesc').value = ""; document.getElementById('gPriceOvn').value = ""; document.getElementById('gCup').value = "";
-                document.getElementById('uploadStatus').innerText = "Ready";
-                document.getElementById('uploadStatus').style.color = "#6b7280";
+                document.getElementById('uploadStatus').innerText = "Ready"; document.getElementById('uploadStatus').style.color = "#6b7280";
             } document.getElementById('girlModal').classList.add('active'); 
         }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
