@@ -22,7 +22,7 @@
         .nav-link:hover { color: var(--gold); }
         .lang-toggle { color: var(--gold); font-size: 12px; font-weight: bold; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; background: #111; min-width: 40px; }
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 35px 20px; text-align: center; border-bottom: 1px solid #222; }
-        .area-button { background: #111; border: 1px solid var(--gold); transition: 0.2s; cursor: pointer; font-size: 12px; padding: 8px 4px; border-radius: 8px; }
+        .area-button { background: #111; border: 1px solid var(--gold); transition: 0.2s; cursor: pointer; font-size: 12px; padding: 8px 4px; border-radius: 8px; color: #fff; }
         .area-button.active { background: var(--gold); color: #000; font-weight: bold; }
         .card { background: #0a0a0a; border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: transform 0.3s ease; }
         .card:hover { transform: translateY(-5px); border-color: var(--gold); }
@@ -57,11 +57,17 @@
 
         function updateTexts() {
             const t = translations[currentLang];
-            document.getElementById('nav-home').innerText = t.home;
-            document.getElementById('hero-title').innerText = t.welcome;
-            document.getElementById('hero-desc').innerText = t.subtitle;
-            document.getElementById('section-title').innerText = t.available;
-            document.getElementById('btn-lang-toggle').innerText = langLabels[currentLang];
+            const homeEl = document.getElementById('nav-home');
+            const welcomeEl = document.getElementById('hero-title');
+            const descEl = document.getElementById('hero-desc');
+            const sectEl = document.getElementById('section-title');
+            const langEl = document.getElementById('btn-lang-toggle');
+
+            if(homeEl) homeEl.innerText = t.home;
+            if(welcomeEl) welcomeEl.innerText = t.welcome;
+            if(descEl) descEl.innerText = t.subtitle;
+            if(sectEl) sectEl.innerText = t.available;
+            if(langEl) langEl.innerText = langLabels[currentLang];
             if (typeof window.renderEverything === "function") window.renderEverything();
         }
 
@@ -97,7 +103,7 @@
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-3">
                 <div class="flex items-center gap-3">
                     <h2 id="section-title" class="text-lg font-bold gold-text">✨ Available Today</h2>
-                    <span id="area-count" class="count-pill">0</span>
+                    <span id="area-count" class="count-pill">Total: 0</span>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
                     <select id="nationFilter" onchange="window.selectNation(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none flex-1"></select>
@@ -124,31 +130,13 @@
             <input type="hidden" id="editId">
             <input type="text" id="gName" placeholder="Name">
             <div class="grid grid-cols-2 gap-2"><input type="number" id="gAge" placeholder="Age"><select id="gNation"><option>Thailand</option><option>Vietnam</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option></select></div>
-            <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="gCup" placeholder="Cup Size">
-                <input type="text" id="gHeight" placeholder="Height">
-            </div>
+            <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup Size"><input type="text" id="gHeight" placeholder="Height"></div>
             <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
             <select id="gStatus"><option value="available">Available</option><option value="busy">Busy</option></select>
-            
-            <div class="flex gap-2 my-2">
-                <button onclick="setPrice(250)" class="btn-preset">Set RM250</button>
-                <button onclick="setPrice(270)" class="btn-preset">Set RM270</button>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-                <input type="number" id="gPrice1" placeholder="1 Shot">
-                <input type="number" id="gPrice2" placeholder="2 Shot">
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-                <input type="number" id="gPrice3" placeholder="3 Shot">
-                <input type="number" id="gPriceOvn" placeholder="Overnight (Ovn)">
-            </div>
-
-            <div class="mt-2 flex gap-2">
-                <input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1">
-                <input type="file" id="fileInput" class="hidden" accept="image/*">
-                <button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button>
-            </div>
+            <div class="flex gap-2 my-2"><button onclick="setPrice(250)" class="btn-preset">Set RM250</button><button onclick="setPrice(270)" class="btn-preset">Set RM270</button></div>
+            <div class="grid grid-cols-2 gap-2"><input type="number" id="gPrice1" placeholder="1 Shot"><input type="number" id="gPrice2" placeholder="2 Shot"></div>
+            <div class="grid grid-cols-2 gap-2"><input type="number" id="gPrice3" placeholder="3 Shot"><input type="number" id="gPriceOvn" placeholder="Overnight"></div>
+            <div class="mt-2 flex gap-2"><input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1"><input type="file" id="fileInput" class="hidden" accept="image/*"><button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button></div>
             <div id="uploadStatus" class="text-[10px] text-gray-500 mb-2">Ready</div>
             <input type="text" id="gWhatsapp" placeholder="WhatsApp (60xxx)" value="601117917032">
             <textarea id="gDesc" placeholder="Bio" rows="2"></textarea>
@@ -170,27 +158,38 @@
         let currentNation = 'All';
         let currentCup = 'All';
 
+        // 📊 统计记录
         async function trackVisitor() {
-            const statsRef = doc(db, "site_stats", "overall");
-            try { await updateDoc(statsRef, { totalViews: increment(1) }); } catch (e) { await setDoc(statsRef, { totalViews: 1 }); }
+            try {
+                const statsRef = doc(db, "site_stats", "overall");
+                await updateDoc(statsRef, { totalViews: increment(1) });
+            } catch (e) {
+                const statsRef = doc(db, "site_stats", "overall");
+                await setDoc(statsRef, { totalViews: 1 });
+            }
         }
         trackVisitor();
 
+        // 图片上传
         const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b"; 
-        document.getElementById('fileInput').addEventListener('change', async (e) => {
-            const file = e.target.files[0]; if (!file) return;
-            const status = document.getElementById('uploadStatus'); status.innerText = "Uploading...";
-            const formData = new FormData(); formData.append('image', file);
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData });
-                const r = await res.json();
-                if (r.success) { 
-                    document.getElementById('gPhoto').value = r.data.url; 
-                    status.innerText = "Upload Success ✅"; status.style.color = "#25D366"; 
-                }
-            } catch (err) { status.innerText = "Error!"; status.style.color = "#ff453a"; }
-        });
+        const fInput = document.getElementById('fileInput');
+        if(fInput) {
+            fInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0]; if (!file) return;
+                const status = document.getElementById('uploadStatus'); status.innerText = "Uploading...";
+                const formData = new FormData(); formData.append('image', file);
+                try {
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const r = await res.json();
+                    if (r.success) { 
+                        document.getElementById('gPhoto').value = r.data.url; 
+                        status.innerText = "Upload Success ✅"; status.style.color = "#25D366"; 
+                    }
+                } catch (err) { status.innerText = "Error!"; status.style.color = "#ff453a"; }
+            });
+        }
 
+        // 核心渲染逻辑
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ id: d.id, ...d.data(), clicks: d.data().clicks || 0 }));
             window.renderEverything();
@@ -199,68 +198,81 @@
         window.renderEverything = () => {
             renderAreaButtons();
             const filteredByArea = allData.filter(g => g.area === currentArea);
-            document.getElementById('area-count').innerText = `${translations[currentLang].total}: ${filteredByArea.length}`;
+            const countEl = document.getElementById('area-count');
+            if(countEl) countEl.innerText = `${translations[currentLang].total}: ${filteredByArea.length}`;
+            
             const nations = ['All', ...new Set(filteredByArea.map(g => g.nation))];
             const cups = ['All', ...new Set(filteredByArea.map(g => g.cup))].sort();
             renderFilters(nations, cups);
+
             let finalData = filteredByArea;
             if(currentNation !== 'All') finalData = finalData.filter(g => g.nation === currentNation);
             if(currentCup !== 'All') finalData = finalData.filter(g => g.cup === currentCup);
+            
             const sortedFinalData = [...finalData].sort((a, b) => b.clicks - a.clicks);
-            renderMain(sortedFinalData); renderAdmin(allData);
-            document.getElementById('back-btn-text').innerText = translations[currentLang].back;
+            renderMain(sortedFinalData);
+            renderAdmin(allData);
+            const backBtn = document.getElementById('back-btn-text');
+            if(backBtn) backBtn.innerText = translations[currentLang].back;
         };
 
-        window.renderAreaButtons = () => {
+        function renderAreaButtons() {
             const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
-            document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join('');
-        };
+            const container = document.getElementById('areaButtons');
+            if(container) {
+                container.innerHTML = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join('');
+            }
+        }
         window.selectArea = (a) => { currentArea = a; currentNation = 'All'; currentCup = 'All'; window.renderEverything(); };
 
         function renderFilters(nations, cups) {
             const nSelect = document.getElementById('nationFilter');
-            nSelect.innerHTML = nations.map(n => `<option value="${n}">${n === 'All' ? translations[currentLang].allNations : n}</option>`).join('');
-            nSelect.value = currentNation;
             const cSelect = document.getElementById('cupFilter');
-            cSelect.innerHTML = cups.map(c => `<option value="${c}">${c === 'All' ? translations[currentLang].allCups : c}</option>`).join('');
-            cSelect.value = currentCup;
+            if(nSelect) {
+                nSelect.innerHTML = nations.map(n => `<option value="${n}">${n === 'All' ? translations[currentLang].allNations : n}</option>`).join('');
+                nSelect.value = currentNation;
+            }
+            if(cSelect) {
+                cSelect.innerHTML = cups.map(c => `<option value="${c}">${c === 'All' ? translations[currentLang].allCups : c}</option>`).join('');
+                cSelect.value = currentCup;
+            }
         }
-
         window.selectNation = (n) => { currentNation = n; window.renderEverything(); };
         window.selectCup = (c) => { currentCup = c; window.renderEverything(); };
 
-        window.renderMain = (data) => {
+        function renderMain(data) {
+            const container = document.getElementById('displayList');
+            if(!container) return;
             const hotText = translations[currentLang].hot;
-            document.getElementById('displayList').innerHTML = data.map((g, index) => `
+            container.innerHTML = data.map((g, index) => `
                 <div class="card" onclick="window.showDetail('${g.id}')">
-                    ${index < 3 && g.clicks > 0 ? `<div class="hot-badge"><span>🔥</span><span class="md:hidden">${hotText}</span><span class="hidden md:inline">${hotText} #${index+1}</span></div>` : ''}
-                    <img src="${g.photo}" class="card-img"><div class="p-2"><div class="flex justify-between items-center mb-1 gap-1"><span class="white-name truncate">${g.name}</span><span class="status-mini ${g.status}">${g.status}</span></div><div class="flex justify-between items-center"><span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span><span class="nation-tag">${g.nation}</span></div></div>
+                    ${index < 3 && g.clicks > 0 ? `<div class="hot-badge"><span>🔥</span><span>${hotText} #${index+1}</span></div>` : ''}
+                    <img src="${g.photo}" class="card-img">
+                    <div class="p-2">
+                        <div class="flex justify-between items-center mb-1 gap-1"><span class="white-name truncate">${g.name}</span><span class="status-mini ${g.status}">${g.status}</span></div>
+                        <div class="flex justify-between items-center"><span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span><span class="nation-tag">${g.nation}</span></div>
+                    </div>
                 </div>`).join('');
-        };
+        }
 
         window.showDetail = async (id) => {
             const g = allData.find(x => x.id === id);
             await updateDoc(doc(db, "girls", id), { clicks: increment(1) });
             navigateTo('detailPage');
             const t = translations[currentLang];
-            document.getElementById('detailContent').innerHTML = `
-                <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-xl">
-                <div class="text-left px-2">
-                    <div class="flex items-center gap-2 mb-1"><h1 class="text-2xl font-bold text-white">${g.name}</h1><span class="nation-tag">${g.nation}</span></div>
-                    <p class="gold-text text-sm mb-6">${g.age}Y | ${g.cup} | ${g.height}</p>
-                    <div class="grid grid-cols-2 gap-2 mb-2">
-                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1Shot</span><span class="gold-text">RM ${g.p1}</span></div>
-                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>2Shot</span><span class="gold-text">RM ${g.p2}</span></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mb-6">
-                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot</span><span class="gold-text">RM ${g.p3}</span></div>
-                        <div class="bg-[#1a1100] border border-[#d4af37]/30 p-3 rounded-lg flex justify-between">
-                            <span class="font-bold">${t.ovn}</span><span class="gold-text font-bold">RM ${g.povn || '??'}</span>
-                        </div>
-                    </div>
-                    <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-[#d4af37]">${g.desc}</div>
-                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center shadow-lg">${t.booking}</a>
-                </div>`;
+            const content = document.getElementById('detailContent');
+            if(content) {
+                content.innerHTML = `
+                    <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-xl">
+                    <div class="text-left px-2">
+                        <div class="flex items-center gap-2 mb-1"><h1 class="text-2xl font-bold text-white">${g.name}</h1><span class="nation-tag">${g.nation}</span></div>
+                        <p class="gold-text text-sm mb-6">${g.age}Y | ${g.cup} | ${g.height}</p>
+                        <div class="grid grid-cols-2 gap-2 mb-2"><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1Shot</span><span class="gold-text">RM ${g.p1}</span></div><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>2Shot</span><span class="gold-text">RM ${g.p2}</span></div></div>
+                        <div class="grid grid-cols-2 gap-2 mb-6"><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot</span><span class="gold-text">RM ${g.p3}</span></div><div class="bg-[#1a1100] border border-[#d4af37]/30 p-3 rounded-lg flex justify-between"><span class="font-bold">${t.ovn}</span><span class="gold-text font-bold">RM ${g.povn || '??'}</span></div></div>
+                        <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-[#d4af37]">${g.desc}</div>
+                        <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center shadow-lg">${t.booking}</a>
+                    </div>`;
+            }
         };
 
         window.handleSave = async () => {
@@ -268,12 +280,11 @@
             const data = { 
                 name: document.getElementById('gName').value, age: document.getElementById('gAge').value, 
                 nation: document.getElementById('gNation').value, cup: document.getElementById('gCup').value, 
-                height: document.getElementById('gHeight').value, 
-                p1: document.getElementById('gPrice1').value, p2: document.getElementById('gPrice2').value, 
-                p3: document.getElementById('gPrice3').value, povn: document.getElementById('gPriceOvn').value, 
-                area: document.getElementById('gArea').value, status: document.getElementById('gStatus').value, 
-                photo: document.getElementById('gPhoto').value, whatsapp: document.getElementById('gWhatsapp').value, 
-                desc: document.getElementById('gDesc').value 
+                height: document.getElementById('gHeight').value, p1: document.getElementById('gPrice1').value, 
+                p2: document.getElementById('gPrice2').value, p3: document.getElementById('gPrice3').value, 
+                povn: document.getElementById('gPriceOvn').value, area: document.getElementById('gArea').value, 
+                status: document.getElementById('gStatus').value, photo: document.getElementById('gPhoto').value, 
+                whatsapp: document.getElementById('gWhatsapp').value, desc: document.getElementById('gDesc').value 
             };
             if(id) await updateDoc(doc(db, "girls", id), data); else { data.clicks = 0; await addDoc(colRef, data); }
             closeModal();
@@ -281,4 +292,71 @@
 
         window.handleEdit = (id) => {
             const g = allData.find(x => x.id === id); openModal(true);
-            document.getElementById('editId').value = g.id; document.getElementById('gName').value =
+            document.getElementById('editId').value = g.id; document.getElementById('gName').value = g.name; 
+            document.getElementById('gAge').value = g.age; document.getElementById('gNation').value = g.nation; 
+            document.getElementById('gCup').value = g.cup; document.getElementById('gHeight').value = g.height; 
+            document.getElementById('gPrice1').value = g.p1; document.getElementById('gPrice2').value = g.p2; 
+            document.getElementById('gPrice3').value = g.p3; document.getElementById('gPriceOvn').value = g.povn || "";
+            document.getElementById('gArea').value = g.area; document.getElementById('gStatus').value = g.status; 
+            document.getElementById('gPhoto').value = g.photo; document.getElementById('gWhatsapp').value = g.whatsapp; 
+            document.getElementById('gDesc').value = g.desc;
+        };
+
+        window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
+
+        window.updateSiteStats = async () => {
+            const statsSnap = await getDoc(doc(db, "site_stats", "overall"));
+            const total = statsSnap.exists() ? statsSnap.data().totalViews : 0;
+            const container = document.getElementById('site-stats-container');
+            if(container) {
+                container.innerHTML = `<div class="bg-blue-900/20 border border-blue-500/30 p-4 rounded-xl mb-6 text-center"><div class="text-blue-400 text-xs font-bold uppercase mb-1">🌐 网站访客总数 (Firebase)</div><div class="text-2xl font-bold text-white">${total.toLocaleString()}</div></div>`;
+            }
+        };
+
+        function renderAdmin(data) {
+            const container = document.getElementById('adminList');
+            if(!container) return;
+            const sortedData = [...data].sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
+            const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
+            let html = "";
+            areas.forEach(area => {
+                const list = sortedData.filter(g => g.area === area);
+                html += `<div class="bg-[#111] px-3 py-1 text-[10px] gold-text mt-4 uppercase font-bold border-l-2 border-[#d4af37] flex justify-between"><span>${area}</span><span>${list.length}</span></div>`;
+                list.forEach(g => {
+                    html += `<div class="admin-item"><div class="flex items-center gap-3 w-[70%]"><img src="${g.photo}" class="w-8 h-8 rounded-full object-cover"><div class="text-xs truncate text-white"><b>${g.name}</b> <span class="text-[#d4af37] ml-2">🔥 ${g.clicks}</span></div></div><div class="flex gap-2"><button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[10px] font-bold px-2 py-1 bg-blue-900/20 rounded">Edit</button><button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[10px] font-bold px-2 py-1 bg-red-900/20 rounded">Del</button></div></div>`;
+                });
+            });
+            container.innerHTML = html;
+        }
+
+        window.setPrice = (base) => {
+            document.getElementById('gPrice1').value = base; 
+            document.getElementById('gPrice2').value = base * 2;
+            document.getElementById('gPrice3').value = base * 3;
+            document.getElementById('gPriceOvn').value = base === 250 ? 800 : 900;
+        };
+
+        // 初始化
+        updateTexts();
+    </script>
+
+    <script>
+        function navigateTo(id) { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); window.scrollTo(0,0);
+            if(id === 'adminPage') {
+                const itv = setInterval(() => { if(window.updateSiteStats){ window.updateSiteStats(); clearInterval(itv); } }, 200);
+            }
+        }
+        function showAdmin() { if(prompt("Pass") === "KAR#1999") navigateTo('adminPage'); }
+        function openModal(isEdit = false) { 
+            if(!isEdit) { 
+                document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; 
+                document.getElementById('gName').value = ""; document.getElementById('gDesc').value = ""; 
+                document.getElementById('uploadStatus').innerText = "Ready";
+            } document.getElementById('girlModal').classList.add('active'); 
+        }
+        function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
+    </script>
+</body>
+</html>
