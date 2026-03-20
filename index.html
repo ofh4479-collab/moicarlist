@@ -14,9 +14,8 @@
         nav { background: rgba(20, 20, 20, 0.98); padding: 12px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; }
         .nav-link { cursor: pointer; color: #aaa; font-size: 11px; font-weight: 600; text-transform: uppercase; transition: color 0.3s; }
         .nav-link:hover { color: var(--gold); }
-        .lang-toggle { color: var(--gold); font-size: 12px; font-weight: bold; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; background: #111; }
+        .lang-toggle { color: var(--gold); font-size: 12px; font-weight: bold; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; background: #111; min-width: 40px; }
         
-        /* 欢迎词区域加回来了 */
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 35px 20px; text-align: center; border-bottom: 1px solid #222; }
         
         .area-button { background: #111; border: 1px solid var(--gold); transition: 0.2s; cursor: pointer; font-size: 12px; padding: 8px 4px; border-radius: 8px; }
@@ -26,7 +25,7 @@
         .card-img { width: 100%; height: 220px; object-fit: contain; background: #000; border-bottom: 1px solid #111; }
         
         .gold-text { color: var(--gold); font-weight: 600; }
-        .white-name { color: #ffffff; font-weight: 700; font-size: 15px; } /* 名字白色设置 */
+        .white-name { color: #ffffff; font-weight: 700; font-size: 15px; } 
         
         .status-mini { font-size: 9px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
         .available { background: var(--whatsapp); color: #fff; }
@@ -47,14 +46,57 @@
 <body>
 
     <script>
-        const i18n = { en: "EN", cn: "中", bm: "BM" };
+        // --- 核心语言配置 ---
+        const translations = {
+            en: {
+                home: "HOME",
+                welcome: "Welcome to MoiCarList",
+                subtitle: "Your Trusted Choice for Professional Services",
+                available: "✨ Available Today",
+                allNations: "All Nations",
+                back: "← BACK",
+                booking: "WHATSAPP BOOKING"
+            },
+            cn: {
+                home: "首页",
+                welcome: "欢迎来到 MoiCarList",
+                subtitle: "您值得信赖的专业服务选择",
+                available: "✨ 今日在线",
+                allNations: "所有国籍",
+                back: "← 返回",
+                booking: "WHATSAPP 预约"
+            },
+            bm: {
+                home: "UTAMA",
+                welcome: "Selamat Datang ke MoiCarList",
+                subtitle: "Pilihan Dipercayai untuk Perkhidmatan Profesional",
+                available: "✨ Tersedia Hari Ini",
+                allNations: "Semua Negara",
+                back: "← KEMBALI",
+                booking: "TEMPAHAN WHATSAPP"
+            }
+        };
+
+        const langLabels = { en: "EN", cn: "中", bm: "BM" };
         let currentLang = 'en';
+
+        function updateTexts() {
+            const t = translations[currentLang];
+            document.getElementById('nav-home').innerText = t.home;
+            document.getElementById('hero-title').innerText = t.welcome;
+            document.getElementById('hero-desc').innerText = t.subtitle;
+            document.getElementById('section-title').innerText = t.available;
+            document.getElementById('btn-lang-toggle').innerText = langLabels[currentLang];
+            
+            // 重新渲染主页以更新下拉框和详情页文字
+            if (typeof renderEverything === "function") renderEverything();
+        }
+
         function toggleLang() {
-            const keys = Object.keys(i18n);
+            const keys = Object.keys(translations);
             let idx = keys.indexOf(currentLang);
             currentLang = keys[(idx + 1) % keys.length];
-            document.getElementById('btn-lang-toggle').innerText = i18n[currentLang];
-            // 可以在这里加上翻译文字的逻辑
+            updateTexts();
         }
     </script>
 
@@ -62,7 +104,7 @@
         <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
             <div class="gold-text text-xl cursor-pointer font-bold" onclick="navigateTo('home')">MoiCarList</div>
             <div class="flex gap-4 items-center">
-                <a onclick="navigateTo('home')" class="nav-link hidden md:block">HOME</a>
+                <a id="nav-home" onclick="navigateTo('home')" class="nav-link hidden md:block">HOME</a>
                 <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle">EN</button>
                 <a href="#" onclick="window.open('https://t.me/MoiCarList', '_blank'); return false;" class="text-[#0088cc]">
                     <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.12 7.14-.14.72-.41.96-.66.98-.56.05-1-.38-1.54-.74-.83-.57-1.3-1.07-2.12-1.6-.94-.61-.33-.95.21-1.5.14-.14 2.53-2.32 2.58-2.52.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.48.94-4.18 2.76-.39.27-.75.4-1.07.39-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.28-.36.77-.55 3.02-1.31 5.03-2.18 6.04-2.6.96-.4 1.99-.48 2.65-.48.14 0 .47.03.68.16.19.11.26.27.28.42.02.16.02.32.01.48z"/></svg>
@@ -74,18 +116,17 @@
 
     <div id="home" class="page active">
         <div class="hero-section">
-            <h1 class="text-2xl md:text-4xl font-bold text-[#d4af37] mb-2">Welcome to MoiCarList</h1>
-            <p class="text-gray-400 text-xs md:text-sm">Your Trusted Choice for Professional Services</p>
+            <h1 id="hero-title" class="text-2xl md:text-4xl font-bold text-[#d4af37] mb-2">Welcome to MoiCarList</h1>
+            <p id="hero-desc" class="text-gray-400 text-xs md:text-sm">Your Trusted Choice for Professional Services</p>
         </div>
 
         <div class="max-w-6xl mx-auto px-4 py-6">
             <div id="areaButtons" class="grid grid-cols-3 md:grid-cols-5 gap-2 mb-8 text-center"></div>
             
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-bold gold-text flex items-center gap-2">✨ Available Today</h2>
-                
+                <h2 id="section-title" class="text-lg font-bold gold-text flex items-center gap-2">✨ Available Today</h2>
                 <select id="nationFilter" onchange="selectNation(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] w-auto m-0 outline-none cursor-pointer">
-                    </select>
+                </select>
             </div>
 
             <div id="displayList" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
@@ -94,7 +135,7 @@
 
     <div id="detailPage" class="page">
         <div class="max-w-2xl mx-auto p-4 pb-20">
-            <div class="mb-4 gold-text font-bold cursor-pointer flex items-center gap-1" onclick="navigateTo('home')">← BACK</div>
+            <div id="back-btn-text" class="mb-4 gold-text font-bold cursor-pointer flex items-center gap-1" onclick="navigateTo('home')">← BACK</div>
             <div id="detailContent"></div>
         </div>
     </div>
@@ -175,11 +216,8 @@
         let currentArea = 'Alor Setar';
         let currentNation = 'All';
 
-        window.setPrice = (base) => {
-            document.getElementById('gPrice1').value = base;
-            document.getElementById('gPrice2').value = base * 2;
-            document.getElementById('gPrice3').value = base * 3;
-        };
+        // --- 图床配置 (记得填你的 KEY) ---
+        const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b"; 
 
         const fileInput = document.getElementById('fileInput');
         fileInput.addEventListener('change', async (e) => {
@@ -190,7 +228,7 @@
             const formData = new FormData();
             formData.append('image', file);
             try {
-                const response = await fetch('https://api.imgbb.com/1/upload?key=6387d8537678e7f10b2df27f87a38753', { method: 'POST', body: formData });
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData });
                 const result = await response.json();
                 if (result.success) {
                     document.getElementById('gPhoto').value = result.data.url;
@@ -202,21 +240,21 @@
 
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-            renderEverything();
+            window.renderEverything();
         });
 
-        function renderEverything() {
+        window.renderEverything = () => {
             renderAreaButtons();
             const filtered = allData.filter(g => g.area === currentArea);
-            
-            // 下拉菜单更新逻辑
             const nations = ['All', ...new Set(filtered.map(g => g.nation))];
             renderNationFilter(nations);
-
             const finalData = currentNation === 'All' ? filtered : filtered.filter(g => g.nation === currentNation);
             renderMain(finalData);
             renderAdmin(allData);
-        }
+            
+            // 确保返回按钮文字也更新
+            document.getElementById('back-btn-text').innerText = translations[currentLang].back;
+        };
 
         window.renderAreaButtons = () => {
             const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
@@ -225,14 +263,15 @@
             `).join('');
         };
 
-        window.selectArea = (a) => { currentArea = a; currentNation = 'All'; renderEverything(); };
+        window.selectArea = (a) => { currentArea = a; currentNation = 'All'; window.renderEverything(); };
 
         function renderNationFilter(nations) {
             const select = document.getElementById('nationFilter');
-            select.innerHTML = nations.map(n => `<option value="${n}">${n === 'All' ? 'All Nations' : n}</option>`).join('');
+            const allLabel = translations[currentLang].allNations;
+            select.innerHTML = nations.map(n => `<option value="${n}">${n === 'All' ? allLabel : n}</option>`).join('');
             select.value = currentNation;
         }
-        window.selectNation = (n) => { currentNation = n; renderEverything(); };
+        window.selectNation = (n) => { currentNation = n; window.renderEverything(); };
 
         window.renderMain = (data) => {
             document.getElementById('displayList').innerHTML = data.map(g => `
@@ -254,6 +293,7 @@
         window.showDetail = (id) => {
             const g = allData.find(x => x.id === id);
             navigateTo('detailPage');
+            const t = translations[currentLang];
             document.getElementById('detailContent').innerHTML = `
                 <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-xl">
                 <div class="text-left px-2">
@@ -268,7 +308,7 @@
                         <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot (3 Hours)</span><span class="gold-text font-bold">RM ${g.p3}</span></div>
                     </div>
                     <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs leading-relaxed border-l-2 border-[#d4af37]">${g.desc}</div>
-                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center shadow-lg">WHATSAPP BOOKING</a>
+                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center shadow-lg uppercase">${t.booking}</a>
                 </div>`;
         };
 
@@ -283,13 +323,9 @@
                 photo: document.getElementById('gPhoto').value, whatsapp: document.getElementById('gWhatsapp').value,
                 desc: document.getElementById('gDesc').value
             };
-            if(id) {
-                await updateDoc(doc(db, "girls", id), data);
-            } else {
-                await addDoc(colRef, data);
-            }
+            if(id) await updateDoc(doc(db, "girls", id), data);
+            else await addDoc(colRef, data);
             closeModal();
-            document.getElementById('uploadStatus').innerText = "Ready";
         };
 
         window.handleEdit = (id) => {
@@ -309,8 +345,6 @@
             document.getElementById('gPhoto').value = g.photo;
             document.getElementById('gWhatsapp').value = g.whatsapp;
             document.getElementById('gDesc').value = g.desc;
-            document.getElementById('modalTitle').innerText = "Edit Profile";
-            document.getElementById('btnSave').innerText = "UPDATE DATA";
         };
 
         window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
@@ -322,19 +356,7 @@
                 const list = data.filter(g => g.area === area);
                 html += `<div class="bg-[#111] px-3 py-1 text-[10px] gold-text mt-4 uppercase font-bold border-l-2 border-[#d4af37]">${area} (${list.length})</div>`;
                 list.forEach(g => {
-                    html += `
-                    <div class="admin-item">
-                        <div class="flex items-center gap-3 w-[70%]">
-                            <img src="${g.photo}" class="w-8 h-8 rounded-full object-cover border border-[#333]">
-                            <div class="text-xs truncate w-full">
-                                <div class="font-bold text-white truncate">${g.name}</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="handleEdit('${g.id}')" class="text-blue-400 text-[10px] font-bold px-2 py-1 bg-blue-900/20 rounded">Edit</button>
-                            <button onclick="handleDelete('${g.id}')" class="text-red-500 text-[10px] font-bold px-2 py-1 bg-red-900/20 rounded">Del</button>
-                        </div>
-                    </div>`;
+                    html += `<div class="admin-item"><div class="flex items-center gap-3 w-[70%]"><img src="${g.photo}" class="w-8 h-8 rounded-full object-cover border border-[#333]"><div class="text-xs truncate w-full"><div class="font-bold text-white truncate">${g.name}</div></div></div><div class="flex gap-2"><button onclick="handleEdit('${g.id}')" class="text-blue-400 text-[10px] font-bold px-2 py-1 bg-blue-900/20 rounded">Edit</button><button onclick="handleDelete('${g.id}')" class="text-red-500 text-[10px] font-bold px-2 py-1 bg-red-900/20 rounded">Del</button></div></div>`;
                 });
             });
             document.getElementById('adminList').innerHTML = html;
@@ -347,7 +369,6 @@
         function openModal(isEdit = false) { 
             if(!isEdit) {
                 document.getElementById('modalTitle').innerText = "Add Profile";
-                document.getElementById('btnSave').innerText = "SAVE DATA";
                 document.getElementById('editId').value = "";
                 document.getElementById('gPhoto').value = "";
                 document.getElementById('gName').value = "";
@@ -357,6 +378,11 @@
             document.getElementById('girlModal').classList.add('active'); 
         }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
+        window.setPrice = (base) => {
+            document.getElementById('gPrice1').value = base;
+            document.getElementById('gPrice2').value = base * 2;
+            document.getElementById('gPrice3').value = base * 3;
+        };
     </script>
 </body>
 </html>
