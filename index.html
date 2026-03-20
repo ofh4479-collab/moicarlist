@@ -3,45 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoiCarList | Professional Services</title>
+    
+    <title>MoiCarList | 北马首选专业服务预约平台</title>
+    <meta name="description" content="MoiCarList 提供 Alor Setar, Penang, Ipoh 等地区最优质的专业按摩与陪伴服务。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ofh4479-collab.github.io/girlcarlist/">
+    <meta property="og:title" content="MoiCarList | 专业、优质、快速预约">
+    <meta property="og:description" content="精选优质佳丽，覆盖北马多个地区，立即 WhatsApp 预约。">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=1000&auto=format&fit=crop">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --gold: #d4af37; --whatsapp: #25D366; --telegram: #0088cc; }
         body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; margin:0; }
-        
         nav { background: rgba(26, 26, 26, 0.95); padding: 12px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
         .nav-link { display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s; color: #aaa; font-size: 12px; font-weight: 600; text-transform: uppercase; text-decoration: none; }
         .nav-link:hover { color: var(--gold); }
-
         .lang-toggle { background: #222; border: 1px solid #444; padding: 4px 12px; border-radius: 6px; color: var(--gold); font-size: 11px; }
-
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 60px 20px; text-align: center; border-bottom: 1px solid #222; }
         .area-button { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 2px solid #d4af37; transition: all 0.3s ease; cursor: pointer; }
         .area-button:hover { background: var(--gold); color: #000; transform: scale(1.05); }
-        
         .card { background: #111; border-radius: 20px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; }
         .card:hover { border-color: var(--gold); transform: translateY(-5px); }
         .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
         .available { background: var(--whatsapp); color: #fff; }
         .busy { background: #ff453a; color: #fff; }
-        
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
-        
         .btn-whatsapp { background: #25D366; color: white; font-weight: 700; padding: 14px; border-radius: 15px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-top: 20px; cursor: pointer; }
-        
         .modal, .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
         .modal.active, .lightbox.active { display: flex; }
         .lightbox img { max-width: 90%; max-height: 90vh; border-radius: 10px; border: 2px solid #444; cursor: pointer; }
-        
         input, select, textarea { background: #222; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; width: 100%; margin: 5px 0; }
         .admin-group-title { background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border-left: 4px solid var(--gold); margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: var(--gold); display: flex; justify-content: space-between; }
-        
         .stat-card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 12px; text-align: center; }
         .stat-val { font-size: 24px; font-weight: bold; color: var(--gold); }
         .stat-label { font-size: 10px; color: #888; text-transform: uppercase; }
-
         .nation-tag { font-size: 10px; background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.3); }
     </style>
 </head>
@@ -53,7 +50,6 @@
             cn: { label: "中", welcome: "欢迎来到 MoiCarList", sub: "马来西亚您最信赖的专业按摩与陪伴服务", selectLoc: "选择您的地区", available: "✨ 今日在位", back: "← 返回列表", book: "立即 WhatsApp 预约", about: "关于她", admin: "管理后台", home: "首页" },
             bm: { label: "BM", welcome: "Selamat Datang ke MoiCarList", sub: "Pilihan Dipercayai Anda untuk Peneman Profesional & Urutan di Malaysia", selectLoc: "Pilih Lokasi Anda", available: "✨ Tersedia Hari Ini", back: "← KEMBALI", book: "TEMPAH WHATSAPP SEKARANG", about: "Mengenai Dia", admin: "ADMIN", home: "UTAMA" }
         };
-
         let langSequence = ['en', 'cn', 'bm'];
         let currentLangIndex = 0;
         const myTelegramChannelUrl = "https://t.me/MoiCarList";
@@ -64,7 +60,6 @@
             document.getElementById('btn-lang-toggle').innerText = "Language: " + i18n[lang].label;
             updateUI(lang);
         }
-
         function updateUI(lang) {
             const t = i18n[lang];
             document.getElementById('txt-welcome').innerText = t.welcome;
@@ -117,7 +112,7 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
                 <div class="stat-card"><div id="stat-totalViews" class="stat-val">0</div><div class="stat-label">Total Site Views</div></div>
-                <div class="stat-card col-span-2"><div id="stat-totalGirls" class="stat-val">0</div><div class="stat-label">Total Profiles Across Malaysia</div></div>
+                <div class="stat-card col-span-2"><div id="stat-totalGirls" class="stat-val">0</div><div class="stat-label">Total Profiles</div></div>
             </div>
             <div id="adminList" class="space-y-10"></div>
         </div>
@@ -161,7 +156,6 @@
             messagingSenderId: "418933639880",
             appId: "1:418933639880:web:a993e1c3e71f2e8d18f3fd"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const colRef = collection(db, "girls");
@@ -177,9 +171,7 @@
             } catch (e) { console.error("Error tracking view", e); }
         }
         trackSiteView();
-
         onSnapshot(statsRef, (doc) => { if(doc.exists()) { document.getElementById('stat-totalViews').innerText = doc.data().views || 0; } });
-
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
             renderMain(allData);
@@ -199,20 +191,13 @@
 
         window.handleSave = async function() {
             const data = {
-                name: document.getElementById('gName').value,
-                age: document.getElementById('gAge').value,
-                nation: document.getElementById('gNation').value,
-                cup: document.getElementById('gCup').value,
-                height: document.getElementById('gHeight').value,
-                p1: document.getElementById('gPrice1').value,
-                p2: document.getElementById('gPrice2').value,
-                p3: document.getElementById('gPrice3').value,
-                area: document.getElementById('gArea').value,
-                status: document.getElementById('gStatus').value,
-                photo: document.getElementById('gPhoto').value,
-                whatsapp: document.getElementById('gWhatsapp').value,
-                desc: document.getElementById('gDesc').value,
-                clicks: 0
+                name: document.getElementById('gName').value, age: document.getElementById('gAge').value,
+                nation: document.getElementById('gNation').value, cup: document.getElementById('gCup').value,
+                height: document.getElementById('gHeight').value, p1: document.getElementById('gPrice1').value,
+                p2: document.getElementById('gPrice2').value, p3: document.getElementById('gPrice3').value,
+                area: document.getElementById('gArea').value, status: document.getElementById('gStatus').value,
+                photo: document.getElementById('gPhoto').value, whatsapp: document.getElementById('gWhatsapp').value,
+                desc: document.getElementById('gDesc').value, clicks: 0
             };
             await addDoc(colRef, data);
             closeModal();
@@ -235,8 +220,7 @@
                         </div>
                         <div class="text-[#d4af37] font-bold text-xl">RM ${g.p1}</div>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         };
 
         window.showDetail = function(id) {
@@ -267,37 +251,16 @@
         window.renderAreaButtons = function() {
             document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button p-4 rounded-xl text-center font-bold text-sm" onclick="filterArea('${a}')">${a}</div>`).join('');
         };
-
         window.filterArea = function(area) {
             const filtered = allData.filter(g => g.area === area);
             renderMain(filtered);
             window.scrollTo({ top: 600, behavior: 'smooth' });
         };
-
         window.renderAdmin = function(data) {
             let html = "";
             areas.forEach(area => {
                 const areaProfiles = data.filter(g => g.area === area);
-                html += `
-                    <div class="admin-group">
-                        <div class="admin-group-title"><span>📍 ${area}</span><span class="text-xs opacity-60">${areaProfiles.length} Profiles</span></div>
-                        <div class="space-y-3">
-                            ${areaProfiles.length > 0 ? areaProfiles.map(g => `
-                                <div class="flex items-center justify-between bg-[#111] p-4 rounded-xl border border-[#222]">
-                                    <div class="flex items-center gap-4 text-left">
-                                        <img src="${g.photo}" class="w-12 h-12 rounded-full object-cover border border-[#333]">
-                                        <div>
-                                            <div class="font-bold text-white flex items-center gap-2">
-                                                ${g.name} 
-                                                <span class="w-2 h-2 rounded-full ${g.status === 'available' ? 'bg-green-500' : 'bg-red-500'}"></span>
-                                            </div>
-                                            <div class="text-[10px] text-gray-500">${g.age}Y | ${g.nation} | <span class="text-[#d4af37] font-bold">${g.clicks || 0} Clicks</span></div>
-                                        </div>
-                                    </div>
-                                    <button onclick="handleDelete('${g.id}')" class="text-red-500 text-xs font-bold px-3 py-1 bg-red-900/20 rounded">Delete</button>
-                                </div>`).join('') : '<p class="text-gray-600 text-xs italic pl-4">Empty</p>'}
-                        </div>
-                    </div>`;
+                html += `<div class="admin-group"><div class="admin-group-title"><span>📍 ${area}</span><span class="text-xs opacity-60">${areaProfiles.length} Profiles</span></div><div class="space-y-3">${areaProfiles.length > 0 ? areaProfiles.map(g => `<div class="flex items-center justify-between bg-[#111] p-4 rounded-xl border border-[#222]"><div class="flex items-center gap-4 text-left"><img src="${g.photo}" class="w-12 h-12 rounded-full object-cover border border-[#333]"><div><div class="font-bold text-white flex items-center gap-2">${g.name} <span class="w-2 h-2 rounded-full ${g.status === 'available' ? 'bg-green-500' : 'bg-red-500'}"></span></div><div class="text-[10px] text-gray-500">${g.age}Y | ${g.nation} | <span class="text-[#d4af37] font-bold">${g.clicks || 0} Clicks</span></div></div></div><button onclick="handleDelete('${g.id}')" class="text-red-500 text-xs font-bold px-3 py-1 bg-red-900/20 rounded">Delete</button></div>`).join('') : '<p class="text-gray-600 text-xs italic pl-4">Empty</p>'}</div></div>`;
             });
             document.getElementById('adminList').innerHTML = html;
         };
@@ -306,16 +269,12 @@
     <script>
         function navigateTo(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            window.scrollTo(0,0);
+            document.getElementById(id).classList.add('active'); window.scrollTo(0,0);
         }
         function showAdmin() { if(prompt("Admin Password") === "KAR#1999") navigateTo('adminPage'); }
         function openModal() { document.getElementById('girlModal').classList.add('active'); }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
-        function openLightbox(imgUrl) {
-            document.getElementById('lightboxImg').src = imgUrl;
-            document.getElementById('lightbox').classList.add('active');
-        }
+        function openLightbox(imgUrl) { document.getElementById('lightboxImg').src = imgUrl; document.getElementById('lightbox').classList.add('active'); }
         function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
     </script>
 </body>
