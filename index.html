@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MD8RMMY2TZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MD8RMMY2TZ');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoiCarList | Professional Services</title>
@@ -162,14 +170,9 @@
         let currentNation = 'All';
         let currentCup = 'All';
 
-        // 📊 统计网站访客总数 (Site Stat Tracker)
         async function trackVisitor() {
             const statsRef = doc(db, "site_stats", "overall");
-            try {
-                await updateDoc(statsRef, { totalViews: increment(1) });
-            } catch (e) {
-                await setDoc(statsRef, { totalViews: 1 });
-            }
+            try { await updateDoc(statsRef, { totalViews: increment(1) }); } catch (e) { await setDoc(statsRef, { totalViews: 1 }); }
         }
         trackVisitor();
 
@@ -183,8 +186,7 @@
                 const r = await res.json();
                 if (r.success) { 
                     document.getElementById('gPhoto').value = r.data.url; 
-                    status.innerText = "Upload Success ✅"; 
-                    status.style.color = "#25D366"; 
+                    status.innerText = "Upload Success ✅"; status.style.color = "#25D366"; 
                 }
             } catch (err) { status.innerText = "Error!"; status.style.color = "#ff453a"; }
         });
@@ -205,8 +207,7 @@
             if(currentNation !== 'All') finalData = finalData.filter(g => g.nation === currentNation);
             if(currentCup !== 'All') finalData = finalData.filter(g => g.cup === currentCup);
             const sortedFinalData = [...finalData].sort((a, b) => b.clicks - a.clicks);
-            renderMain(sortedFinalData);
-            renderAdmin(allData);
+            renderMain(sortedFinalData); renderAdmin(allData);
             document.getElementById('back-btn-text').innerText = translations[currentLang].back;
         };
 
@@ -214,7 +215,6 @@
             const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
             document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join('');
         };
-
         window.selectArea = (a) => { currentArea = a; currentNation = 'All'; currentCup = 'All'; window.renderEverything(); };
 
         function renderFilters(nations, cups) {
@@ -281,77 +281,4 @@
 
         window.handleEdit = (id) => {
             const g = allData.find(x => x.id === id); openModal(true);
-            document.getElementById('editId').value = g.id; document.getElementById('gName').value = g.name; 
-            document.getElementById('gAge').value = g.age; document.getElementById('gNation').value = g.nation; 
-            document.getElementById('gCup').value = g.cup; document.getElementById('gHeight').value = g.height; 
-            document.getElementById('gPrice1').value = g.p1; document.getElementById('gPrice2').value = g.p2; 
-            document.getElementById('gPrice3').value = g.p3; document.getElementById('gPriceOvn').value = g.povn || "";
-            document.getElementById('gArea').value = g.area; document.getElementById('gStatus').value = g.status; 
-            document.getElementById('gPhoto').value = g.photo; document.getElementById('gWhatsapp').value = g.whatsapp; 
-            document.getElementById('gDesc').value = g.desc;
-        };
-
-        window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
-
-        // 💡 实时从后台获取总访问人数
-        window.updateSiteStats = async () => {
-            const statsSnap = await getDoc(doc(db, "site_stats", "overall"));
-            const total = statsSnap.exists() ? statsSnap.data().totalViews : 0;
-            const container = document.getElementById('site-stats-container');
-            if(container) {
-                container.innerHTML = `
-                    <div class="bg-blue-900/20 border border-blue-500/30 p-4 rounded-xl mb-6 text-center shadow-lg">
-                        <div class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-1">🌐 全局访客统计</div>
-                        <div class="text-2xl font-bold text-white">${total.toLocaleString()} <span class="text-xs font-normal text-blue-300">次打开</span></div>
-                    </div>`;
-            }
-        };
-
-        window.renderAdmin = (data) => {
-            const sortedData = [...data].sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
-            const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
-            let html = "";
-            areas.forEach(area => {
-                const list = sortedData.filter(g => g.area === area);
-                html += `<div class="bg-[#111] px-3 py-1 text-[10px] gold-text mt-4 uppercase font-bold border-l-2 border-[#d4af37] flex justify-between"><span>${area}</span><span>${list.length} 人</span></div>`;
-                list.forEach(g => {
-                    html += `<div class="admin-item"><div class="flex items-center gap-3 w-[70%]"><img src="${g.photo}" class="w-8 h-8 rounded-full object-cover"><div class="text-xs truncate"><div class="font-bold text-white">${g.name} <span class="text-[#d4af37] ml-2">🔥 ${g.clicks}</span></div></div></div><div class="flex gap-2"><button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[10px] font-bold px-2 py-1 bg-blue-900/20 rounded">Edit</button><button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[10px] font-bold px-2 py-1 bg-red-900/20 rounded">Del</button></div></div>`;
-                });
-            });
-            document.getElementById('adminList').innerHTML = html;
-        };
-
-        window.setPrice = (base) => {
-            if(base === 250) {
-                document.getElementById('gPrice1').value = 250; document.getElementById('gPrice2').value = 500;
-                document.getElementById('gPrice3').value = 750; document.getElementById('gPriceOvn').value = 800;
-            } else if(base === 270) {
-                document.getElementById('gPrice1').value = 270; document.getElementById('gPrice2').value = 540;
-                document.getElementById('gPrice3').value = 810; document.getElementById('gPriceOvn').value = 900;
-            }
-        };
-    </script>
-
-    <script>
-        function navigateTo(id) { 
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
-            document.getElementById(id).classList.add('active'); 
-            window.scrollTo(0,0);
-            // 💡 如果进入管理员页面，刷新访问人数
-            if(id === 'adminPage') {
-                const checkModule = setInterval(() => {
-                    if (window.updateSiteStats) { window.updateSiteStats(); clearInterval(checkModule); }
-                }, 100);
-            }
-        }
-        function showAdmin() { if(prompt("Pass") === "KAR#1999") navigateTo('adminPage'); }
-        function openModal(isEdit = false) { 
-            if(!isEdit) { 
-                document.getElementById('modalTitle').innerText = "Add Profile"; document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; document.getElementById('gName').value = ""; document.getElementById('gDesc').value = ""; document.getElementById('gPriceOvn').value = ""; document.getElementById('gCup').value = "";
-                document.getElementById('uploadStatus').innerText = "Ready"; document.getElementById('uploadStatus').style.color = "#6b7280";
-            } document.getElementById('girlModal').classList.add('active'); 
-        }
-        function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
-    </script>
-</body>
-</html>
+            document.getElementById('editId').value = g.id; document.getElementById('gName').value =
