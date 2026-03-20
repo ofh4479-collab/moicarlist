@@ -13,35 +13,25 @@
         .nav-link { cursor: pointer; color: #aaa; font-size: 11px; font-weight: 600; text-transform: uppercase; transition: color 0.3s; }
         .nav-link:hover { color: var(--gold); }
         .lang-toggle { color: var(--gold); font-size: 12px; font-weight: bold; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; background: #111; min-width: 40px; }
-        
-        /* Hero Section */
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 35px 20px; text-align: center; border-bottom: 1px solid #222; }
-        
         .area-button { background: #111; border: 1px solid var(--gold); transition: 0.2s; cursor: pointer; font-size: 12px; padding: 8px 4px; border-radius: 8px; }
         .area-button.active { background: var(--gold); color: #000; font-weight: bold; }
-        
         .card { background: #0a0a0a; border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: transform 0.3s ease; }
         .card:hover { transform: translateY(-5px); border-color: var(--gold); }
         .card-img { width: 100%; height: 220px; object-fit: contain; background: #000; border-bottom: 1px solid #111; }
-        
         .gold-text { color: var(--gold); font-weight: 600; }
         .white-name { color: #ffffff; font-weight: 700; font-size: 15px; } 
         .status-mini { font-size: 9px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
         .available { background: var(--whatsapp); color: #fff; }
         .busy { background: #ff453a; color: #fff; }
         .nation-tag { font-size: 9px; background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.3); }
-        
-        /* 🔥 Hot Badge */
         .hot-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #d4af37; font-size: 10px; padding: 3px 7px; border-radius: 20px; border: 1px solid #d4af37; font-weight: bold; display: flex; items-center; gap: 3px; z-index: 10; }
-
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
-        
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; padding: 15px; }
         .modal.active { display: flex; }
-        
         input, select, textarea { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 6px; width: 100%; margin: 4px 0; font-size: 14px; }
-        .btn-preset { background: #222; font-size: 10px; padding: 5px 8px; border-radius: 4px; color: var(--gold); border: 1px solid #444; }
+        .btn-preset { background: #222; font-size: 10px; padding: 5px 10px; border-radius: 4px; color: var(--gold); border: 1px solid var(--gold); margin-right: 5px; }
         .admin-item { background: #0a0a0a; border-bottom: 1px solid #222; padding: 8px; display: flex; align-items: center; justify-content: space-between; }
         .count-pill { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-size: 10px; padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3); }
     </style>
@@ -94,10 +84,8 @@
             <h1 id="hero-title" class="text-2xl md:text-4xl font-bold text-[#d4af37] mb-2">Welcome to MoiCarList</h1>
             <p id="hero-desc" class="text-gray-400 text-xs md:text-sm">Your Trusted Choice</p>
         </div>
-
         <div class="max-w-6xl mx-auto px-4 py-6">
             <div id="areaButtons" class="grid grid-cols-3 md:grid-cols-5 gap-2 mb-8 text-center"></div>
-            
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-3">
                 <div class="flex items-center gap-3">
                     <h2 id="section-title" class="text-lg font-bold gold-text">✨ Available Today</h2>
@@ -108,24 +96,15 @@
                     <select id="cupFilter" onchange="window.selectCup(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none flex-1"></select>
                 </div>
             </div>
-
             <div id="displayList" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
         </div>
     </div>
 
-    <div id="detailPage" class="page">
-        <div class="max-w-2xl mx-auto p-4 pb-20">
-            <div id="back-btn-text" class="mb-4 gold-text font-bold cursor-pointer" onclick="navigateTo('home')">← BACK</div>
-            <div id="detailContent"></div>
-        </div>
-    </div>
+    <div id="detailPage" class="page"><div class="max-w-2xl mx-auto p-4 pb-20"><div id="back-btn-text" class="mb-4 gold-text font-bold cursor-pointer" onclick="navigateTo('home')">← BACK</div><div id="detailContent"></div></div></div>
 
     <div id="adminPage" class="page bg-[#050505]">
         <div class="max-w-4xl mx-auto p-4">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold gold-text">Admin Panel</h2>
-                <button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add</button>
-            </div>
+            <div class="flex justify-between items-center mb-6"><h2 class="text-xl font-bold gold-text">Admin Panel</h2><button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add</button></div>
             <div id="adminList" class="space-y-1"></div>
         </div>
     </div>
@@ -135,20 +114,17 @@
             <h3 id="modalTitle" class="gold-text font-bold mb-4">Profile Info</h3>
             <input type="hidden" id="editId">
             <input type="text" id="gName" placeholder="Name">
+            <div class="grid grid-cols-2 gap-2"><input type="number" id="gAge" placeholder="Age"><select id="gNation"><option>Thailand</option><option>Vietnam</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option></select></div>
             <div class="grid grid-cols-2 gap-2">
-                <input type="number" id="gAge" placeholder="Age">
-                <select id="gNation"><option>Thailand</option><option>Vietnam</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option></select>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-                <select id="gCup"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+                <input type="text" id="gCup" placeholder="Cup Size (e.g. 34C)">
                 <input type="text" id="gHeight" placeholder="Height">
             </div>
             <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
             <select id="gStatus"><option value="available">Available</option><option value="busy">Busy</option></select>
             
-            <div class="flex gap-2 my-2">
-                <button onclick="setPrice(250)" class="btn-preset">Set 250 (OVN 800)</button>
-                <button onclick="setPrice(270)" class="btn-preset">Set 270 (OVN 900)</button>
+            <div class="flex gap-1 my-2">
+                <button onclick="setPrice(250)" class="btn-preset">RM250 Set</button>
+                <button onclick="setPrice(270)" class="btn-preset">RM270 Set</button>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <input type="number" id="gPrice1" placeholder="1 Shot">
@@ -159,16 +135,12 @@
                 <input type="number" id="gPriceOvn" placeholder="Overnight (Ovn)">
             </div>
 
-            <div class="mt-2 flex gap-2">
-                <input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1">
-                <input type="file" id="fileInput" class="hidden" accept="image/*">
-                <button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white uppercase">Upload</button>
-            </div>
+            <div class="mt-2 flex gap-2"><input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1"><input type="file" id="fileInput" class="hidden" accept="image/*"><button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button></div>
             <div id="uploadStatus" class="text-[10px] text-gray-500 mb-2">Ready</div>
             <input type="text" id="gWhatsapp" placeholder="WhatsApp (60xxx)" value="601117917032">
             <textarea id="gDesc" placeholder="Bio" rows="2"></textarea>
             <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-lg mt-4 text-sm uppercase">Save</button>
-            <button onclick="closeModal()" class="w-full text-gray-500 mt-3 text-xs uppercase">Cancel</button>
+            <button onclick="closeModal()" class="w-full text-gray-500 mt-3 text-xs">CANCEL</button>
         </div>
     </div>
 
@@ -184,19 +156,6 @@
         let currentArea = 'Alor Setar';
         let currentNation = 'All';
         let currentCup = 'All';
-
-        const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b"; 
-
-        document.getElementById('fileInput').addEventListener('change', async (e) => {
-            const file = e.target.files[0]; if (!file) return;
-            const status = document.getElementById('uploadStatus'); status.innerText = "Uploading...";
-            const formData = new FormData(); formData.append('image', file);
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData });
-                const r = await res.json();
-                if (r.success) { document.getElementById('gPhoto').value = r.data.url; status.innerText = "Upload Success ✅"; status.style.color = "#25D366"; }
-            } catch (err) { status.innerText = "Error!"; }
-        });
 
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ id: d.id, ...d.data(), clicks: d.data().clicks || 0 }));
@@ -264,12 +223,11 @@
                     <div class="grid grid-cols-2 gap-2 mb-6">
                         <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot</span><span class="gold-text">RM ${g.p3}</span></div>
                         <div class="bg-[#1a1100] border border-[#d4af37]/30 p-3 rounded-lg flex justify-between">
-                            <span class="font-bold">${t.ovn}</span>
-                            <span class="gold-text font-bold">RM ${g.povn || '??'}</span>
+                            <span class="font-bold">${t.ovn}</span><span class="gold-text font-bold">RM ${g.povn || '??'}</span>
                         </div>
                     </div>
                     <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-[#d4af37]">${g.desc}</div>
-                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center uppercase shadow-lg">${t.booking}</a>
+                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center shadow-lg">${t.booking}</a>
                 </div>`;
         };
 
@@ -317,11 +275,19 @@
             document.getElementById('adminList').innerHTML = html;
         };
 
+        // 💡 价格预设逻辑（精准修正）
         window.setPrice = (base) => {
-            document.getElementById('gPrice1').value = base;
-            document.getElementById('gPrice2').value = base * 2 - 50; 
-            document.getElementById('gPrice3').value = base * 3 - 100;
-            document.getElementById('gPriceOvn').value = (base === 250) ? 800 : 900;
+            if(base === 250) {
+                document.getElementById('gPrice1').value = 250;
+                document.getElementById('gPrice2').value = 500;
+                document.getElementById('gPrice3').value = 750;
+                document.getElementById('gPriceOvn').value = 800;
+            } else if(base === 270) {
+                document.getElementById('gPrice1').value = 270;
+                document.getElementById('gPrice2').value = 540;
+                document.getElementById('gPrice3').value = 810;
+                document.getElementById('gPriceOvn').value = 900;
+            }
         };
     </script>
 
@@ -330,16 +296,8 @@
         function showAdmin() { if(prompt("Pass") === "KAR#1999") navigateTo('adminPage'); }
         function openModal(isEdit = false) { 
             if(!isEdit) { 
-                document.getElementById('modalTitle').innerText = "Add Profile"; 
-                document.getElementById('editId').value = ""; 
-                document.getElementById('gPhoto').value = ""; 
-                document.getElementById('gName').value = ""; 
-                document.getElementById('gDesc').value = "";
-                document.getElementById('gPriceOvn').value = "";
-                document.getElementById('uploadStatus').innerText = "Ready";
-                document.getElementById('uploadStatus').style.color = "#6b7280";
-            } 
-            document.getElementById('girlModal').classList.add('active'); 
+                document.getElementById('modalTitle').innerText = "Add Profile"; document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; document.getElementById('gName').value = ""; document.getElementById('gDesc').value = ""; document.getElementById('gPriceOvn').value = ""; document.getElementById('gCup').value = "";
+            } document.getElementById('girlModal').classList.add('active'); 
         }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
     </script>
