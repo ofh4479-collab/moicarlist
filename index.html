@@ -16,22 +16,16 @@
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 35px 20px; text-align: center; border-bottom: 1px solid #222; }
         .area-button { background: #111; border: 1px solid var(--gold); transition: 0.2s; cursor: pointer; font-size: 12px; padding: 8px 4px; border-radius: 8px; }
         .area-button.active { background: var(--gold); color: #000; font-weight: bold; }
-        
-        /* 小姐框框优化 */
         .card { background: #0a0a0a; border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: transform 0.3s ease; }
         .card:hover { transform: translateY(-5px); border-color: var(--gold); }
         .card-img { width: 100%; height: 220px; object-fit: contain; background: #000; border-bottom: 1px solid #111; }
-        
         .gold-text { color: var(--gold); font-weight: 600; }
         .white-name { color: #ffffff; font-weight: 700; font-size: 15px; } 
         .status-mini { font-size: 9px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
         .available { background: var(--whatsapp); color: #fff; }
         .busy { background: #ff453a; color: #fff; }
         .nation-tag { font-size: 9px; background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.3); }
-        
-        /* 🔥 火热排行小标签 */
-        .hot-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #d4af37; font-size: 10px; padding: 3px 7px; border-radius: 20px; border: 1px solid #d4af37; font-weight: bold; display: flex; items-center; gap: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; }
-
+        .hot-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #d4af37; font-size: 10px; padding: 3px 7px; border-radius: 20px; border: 1px solid #d4af37; font-weight: bold; display: flex; items-center; gap: 3px; z-index: 10; }
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; padding: 15px; }
@@ -39,15 +33,16 @@
         input, select, textarea { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 6px; width: 100%; margin: 4px 0; font-size: 14px; }
         .btn-preset { background: #222; font-size: 10px; padding: 5px 8px; border-radius: 4px; color: var(--gold); border: 1px solid #444; }
         .admin-item { background: #0a0a0a; border-bottom: 1px solid #222; padding: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .count-pill { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-size: 10px; padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3); }
     </style>
 </head>
 <body>
 
     <script>
         const translations = {
-            en: { home: "HOME", welcome: "Welcome to MoiCarList", subtitle: "Your Trusted Choice", available: "✨ Available Today", allNations: "All Nations", allCups: "All Cups", back: "← BACK", booking: "WHATSAPP BOOKING", hot: "HOT" },
-            cn: { home: "首页", welcome: "欢迎来到 MoiCarList", subtitle: "您值得信赖 Choice", available: "✨ 今日在线", allNations: "所有国籍", allCups: "所有胸围", back: "← 返回", booking: "WHATSAPP 预约", hot: "火热" },
-            bm: { home: "UTAMA", welcome: "Selamat Datang", subtitle: "Pilihan Dipercayai", available: "✨ Tersedia Hari Ini", allNations: "Semua Negara", allCups: "Semua Saiz", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT" }
+            en: { home: "HOME", welcome: "Welcome to MoiCarList", available: "✨ Available Today", allNations: "All Nations", allCups: "All Cups", back: "← BACK", booking: "WHATSAPP BOOKING", hot: "HOT", total: "Total", ovn: "Overnight" },
+            cn: { home: "首页", welcome: "欢迎来到 MoiCarList", available: "✨ 今日在线", allNations: "所有国籍", allCups: "所有胸围", back: "← 返回", booking: "WHATSAPP 预约", hot: "火热", total: "总计", ovn: "包夜" },
+            bm: { home: "UTAMA", welcome: "Selamat Datang", available: "✨ Tersedia Hari Ini", allNations: "Semua Negara", allCups: "Semua Saiz", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT", total: "Jumlah", ovn: "Bermalam" }
         };
         const langLabels = { en: "EN", cn: "中", bm: "BM" };
         let currentLang = 'en';
@@ -56,7 +51,6 @@
             const t = translations[currentLang];
             document.getElementById('nav-home').innerText = t.home;
             document.getElementById('hero-title').innerText = t.welcome;
-            document.getElementById('hero-desc').innerText = t.subtitle;
             document.getElementById('section-title').innerText = t.available;
             document.getElementById('btn-lang-toggle').innerText = langLabels[currentLang];
             if (typeof window.renderEverything === "function") window.renderEverything();
@@ -76,9 +70,6 @@
             <div class="flex gap-4 items-center">
                 <a id="nav-home" onclick="navigateTo('home')" class="nav-link hidden md:block">HOME</a>
                 <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle">EN</button>
-                <a href="#" onclick="window.open('https://t.me/MoiCarList', '_blank'); return false;" class="text-[#0088cc]">
-                    <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.12 7.14-.14.72-.41.96-.66.98-.56.05-1-.38-1.54-.74-.83-.57-1.3-1.07-2.12-1.6-.94-.61-.33-.95.21-1.5.14-.14 2.53-2.32 2.58-2.52.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.48.94-4.18 2.76-.39.27-.75.4-1.07.39-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.28-.36.77-.55 3.02-1.31 5.03-2.18 6.04-2.6.96-.4 1.99-.48 2.65-.48.14 0 .47.03.68.16.19.11.26.27.28.42.02.16.02.32.01.48z"/></svg>
-                </a>
                 <a onclick="showAdmin()" class="nav-link">ADMIN</a>
             </div>
         </div>
@@ -87,37 +78,28 @@
     <div id="home" class="page active">
         <div class="hero-section">
             <h1 id="hero-title" class="text-2xl md:text-4xl font-bold text-[#d4af37] mb-2">Welcome to MoiCarList</h1>
-            <p id="hero-desc" class="text-gray-400 text-xs md:text-sm">Your Trusted Choice</p>
         </div>
-
         <div class="max-w-6xl mx-auto px-4 py-6">
             <div id="areaButtons" class="grid grid-cols-3 md:grid-cols-5 gap-2 mb-8 text-center"></div>
-            
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-3">
-                <h2 id="section-title" class="text-lg font-bold gold-text">✨ Available Today</h2>
+                <div class="flex items-center gap-3">
+                    <h2 id="section-title" class="text-lg font-bold gold-text">✨ Available Today</h2>
+                    <span id="area-count" class="count-pill">0</span>
+                </div>
                 <div class="flex gap-2 w-full md:w-auto">
-                    <select id="nationFilter" onchange="window.selectNation(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none cursor-pointer flex-1"></select>
-                    <select id="cupFilter" onchange="window.selectCup(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none cursor-pointer flex-1"></select>
+                    <select id="nationFilter" onchange="window.selectNation(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none flex-1"></select>
+                    <select id="cupFilter" onchange="window.selectCup(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none flex-1"></select>
                 </div>
             </div>
-
             <div id="displayList" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
         </div>
     </div>
 
-    <div id="detailPage" class="page">
-        <div class="max-w-2xl mx-auto p-4 pb-20">
-            <div id="back-btn-text" class="mb-4 gold-text font-bold cursor-pointer flex items-center gap-1" onclick="navigateTo('home')">← BACK</div>
-            <div id="detailContent"></div>
-        </div>
-    </div>
+    <div id="detailPage" class="page"><div class="max-w-2xl mx-auto p-4 pb-20"><div id="back-btn-text" class="mb-4 gold-text font-bold cursor-pointer" onclick="navigateTo('home')">← BACK</div><div id="detailContent"></div></div></div>
 
     <div id="adminPage" class="page bg-[#050505]">
         <div class="max-w-4xl mx-auto p-4">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold gold-text">Admin Panel (Sorted by Clicks)</h2>
-                <button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add</button>
-            </div>
+            <div class="flex justify-between items-center mb-6"><h2 class="text-xl font-bold gold-text">Admin Panel</h2><button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add</button></div>
             <div id="adminList" class="space-y-1"></div>
         </div>
     </div>
@@ -127,31 +109,29 @@
             <h3 id="modalTitle" class="gold-text font-bold mb-4">Profile Info</h3>
             <input type="hidden" id="editId">
             <input type="text" id="gName" placeholder="Name">
-            <div class="grid grid-cols-2 gap-2">
-                <input type="number" id="gAge" placeholder="Age">
-                <select id="gNation">
-                    <option>Thailand</option><option>Vietnam</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option>
-                </select>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-                <select id="gCup">
-                    <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option>
-                </select>
-                <input type="text" id="gHeight" placeholder="Height (e.g. 160cm)">
-            </div>
+            <div class="grid grid-cols-2 gap-2"><input type="number" id="gAge" placeholder="Age"><select id="gNation"><option>Thailand</option><option>Vietnam</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option></select></div>
+            <div class="grid grid-cols-2 gap-2"><select id="gCup"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select><input type="text" id="gHeight" placeholder="Height"></div>
             <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
             <select id="gStatus"><option value="available">Available</option><option value="busy">Busy</option></select>
-            <div class="flex gap-2 my-2"><button onclick="setPrice(250)" class="btn-preset">Set 250+</button><button onclick="setPrice(270)" class="btn-preset">Set 270+</button></div>
-            <div class="grid grid-cols-3 gap-1"><input type="number" id="gPrice1" placeholder="1s"><input type="number" id="gPrice2" placeholder="2s"><input type="number" id="gPrice3" placeholder="3h"></div>
-            <div class="mt-2 border border-[#333] p-2 rounded flex gap-2 items-center">
-                <input type="text" id="gPhoto" placeholder="Photo URL" class="m-0">
-                <input type="file" id="fileInput" class="hidden" accept="image/*">
-                <button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button>
+            
+            <div class="flex gap-2 my-2">
+                <button onclick="setPrice(250)" class="btn-preset">Set 250 (OVN 800)</button>
+                <button onclick="setPrice(270)" class="btn-preset">Set 270 (OVN 900)</button>
             </div>
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="gPrice1" placeholder="1 Shot">
+                <input type="number" id="gPrice2" placeholder="2 Shot">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="gPrice3" placeholder="3 Shot">
+                <input type="number" id="gPriceOvn" placeholder="Overnight (Ovn)">
+            </div>
+
+            <div class="mt-2 flex gap-2"><input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1"><input type="file" id="fileInput" class="hidden" accept="image/*"><button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button></div>
             <div id="uploadStatus" class="text-[10px] text-gray-500 mb-2">Ready</div>
             <input type="text" id="gWhatsapp" placeholder="WhatsApp (60xxx)" value="601117917032">
             <textarea id="gDesc" placeholder="Bio" rows="2"></textarea>
-            <button onclick="handleSave()" id="btnSave" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-lg mt-4 text-sm uppercase">Save</button>
+            <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-lg mt-4 text-sm uppercase">Save</button>
             <button onclick="closeModal()" class="w-full text-gray-500 mt-3 text-xs">CANCEL</button>
         </div>
     </div>
@@ -160,14 +140,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCK8dhWPA2pd04gzVxmkOgQuMpFfFPyXxs",
-            authDomain: "girlcarlist-db.firebaseapp.com",
-            projectId: "girlcarlist-db",
-            storageBucket: "girlcarlist-db.firebasestorage.app",
-            messagingSenderId: "418933639880",
-            appId: "1:418933639880:web:a993e1c3e71f2e8d18f3fd"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyCK8dhWPA2pd04gzVxmkOgQuMpFfFPyXxs", authDomain: "girlcarlist-db.firebaseapp.com", projectId: "girlcarlist-db", storageBucket: "girlcarlist-db.firebasestorage.app", messagingSenderId: "418933639880", appId: "1:418933639880:web:a993e1c3e71f2e8d18f3fd" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const colRef = collection(db, "girls");
@@ -197,18 +170,14 @@
         window.renderEverything = () => {
             renderAreaButtons();
             const filteredByArea = allData.filter(g => g.area === currentArea);
-            
+            document.getElementById('area-count').innerText = `${translations[currentLang].total}: ${filteredByArea.length}`;
             const nations = ['All', ...new Set(filteredByArea.map(g => g.nation))];
             const cups = ['All', ...new Set(filteredByArea.map(g => g.cup))].sort();
             renderFilters(nations, cups);
-
             let finalData = filteredByArea;
             if(currentNation !== 'All') finalData = finalData.filter(g => g.nation === currentNation);
             if(currentCup !== 'All') finalData = finalData.filter(g => g.cup === currentCup);
-            
-            // 💡 首页排序逻辑：按点击量从高到低排列
             const sortedFinalData = [...finalData].sort((a, b) => b.clicks - a.clicks);
-            
             renderMain(sortedFinalData);
             renderAdmin(allData);
             document.getElementById('back-btn-text').innerText = translations[currentLang].back;
@@ -216,9 +185,7 @@
 
         window.renderAreaButtons = () => {
             const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
-            document.getElementById('areaButtons').innerHTML = areas.map(a => `
-                <div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>
-            `).join('');
+            document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join('');
         };
 
         window.selectArea = (a) => { currentArea = a; currentNation = 'All'; currentCup = 'All'; window.renderEverything(); };
@@ -227,7 +194,6 @@
             const nSelect = document.getElementById('nationFilter');
             nSelect.innerHTML = nations.map(n => `<option value="${n}">${n === 'All' ? translations[currentLang].allNations : n}</option>`).join('');
             nSelect.value = currentNation;
-
             const cSelect = document.getElementById('cupFilter');
             cSelect.innerHTML = cups.map(c => `<option value="${c}">${c === 'All' ? translations[currentLang].allCups : c}</option>`).join('');
             cSelect.value = currentCup;
@@ -239,78 +205,63 @@
         window.renderMain = (data) => {
             const hotText = translations[currentLang].hot;
             document.getElementById('displayList').innerHTML = data.map((g, index) => `
-                <div class="card shadow-lg" onclick="window.showDetail('${g.id}')">
+                <div class="card" onclick="window.showDetail('${g.id}')">
                     ${index < 3 && g.clicks > 0 ? `<div class="hot-badge"><span>🔥</span><span class="md:hidden">${hotText}</span><span class="hidden md:inline">${hotText} #${index+1}</span></div>` : ''}
-                    <img src="${g.photo}" class="card-img">
-                    <div class="p-2">
-                        <div class="flex justify-between items-center mb-1 gap-1">
-                             <span class="white-name truncate">${g.name}</span>
-                             <span class="status-mini ${g.status}">${g.status}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span>
-                            <span class="nation-tag">${g.nation}</span>
-                        </div>
-                    </div>
+                    <img src="${g.photo}" class="card-img"><div class="p-2"><div class="flex justify-between items-center mb-1 gap-1"><span class="white-name truncate">${g.name}</span><span class="status-mini ${g.status}">${g.status}</span></div><div class="flex justify-between items-center"><span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span><span class="nation-tag">${g.nation}</span></div></div>
                 </div>`).join('');
         };
 
         window.showDetail = async (id) => {
             const g = allData.find(x => x.id === id);
             await updateDoc(doc(db, "girls", id), { clicks: increment(1) });
-            
-            window.navigateTo('detailPage');
+            navigateTo('detailPage');
             const t = translations[currentLang];
             document.getElementById('detailContent').innerHTML = `
                 <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-xl">
                 <div class="text-left px-2">
-                    <div class="flex items-center gap-2 mb-1">
-                        <h1 class="text-2xl font-bold text-white">${g.name}</h1>
-                        <span class="nation-tag">${g.nation}</span>
-                    </div>
+                    <div class="flex items-center gap-2 mb-1"><h1 class="text-2xl font-bold text-white">${g.name}</h1><span class="nation-tag">${g.nation}</span></div>
                     <p class="gold-text text-sm mb-6">${g.age}Y | ${g.cup} | ${g.height}</p>
-                    <div class="grid gap-2 mb-6">
-                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1shot</span><span class="gold-text font-bold">RM ${g.p1}</span></div>
-                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>2shot</span><span class="gold-text font-bold">RM ${g.p2}</span></div>
-                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot</span><span class="gold-text font-bold">RM ${g.p3}</span></div>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1Shot</span><span class="gold-text">RM ${g.p1}</span></div>
+                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>2Shot</span><span class="gold-text">RM ${g.p2}</span></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mb-6">
+                        <div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot</span><span class="gold-text">RM ${g.p3}</span></div>
+                        <div class="bg-[#1a1100] border border-[#d4af37]/30 p-3 rounded-lg flex justify-between">
+                            <span class="font-bold">${t.ovn}</span>
+                            <span class="gold-text font-bold">RM ${g.povn || '??'}</span>
+                        </div>
                     </div>
                     <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-[#d4af37]">${g.desc}</div>
-                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center shadow-lg uppercase">${t.booking}</a>
+                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center uppercase shadow-lg">${t.booking}</a>
                 </div>`;
         };
 
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
-            const data = {
-                name: document.getElementById('gName').value, age: document.getElementById('gAge').value,
-                nation: document.getElementById('gNation').value, cup: document.getElementById('gCup').value,
-                height: document.getElementById('gHeight').value, p1: document.getElementById('gPrice1').value,
-                p2: document.getElementById('gPrice2').value, p3: document.getElementById('gPrice3').value,
-                area: document.getElementById('gArea').value, status: document.getElementById('gStatus').value,
-                photo: document.getElementById('gPhoto').value, whatsapp: document.getElementById('gWhatsapp').value,
-                desc: document.getElementById('gDesc').value
+            const data = { 
+                name: document.getElementById('gName').value, age: document.getElementById('gAge').value, 
+                nation: document.getElementById('gNation').value, cup: document.getElementById('gCup').value, 
+                height: document.getElementById('gHeight').value, 
+                p1: document.getElementById('gPrice1').value, p2: document.getElementById('gPrice2').value, 
+                p3: document.getElementById('gPrice3').value, povn: document.getElementById('gPriceOvn').value, 
+                area: document.getElementById('gArea').value, status: document.getElementById('gStatus').value, 
+                photo: document.getElementById('gPhoto').value, whatsapp: document.getElementById('gWhatsapp').value, 
+                desc: document.getElementById('gDesc').value 
             };
-            if(id) await updateDoc(doc(db, "girls", id), data);
-            else { data.clicks = 0; await addDoc(colRef, data); }
-            window.closeModal();
+            if(id) await updateDoc(doc(db, "girls", id), data); else { data.clicks = 0; await addDoc(colRef, data); }
+            closeModal();
         };
 
         window.handleEdit = (id) => {
-            const g = allData.find(x => x.id === id);
-            window.openModal(true);
-            document.getElementById('editId').value = g.id;
-            document.getElementById('gName').value = g.name;
-            document.getElementById('gAge').value = g.age;
-            document.getElementById('gNation').value = g.nation;
-            document.getElementById('gCup').value = g.cup;
-            document.getElementById('gHeight').value = g.height;
-            document.getElementById('gPrice1').value = g.p1;
-            document.getElementById('gPrice2').value = g.p2;
-            document.getElementById('gPrice3').value = g.p3;
-            document.getElementById('gArea').value = g.area;
-            document.getElementById('gStatus').value = g.status;
-            document.getElementById('gPhoto').value = g.photo;
-            document.getElementById('gWhatsapp').value = g.whatsapp;
+            const g = allData.find(x => x.id === id); openModal(true);
+            document.getElementById('editId').value = g.id; document.getElementById('gName').value = g.name; 
+            document.getElementById('gAge').value = g.age; document.getElementById('gNation').value = g.nation; 
+            document.getElementById('gCup').value = g.cup; document.getElementById('gHeight').value = g.height; 
+            document.getElementById('gPrice1').value = g.p1; document.getElementById('gPrice2').value = g.p2; 
+            document.getElementById('gPrice3').value = g.p3; document.getElementById('gPriceOvn').value = g.povn || "";
+            document.getElementById('gArea').value = g.area; document.getElementById('gStatus').value = g.status; 
+            document.getElementById('gPhoto').value = g.photo; document.getElementById('gWhatsapp').value = g.whatsapp; 
             document.getElementById('gDesc').value = g.desc;
         };
 
@@ -322,12 +273,21 @@
             let html = "";
             areas.forEach(area => {
                 const list = sortedData.filter(g => g.area === area);
-                html += `<div class="bg-[#111] px-3 py-1 text-[10px] gold-text mt-4 uppercase font-bold border-l-2 border-[#d4af37]">${area}</div>`;
+                html += `<div class="bg-[#111] px-3 py-1 text-[10px] gold-text mt-4 uppercase font-bold border-l-2 border-[#d4af37] flex justify-between"><span>${area}</span><span>${list.length} 人</span></div>`;
                 list.forEach(g => {
-                    html += `<div class="admin-item"><div class="flex items-center gap-3 w-[70%]"><img src="${g.photo}" class="w-8 h-8 rounded-full object-cover border border-[#333]"><div class="text-xs truncate"><div class="font-bold text-white">${g.name} <span class="text-[#d4af37] ml-2">🔥 ${g.clicks} clicks</span></div></div></div><div class="flex gap-2"><button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[10px] font-bold px-2 py-1 bg-blue-900/20 rounded">Edit</button><button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[10px] font-bold px-2 py-1 bg-red-900/20 rounded">Del</button></div></div>`;
+                    html += `<div class="admin-item"><div class="flex items-center gap-3 w-[70%]"><img src="${g.photo}" class="w-8 h-8 rounded-full object-cover"><div class="text-xs truncate"><div class="font-bold text-white">${g.name} <span class="text-[#d4af37] ml-2">🔥 ${g.clicks}</span></div></div></div><div class="flex gap-2"><button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[10px] font-bold px-2 py-1 bg-blue-900/20 rounded">Edit</button><button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[10px] font-bold px-2 py-1 bg-red-900/20 rounded">Del</button></div></div>`;
                 });
             });
             document.getElementById('adminList').innerHTML = html;
+        };
+
+        // 💡 价格快捷键设置
+        window.setPrice = (base) => {
+            document.getElementById('gPrice1').value = base;
+            document.getElementById('gPrice2').value = base * 2 - 50; // 假设2shot有优惠
+            document.getElementById('gPrice3').value = base * 3 - 100;
+            // 设置 Overnight 默认价格
+            document.getElementById('gPriceOvn').value = (base === 250) ? 800 : 900;
         };
     </script>
 
@@ -335,23 +295,17 @@
         function navigateTo(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
         function showAdmin() { if(prompt("Pass") === "KAR#1999") navigateTo('adminPage'); }
         function openModal(isEdit = false) { 
-            if(!isEdit) {
-                document.getElementById('modalTitle').innerText = "Add Profile";
-                document.getElementById('editId').value = "";
-                document.getElementById('gPhoto').value = "";
-                document.getElementById('gName').value = "";
+            if(!isEdit) { 
+                document.getElementById('modalTitle').innerText = "Add Profile"; 
+                document.getElementById('editId').value = ""; 
+                document.getElementById('gPhoto').value = ""; 
+                document.getElementById('gName').value = ""; 
                 document.getElementById('gDesc').value = "";
-                document.getElementById('uploadStatus').innerText = "Ready";
-                document.getElementById('uploadStatus').style.color = "#6b7280";
-            }
+                document.getElementById('gPriceOvn').value = "";
+            } 
             document.getElementById('girlModal').classList.add('active'); 
         }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
-        window.setPrice = (base) => {
-            document.getElementById('gPrice1').value = base;
-            document.getElementById('gPrice2').value = base * 2;
-            document.getElementById('gPrice3').value = base * 3;
-        };
     </script>
 </body>
 </html>
