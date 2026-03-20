@@ -31,7 +31,7 @@
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; padding: 15px; }
         .modal.active { display: flex; }
         input, select, textarea { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 6px; width: 100%; margin: 4px 0; font-size: 14px; }
-        .btn-preset { background: #222; font-size: 10px; padding: 5px 10px; border-radius: 4px; color: var(--gold); border: 1px solid var(--gold); margin-right: 5px; }
+        .btn-preset { background: #222; font-size: 10px; padding: 5px 8px; border-radius: 4px; color: var(--gold); border: 1px solid #444; }
         .admin-item { background: #0a0a0a; border-bottom: 1px solid #222; padding: 8px; display: flex; align-items: center; justify-content: space-between; }
         .count-pill { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-size: 10px; padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3); }
     </style>
@@ -116,15 +116,15 @@
             <input type="text" id="gName" placeholder="Name">
             <div class="grid grid-cols-2 gap-2"><input type="number" id="gAge" placeholder="Age"><select id="gNation"><option>Thailand</option><option>Vietnam</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option></select></div>
             <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="gCup" placeholder="Cup Size (e.g. 34C)">
+                <input type="text" id="gCup" placeholder="Cup Size">
                 <input type="text" id="gHeight" placeholder="Height">
             </div>
             <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
             <select id="gStatus"><option value="available">Available</option><option value="busy">Busy</option></select>
             
-            <div class="flex gap-1 my-2">
-                <button onclick="setPrice(250)" class="btn-preset">RM250 Set</button>
-                <button onclick="setPrice(270)" class="btn-preset">RM270 Set</button>
+            <div class="flex gap-2 my-2">
+                <button onclick="setPrice(250)" class="btn-preset">Set RM250</button>
+                <button onclick="setPrice(270)" class="btn-preset">Set RM270</button>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <input type="number" id="gPrice1" placeholder="1 Shot">
@@ -135,7 +135,11 @@
                 <input type="number" id="gPriceOvn" placeholder="Overnight (Ovn)">
             </div>
 
-            <div class="mt-2 flex gap-2"><input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1"><input type="file" id="fileInput" class="hidden" accept="image/*"><button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button></div>
+            <div class="mt-2 flex gap-2">
+                <input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1">
+                <input type="file" id="fileInput" class="hidden" accept="image/*">
+                <button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button>
+            </div>
             <div id="uploadStatus" class="text-[10px] text-gray-500 mb-2">Ready</div>
             <input type="text" id="gWhatsapp" placeholder="WhatsApp (60xxx)" value="601117917032">
             <textarea id="gDesc" placeholder="Bio" rows="2"></textarea>
@@ -156,6 +160,23 @@
         let currentArea = 'Alor Setar';
         let currentNation = 'All';
         let currentCup = 'All';
+
+        // 💡 修复：补回图片上传的核心监听逻辑
+        const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b"; 
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0]; if (!file) return;
+            const status = document.getElementById('uploadStatus'); status.innerText = "Uploading...";
+            const formData = new FormData(); formData.append('image', file);
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                const r = await res.json();
+                if (r.success) { 
+                    document.getElementById('gPhoto').value = r.data.url; 
+                    status.innerText = "Upload Success ✅"; 
+                    status.style.color = "#25D366"; 
+                }
+            } catch (err) { status.innerText = "Error!"; status.style.color = "#ff453a"; }
+        });
 
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ id: d.id, ...d.data(), clicks: d.data().clicks || 0 }));
@@ -275,7 +296,6 @@
             document.getElementById('adminList').innerHTML = html;
         };
 
-        // 💡 价格预设逻辑（精准修正）
         window.setPrice = (base) => {
             if(base === 250) {
                 document.getElementById('gPrice1').value = 250;
@@ -297,6 +317,8 @@
         function openModal(isEdit = false) { 
             if(!isEdit) { 
                 document.getElementById('modalTitle').innerText = "Add Profile"; document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; document.getElementById('gName').value = ""; document.getElementById('gDesc').value = ""; document.getElementById('gPriceOvn').value = ""; document.getElementById('gCup').value = "";
+                document.getElementById('uploadStatus').innerText = "Ready";
+                document.getElementById('uploadStatus').style.color = "#6b7280";
             } document.getElementById('girlModal').classList.add('active'); 
         }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
