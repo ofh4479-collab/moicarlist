@@ -3,25 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>MoiCarList | 北马首选专业服务预约平台</title>
-    <meta name="description" content="MoiCarList 提供 Alor Setar, Penang, Ipoh 等地区最优质的专业按摩与陪伴服务。">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://ofh4479-collab.github.io/girlcarlist/">
+    <title>MoiCarList | Professional Services</title>
     <meta property="og:title" content="MoiCarList | 专业、优质、快速预约">
-    <meta property="og:description" content="精选优质佳丽，覆盖北马多个地区，立即 WhatsApp 预约。">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=1000&auto=format&fit=crop">
+    <meta property="og:description" content="精选优质佳丽，覆盖北马地区，立即预约。">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=1000">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --gold: #d4af37; --whatsapp: #25D366; --telegram: #0088cc; }
+        :root { --gold: #d4af37; --whatsapp: #25D366; }
         body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; margin:0; }
         nav { background: rgba(26, 26, 26, 0.95); padding: 12px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
-        .nav-link { display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s; color: #aaa; font-size: 12px; font-weight: 600; text-transform: uppercase; text-decoration: none; }
+        .nav-link { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #aaa; font-size: 12px; font-weight: 600; text-transform: uppercase; text-decoration: none; }
         .nav-link:hover { color: var(--gold); }
         .lang-toggle { background: #222; border: 1px solid #444; padding: 4px 12px; border-radius: 6px; color: var(--gold); font-size: 11px; }
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 60px 20px; text-align: center; border-bottom: 1px solid #222; }
-        .area-button { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 2px solid #d4af37; transition: all 0.3s ease; cursor: pointer; }
+        .area-button { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 2px solid #d4af37; transition: 0.3s; cursor: pointer; }
         .area-button:hover { background: var(--gold); color: #000; transform: scale(1.05); }
         .card { background: #111; border-radius: 20px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; }
         .card:hover { border-color: var(--gold); transform: translateY(-5px); }
@@ -30,10 +26,10 @@
         .busy { background: #ff453a; color: #fff; }
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
-        .btn-whatsapp { background: #25D366; color: white; font-weight: 700; padding: 14px; border-radius: 15px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-top: 20px; cursor: pointer; }
+        .btn-whatsapp { background: #25D366; color: white; font-weight: 700; padding: 14px; border-radius: 15px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; cursor: pointer; }
         .modal, .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
         .modal.active, .lightbox.active { display: flex; }
-        .lightbox img { max-width: 90%; max-height: 90vh; border-radius: 10px; border: 2px solid #444; cursor: pointer; }
+        .lightbox img { max-width: 90%; max-height: 90vh; border-radius: 10px; border: 2px solid #444; }
         input, select, textarea { background: #222; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; width: 100%; margin: 5px 0; }
         .admin-group-title { background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border-left: 4px solid var(--gold); margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: var(--gold); display: flex; justify-content: space-between; }
         .stat-card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 12px; text-align: center; }
@@ -46,14 +42,12 @@
 
     <script>
         const i18n = {
-            en: { label: "EN", welcome: "Welcome to MoiCarList", sub: "Your Trusted Choice for Professional Companionship and Massage in Malaysia", selectLoc: "Select Your Location", available: "✨ Available Today", back: "← BACK", book: "WHATSAPP BOOKING NOW", about: "About Her", admin: "ADMIN", home: "HOME" },
-            cn: { label: "中", welcome: "欢迎来到 MoiCarList", sub: "马来西亚您最信赖的专业按摩与陪伴服务", selectLoc: "选择您的地区", available: "✨ 今日在位", back: "← 返回列表", book: "立即 WhatsApp 预约", about: "关于她", admin: "管理后台", home: "首页" },
-            bm: { label: "BM", welcome: "Selamat Datang ke MoiCarList", sub: "Pilihan Dipercayai Anda untuk Peneman Profesional & Urutan di Malaysia", selectLoc: "Pilih Lokasi Anda", available: "✨ Tersedia Hari Ini", back: "← KEMBALI", book: "TEMPAH WHATSAPP SEKARANG", about: "Mengenai Dia", admin: "ADMIN", home: "UTAMA" }
+            en: { label: "EN", welcome: "Welcome to MoiCarList", sub: "Companionship and Massage in Malaysia", selectLoc: "Select Location", available: "✨ Available Today", back: "← BACK", book: "WHATSAPP BOOKING NOW", admin: "ADMIN", home: "HOME" },
+            cn: { label: "中", welcome: "欢迎来到 MoiCarList", sub: "马来西亚专业服务预约", selectLoc: "选择您的地区", available: "✨ 今日在位", back: "← 返回列表", book: "立即 WhatsApp 预约", admin: "管理后台", home: "首页" },
+            bm: { label: "BM", welcome: "Selamat Datang", sub: "Servis Profesional di Malaysia", selectLoc: "Pilih Lokasi", available: "✨ Tersedia Hari Ini", back: "← KEMBALI", book: "TEMPAH WHATSAPP", admin: "ADMIN", home: "UTAMA" }
         };
         let langSequence = ['en', 'cn', 'bm'];
         let currentLangIndex = 0;
-        const myTelegramChannelUrl = "https://t.me/MoiCarList";
-
         function toggleLang() {
             currentLangIndex = (currentLangIndex + 1) % langSequence.length;
             const lang = langSequence[currentLangIndex];
@@ -78,7 +72,6 @@
             <div class="flex gap-4 items-center">
                 <a id="nav-home" onclick="navigateTo('home')" class="nav-link">HOME</a>
                 <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle font-bold">Language: EN</button>
-                <a href="#" onclick="window.open(myTelegramChannelUrl, '_blank'); return false;" class="nav-link text-[#0088cc]"><svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.12 7.14-.14.72-.41.96-.66.98-.56.05-1-.38-1.54-.74-.83-.57-1.3-1.07-2.12-1.6-.94-.61-.33-.95.21-1.5.14-.14 2.53-2.32 2.58-2.52.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.48.94-4.18 2.76-.39.27-.75.4-1.07.39-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.28-.36.77-.55 3.02-1.31 5.03-2.18 6.04-2.6.96-.4 1.99-.48 2.65-.48.14 0 .47.03.68.16.19.11.26.27.28.42.02.16.02.32.01.48z"/></svg></a>
                 <a id="nav-admin" onclick="showAdmin()" class="nav-link">ADMIN</a>
             </div>
         </div>
@@ -86,19 +79,19 @@
 
     <div id="home" class="page active">
         <div class="hero-section">
-            <h1 id="txt-welcome" class="text-4xl md:text-5xl font-bold text-[#d4af37] mb-4">Welcome to MoiCarList</h1>
-            <p id="txt-sub" class="text-gray-400 max-w-2xl mx-auto">Your Trusted Choice for Professional Companionship and Massage in Malaysia</p>
+            <h1 id="txt-welcome" class="text-4xl font-bold text-[#d4af37] mb-4">Welcome to MoiCarList</h1>
+            <p id="txt-sub" class="text-gray-400">Your Trusted Choice for Professional Services</p>
         </div>
         <div class="max-w-6xl mx-auto px-6 py-10">
             <h2 id="txt-selectLoc" class="text-center text-xl mb-6 font-semibold">Select Your Location</h2>
-            <div id="areaButtons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12"></div>
+            <div id="areaButtons" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12"></div>
             <h2 id="txt-available" class="text-2xl font-bold mb-8 text-[#d4af37]">✨ Available Today</h2>
-            <div id="displayList" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
+            <div id="displayList" class="grid grid-cols-1 md:grid-cols-4 gap-8"></div>
         </div>
     </div>
 
     <div id="detailPage" class="page">
-        <div class="max-w-2xl mx-auto p-6 pb-20 text-center relative">
+        <div class="max-w-2xl mx-auto p-6 pb-20 text-center">
             <div id="txt-back-btn" class="mb-6 text-[#d4af37] font-bold cursor-pointer text-left" onclick="navigateTo('home')">← BACK</div>
             <div id="detailContent"></div>
         </div>
@@ -107,14 +100,14 @@
     <div id="adminPage" class="page">
         <div class="max-w-4xl mx-auto p-6">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-bold text-[#d4af37]">Cloud Control Panel</h2>
-                <button onclick="openModal()" class="bg-[#d4af37] text-black px-6 py-2 rounded-full font-bold shadow-lg">+ Add Profile</button>
+                <h2 class="text-2xl font-bold text-[#d4af37]">Control Panel</h2>
+                <button onclick="openModal()" class="bg-[#d4af37] text-black px-6 py-2 rounded-full font-bold">+ Add Profile</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-                <div class="stat-card"><div id="stat-totalViews" class="stat-val">0</div><div class="stat-label">Total Site Views</div></div>
+                <div class="stat-card"><div id="stat-totalViews" class="stat-val">0</div><div class="stat-label">Views</div></div>
                 <div class="stat-card col-span-2"><div id="stat-totalGirls" class="stat-val">0</div><div class="stat-label">Total Profiles</div></div>
             </div>
-            <div id="adminList" class="space-y-10"></div>
+            <div id="adminList"></div>
         </div>
     </div>
 
@@ -129,20 +122,29 @@
                 <option value="Vietnam">Vietnam</option>
                 <option value="Indonesia">Indonesia</option>
                 <option value="China">China</option>
-                <option value="Other">Other</option>
             </select>
             <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup Size"><input type="text" id="gHeight" placeholder="Height"></div>
             <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
-            <select id="gStatus"><option value="available">Available Now</option><option value="busy">Busy</option></select>
-            <input type="number" id="gPrice1" placeholder="1shot RM"><input type="number" id="gPrice2" placeholder="2shot RM"><input type="number" id="gPrice3" placeholder="3Hours RM">
-            <input type="text" id="gPhoto" placeholder="Photo URL"><input type="text" id="gWhatsapp" placeholder="WhatsApp (e.g. 60123456789)">
-            <textarea id="gDesc" placeholder="Bio/Description" rows="3"></textarea>
+            <select id="gStatus"><option value="available">Available</option><option value="busy">Busy</option></select>
+            <input type="number" id="gPrice1" placeholder="1shot RM"><input type="number" id="gPrice2" placeholder="2shot RM"><input type="number" id="gPrice3" placeholder="3Shot (3 Hours) RM">
+            
+            <div class="mt-2">
+                <div class="flex gap-2">
+                    <input type="text" id="gPhoto" placeholder="Photo URL">
+                    <input type="file" id="fileInput" class="hidden" accept="image/*">
+                    <button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-4 rounded-lg text-xs font-bold whitespace-nowrap">UPLOAD PHOTO</button>
+                </div>
+                <div id="uploadStatus" class="text-[10px] text-gray-400 mt-1">Status: Ready</div>
+            </div>
+
+            <input type="text" id="gWhatsapp" placeholder="WhatsApp (e.g. 60123456789)">
+            <textarea id="gDesc" placeholder="Description" rows="3"></textarea>
             <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-xl mt-6">SAVE TO CLOUD</button>
             <button onclick="closeModal()" class="w-full text-gray-500 mt-4 text-xs">CANCEL</button>
         </div>
     </div>
 
-    <div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightboxImg" src="" alt="Full size image"></div>
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightboxImg"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -163,12 +165,46 @@
         let allData = [];
         const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
 
+        // --- 图片上传核心逻辑 ---
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const status = document.getElementById('uploadStatus');
+            status.innerText = "Uploading... please wait";
+            status.style.color = "#d4af37";
+
+            // 使用 ImgBB 的 API (这是一个免费的公共 API Key)
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                // 这个 Key 是公开的，你可以后期注册自己的换掉
+                const response = await fetch('https://api.imgbb.com/1/upload?key=6387d8537678e7f10b2df27f87a38753', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('gPhoto').value = result.data.url;
+                    status.innerText = "Upload Success ✅";
+                    status.style.color = "#25D366";
+                } else {
+                    status.innerText = "Upload Failed ❌";
+                }
+            } catch (err) {
+                status.innerText = "Error: " + err.message;
+            }
+        });
+
+        // --- Firebase 逻辑 ---
         async function trackSiteView() {
             try {
                 const docSnap = await getDoc(statsRef);
                 if (!docSnap.exists()) { await setDoc(statsRef, { views: 0 }); }
                 await updateDoc(statsRef, { views: increment(1) });
-            } catch (e) { console.error("Error tracking view", e); }
+            } catch (e) {}
         }
         trackSiteView();
         onSnapshot(statsRef, (doc) => { if(doc.exists()) { document.getElementById('stat-totalViews').innerText = doc.data().views || 0; } });
@@ -186,7 +222,7 @@
                 await updateDoc(girlRef, { clicks: increment(1) });
                 const girl = allData.find(x => x.id === id);
                 if (girl && girl.whatsapp) { window.open(`https://wa.me/${girl.whatsapp}`, '_blank'); }
-            } catch (e) { console.error("Error tracking click", e); }
+            } catch (e) {}
         }
 
         window.handleSave = async function() {
@@ -201,80 +237,72 @@
             };
             await addDoc(colRef, data);
             closeModal();
+            document.getElementById('uploadStatus').innerText = "Status: Ready";
         };
 
         window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
 
         window.renderMain = function(data) {
             document.getElementById('displayList').innerHTML = data.map(g => `
-                <div class="card shadow-lg" onclick="showDetail('${g.id}')">
-                    <img src="${g.photo}" class="w-full h-80 object-cover border-b border-[#222]">
+                <div class="card" onclick="showDetail('${g.id}')">
+                    <img src="${g.photo}" class="w-full h-80 object-cover">
                     <div class="p-5">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="font-bold text-2xl text-white">${g.name}</span>
+                            <span class="font-bold text-xl">${g.name}</span>
                             <span class="status-badge ${g.status}">${g.status}</span>
                         </div>
                         <div class="flex gap-2 items-center mb-3">
                             <span class="nation-tag">${g.nation}</span>
-                            <span class="text-gray-400 text-sm font-medium">${g.age}Y | ${g.cup} | ${g.height}</span>
+                            <span class="text-gray-400 text-xs">${g.age}Y | ${g.cup} | ${g.height}</span>
                         </div>
-                        <div class="text-[#d4af37] font-bold text-xl">RM ${g.p1}</div>
+                        <div class="text-[#d4af37] font-bold text-lg">RM ${g.p1}</div>
                     </div>
                 </div>`).join('');
         };
 
         window.showDetail = function(id) {
             const g = allData.find(x => x.id === id);
-            const langKey = langSequence[currentLangIndex];
-            const t = i18n[langKey];
+            const t = i18n[langSequence[currentLangIndex]];
             navigateTo('detailPage');
             document.getElementById('txt-back-btn').innerText = t.back;
             document.getElementById('detailContent').innerHTML = `
-                <img src="${g.photo}" class="w-full rounded-2xl mb-8 shadow-2xl border border-[#333] cursor-pointer" onclick="openLightbox('${g.photo}')">
+                <img src="${g.photo}" class="w-full rounded-2xl mb-6 cursor-pointer shadow-xl" onclick="openLightbox('${g.photo}')">
                 <div class="text-left">
-                    <div class="flex items-center gap-3 mb-2">
-                        <h1 class="text-4xl font-bold text-white">${g.name}</h1>
-                        <span class="nation-tag text-sm py-1 px-3">${g.nation}</span>
+                    <h1 class="text-3xl font-bold mb-1">${g.name} <span class="text-sm font-normal text-gray-500">(${g.nation})</span></h1>
+                    <p class="text-[#d4af37] font-bold">${g.age}Y | ${g.cup} | ${g.height}</p>
+                    <div class="space-y-2 mt-6">
+                        <div class="bg-[#111] p-4 rounded-xl flex justify-between"><span>1shot (45min)</span><span class="text-[#d4af37] font-bold">RM ${g.p1}</span></div>
+                        <div class="bg-[#111] p-4 rounded-xl flex justify-between"><span>2shot (90min)</span><span class="text-[#d4af37] font-bold">RM ${g.p2}</span></div>
+                        <div class="bg-[#111] p-4 rounded-xl flex justify-between"><span>3Shot (3 Hours)</span><span class="text-[#d4af37] font-bold">RM ${g.p3}</span></div>
                     </div>
-                    <p class="text-[#d4af37] text-xl font-semibold">${g.age}Y | ${g.cup} | ${g.height}</p>
-                </div>
-                <div class="grid gap-3 mt-8 mb-8">
-                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center"><span class="text-gray-400">1shot (45min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p1}</span></div>
-                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center"><span class="text-gray-400">2shot (90min)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p2}</span></div>
-                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] flex justify-between items-center"><span class="text-gray-400">3Shot (3 Hours)</span><span class="text-[#d4af37] font-bold text-lg">RM ${g.p3}</span></div>
-                </div>
-                <div class="bg-[#111] p-6 rounded-2xl border-l-4 border-[#d4af37] mb-10 text-left"><p class="text-gray-300 leading-relaxed">${g.desc}</p></div>
-                <button onclick="trackGirlClick('${g.id}')" class="btn-whatsapp">${t.book}</button>
-            `;
+                    <p class="mt-6 text-gray-400 text-sm leading-relaxed">${g.desc}</p>
+                    <div onclick="trackGirlClick('${g.id}')" class="btn-whatsapp">${t.book}</div>
+                </div>`;
         };
 
         window.renderAreaButtons = function() {
-            document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button p-4 rounded-xl text-center font-bold text-sm" onclick="filterArea('${a}')">${a}</div>`).join('');
+            document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button p-3 rounded-xl text-center font-bold text-xs" onclick="filterArea('${a}')">${a}</div>`).join('');
         };
         window.filterArea = function(area) {
-            const filtered = allData.filter(g => g.area === area);
-            renderMain(filtered);
-            window.scrollTo({ top: 600, behavior: 'smooth' });
+            renderMain(allData.filter(g => g.area === area));
+            window.scrollTo({ top: 500, behavior: 'smooth' });
         };
         window.renderAdmin = function(data) {
             let html = "";
             areas.forEach(area => {
                 const areaProfiles = data.filter(g => g.area === area);
-                html += `<div class="admin-group"><div class="admin-group-title"><span>📍 ${area}</span><span class="text-xs opacity-60">${areaProfiles.length} Profiles</span></div><div class="space-y-3">${areaProfiles.length > 0 ? areaProfiles.map(g => `<div class="flex items-center justify-between bg-[#111] p-4 rounded-xl border border-[#222]"><div class="flex items-center gap-4 text-left"><img src="${g.photo}" class="w-12 h-12 rounded-full object-cover border border-[#333]"><div><div class="font-bold text-white flex items-center gap-2">${g.name} <span class="w-2 h-2 rounded-full ${g.status === 'available' ? 'bg-green-500' : 'bg-red-500'}"></span></div><div class="text-[10px] text-gray-500">${g.age}Y | ${g.nation} | <span class="text-[#d4af37] font-bold">${g.clicks || 0} Clicks</span></div></div></div><button onclick="handleDelete('${g.id}')" class="text-red-500 text-xs font-bold px-3 py-1 bg-red-900/20 rounded">Delete</button></div>`).join('') : '<p class="text-gray-600 text-xs italic pl-4">Empty</p>'}</div></div>`;
+                html += `<div class="admin-group"><div class="admin-group-title">📍 ${area} <span>${areaProfiles.length}</span></div><div class="space-y-2">${areaProfiles.map(g => `<div class="flex items-center justify-between bg-[#111] p-3 rounded-lg"><div class="flex items-center gap-3"><img src="${g.photo}" class="w-10 h-10 rounded-full object-cover"><div><div class="text-sm font-bold">${g.name} <span class="w-2 h-2 rounded-full inline-block ${g.status==='available'?'bg-green-500':'bg-red-500'}"></span></div><div class="text-[10px] text-gray-500">${g.clicks || 0} Clicks</div></div></div><button onclick="handleDelete('${g.id}')" class="text-red-500 text-xs px-2 py-1 bg-red-900/20 rounded">Del</button></div>`).join('')}</div></div>`;
             });
             document.getElementById('adminList').innerHTML = html;
         };
     </script>
 
     <script>
-        function navigateTo(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active'); window.scrollTo(0,0);
-        }
-        function showAdmin() { if(prompt("Admin Password") === "KAR#1999") navigateTo('adminPage'); }
+        function navigateTo(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+        function showAdmin() { if(prompt("Password") === "KAR#1999") navigateTo('adminPage'); }
         function openModal() { document.getElementById('girlModal').classList.add('active'); }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
-        function openLightbox(imgUrl) { document.getElementById('lightboxImg').src = imgUrl; document.getElementById('lightbox').classList.add('active'); }
+        function openLightbox(url) { document.getElementById('lightboxImg').src = url; document.getElementById('lightbox').classList.add('active'); }
         function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
     </script>
 </body>
