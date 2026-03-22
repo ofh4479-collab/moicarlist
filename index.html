@@ -45,21 +45,43 @@
         .clear-btn { position: absolute; right: 15px; color: #666; cursor: pointer; font-size: 18px; font-weight: bold; display: none; }
         .search-container:hover .clear-btn { display: block; }
         .btn-gold { background: var(--gold); color: #000; font-weight: bold; padding: 12px; border-radius: 8px; width: 100%; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
+
+        /* --- 个人中心美化样式 --- */
+        .user-card { 
+            background: linear-gradient(145deg, #151515 0%, #050505 100%); 
+            border: 1px solid rgba(212, 175, 55, 0.3); 
+            border-radius: 24px; padding: 40px 20px; margin-top: 20px;
+        }
+        .avatar-container { 
+            position: relative; width: 100px; height: 100px; margin: 0 auto 15px; 
+            border: 2px solid var(--gold); border-radius: 50%; padding: 3px; cursor: pointer;
+        }
+        .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .avatar-overlay { 
+            position: absolute; inset: 0; background: rgba(0,0,0,0.5); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 10px; color: var(--gold); font-weight: bold; opacity: 0; transition: 0.2s; 
+        }
+        .avatar-container:hover .avatar-overlay { opacity: 1; }
+        .point-box {
+            background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+            border-radius: 15px; padding: 15px; color: #000; 
+            display: flex; justify-content: space-between; align-items: center; margin: 20px 0;
+        }
+        .btn-checkin { 
+            width: 100%; padding: 14px; border-radius: 12px; background: #fff; 
+            color: #000; font-size: 14px; font-weight: 700; transition: 0.2s; 
+        }
+        .btn-checkin:disabled { opacity: 0.5; background: #555; }
         
-        /* 管理员切换 Tab 样式 */
         .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; }
         .admin-tab-btn { color: #666; font-size: 12px; font-weight: bold; padding: 5px 15px; cursor: pointer; border-radius: 5px; }
         .admin-tab-btn.active { color: var(--gold); background: rgba(212, 175, 55, 0.1); }
-
         .comment-section { background: #0a0a0a; border: 1px solid #222; border-radius: 15px; padding: 15px; margin-top: 25px; }
         .comment-input { background: #111; border: 1px solid #333; border-radius: 8px; padding: 10px; font-size: 12px; color: #fff; width: 100%; min-height: 70px; resize: none; outline: none; }
-        .comment-input:focus { border-color: var(--gold); }
         .comment-item { padding: 12px 0; border-bottom: 1px solid #1a1a1a; }
-        .comment-item:last-child { border: none; }
         .vote-btn { cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 11px; padding: 4px 8px; border-radius: 4px; background: #111; border: 1px solid #222; transition: 0.2s; }
-        .vote-btn:hover { border-color: var(--gold); color: var(--gold); }
         .vote-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212, 175, 55, 0.1); }
-        
         .card-votes { position: absolute; bottom: 38px; right: 8px; display: flex; flex-direction: column; gap: 4px; z-index: 20; }
         .mini-vote { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; min-width: 42px; }
         .mini-vote.active { border-color: var(--gold); color: var(--gold); }
@@ -142,22 +164,35 @@
 
     <div id="userPage" class="page">
         <div class="max-w-md mx-auto p-6 text-center">
-            <h2 id="profile-title" class="text-xl font-bold gold-text mb-6">PROFILE</h2>
+            <h2 id="profile-title" class="text-xl font-bold gold-text mb-2">PROFILE</h2>
             <div class="user-card">
                 <div class="avatar-container" onclick="document.getElementById('userAvatarInput').click()">
                     <img id="user-avatar-img" src="https://via.placeholder.com/150/222222/d4af37?text=👤" class="avatar-img">
-                    <div class="avatar-overlay">EDIT</div>
+                    <div class="avatar-overlay">CHANGE</div>
                     <input type="file" id="userAvatarInput" class="hidden" accept="image/*">
                 </div>
-                <h3 id="profile-name" class="text-lg font-bold cursor-pointer hover:text-gold transition" onclick="window.openChangeNameModal()">Username</h3>
-                <p id="profile-email" class="text-gray-500 text-[10px] mb-4">email@example.com</p>
+                
+                <h3 id="profile-name" class="text-lg font-bold text-white mb-1">---</h3>
+                <p id="profile-email" class="text-gray-500 text-[10px] mb-4">---</p>
+                
                 <div class="point-box">
-                    <p id="points-label" class="text-[10px] font-bold uppercase tracking-wider">Points</p>
-                    <p id="profile-points" class="text-3xl font-bold">0</p>
+                    <div class="text-left">
+                        <p class="text-[9px] font-bold uppercase tracking-wider opacity-80">POINTS</p>
+                        <p id="profile-points" class="text-3xl font-black text-black">0</p>
+                    </div>
+                    <div class="text-2xl">🪙</div>
                 </div>
-                <button id="btn-checkin-action" onclick="window.handleCheckIn()" class="btn-checkin mt-4">Daily Check In</button>
+
+                <div class="space-y-3">
+                    <button id="btn-checkin-action" onclick="window.handleCheckIn()" class="btn-checkin">
+                        Daily Check In
+                    </button>
+                    <button onclick="window.openChangeNameModal()" class="w-full py-3 text-[11px] text-gold border border-gold/30 rounded-xl hover:bg-gold/10 transition">
+                        ✏️ Edit Username (100 pts)
+                    </button>
+                </div>
             </div>
-            <button onclick="navigateTo('home')" class="mt-8 text-gray-400 text-sm">← Back to Home</button>
+            <button onclick="navigateTo('home')" class="mt-8 text-gray-400 text-xs hover:text-gold transition">← Back to Home</button>
         </div>
     </div>
 
@@ -284,7 +319,7 @@
                         }
                         if(currentUserData.isAdmin === true) {
                             adminLink.classList.remove('hidden');
-                            listenToAllComments(); // 只有管理员需要监听全局评论
+                            listenToAllComments();
                         }
                         checkCheckInStatus();
                     } else { document.getElementById('usernameModal').classList.add('active'); }
@@ -297,7 +332,6 @@
             } else { userInfo.classList.add('hidden'); adminLink.classList.add('hidden'); authBtns.classList.remove('hidden'); currentUserData = null; userVotes = {}; }
         });
 
-        // 管理后台：监听所有评论
         function listenToAllComments() {
             const q = query(collection(db, "comments"), orderBy("createdAt", "desc"), limit(50));
             onSnapshot(q, (snapshot) => {
@@ -318,7 +352,6 @@
                             <button onclick="window.handleDeleteComment('${c.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1 bg-red-900/10 rounded">DELETE</button>
                         </div>
                         <p class="text-[11px] text-gray-400 bg-[#111] p-2 rounded">${c.text}</p>
-                        <div class="text-[8px] text-gray-700 mt-1">${new Date(c.createdAt).toLocaleString()}</div>
                     </div>`;
                 }).join('');
             });
@@ -335,7 +368,6 @@
             const reviewTab = document.getElementById('tab-reviews');
             const listView = document.getElementById('admin-list-view');
             const reviewView = document.getElementById('admin-reviews-view');
-            
             if(tab === 'list') {
                 listTab.classList.add('active'); reviewTab.classList.remove('active');
                 listView.classList.remove('hidden'); reviewView.classList.add('hidden');
@@ -345,29 +377,13 @@
             }
         };
 
-        function isSensitiveText(text) {
-            const phoneRegex = /\d{7,}/;
-            const emailRegex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}/gi;
-            const cleanText = text.replace(/\s/g, '');
-            return phoneRegex.test(cleanText) || emailRegex.test(cleanText);
-        }
-
         window.submitComment = async (girlId) => {
             if (!auth.currentUser) { window.openAuthModal('login'); return; }
             const text = document.getElementById('commentText').value.trim();
             if (!text) return;
-            const isAdmin = currentUserData.isAdmin === true;
-            if (!isAdmin && isSensitiveText(text)) {
-                alert("Policy: Continuous numbers (7+) or emails are not allowed."); return;
-            }
             const now = Date.now();
-            const lastTime = currentUserData.lastCommentTime || 0;
-            if (!isAdmin && (now - lastTime < 180000)) {
-                alert(`Cooling down... please wait.`); return;
-            }
             try {
                 await addDoc(collection(db, "comments"), { girlId, uid: auth.currentUser.uid, username: currentUserData.username, avatar: currentUserData.avatar || "", text, likes: 0, dislikes: 0, createdAt: now });
-                await updateDoc(doc(db, "users", auth.currentUser.uid), { lastCommentTime: now });
                 document.getElementById('commentText').value = "";
             } catch (err) { console.error(err); }
         };
@@ -386,11 +402,8 @@
                     if (existingVote) await updateDoc(targetRef, { [existingVote === 'like' ? 'likes' : 'dislikes']: increment(-1) });
                     await setDoc(voteRef, { uid: auth.currentUser.uid, targetId: targetId, type: type });
                     await updateDoc(targetRef, { [type === 'like' ? 'likes' : 'dislikes']: increment(1) });
-                    if (type === 'like' && collectionName === "comments" && authorUid && authorUid !== auth.currentUser.uid) {
-                        await updateDoc(doc(db, "users", authorUid), { points: increment(10) });
-                    }
                 }
-            } catch (e) { console.error("Vote failed:", e); }
+            } catch (e) { console.error(e); }
         };
 
         function listenToComments(girlId) {
@@ -399,7 +412,7 @@
                 const container = document.getElementById('commentsList');
                 if (!container) return;
                 const comments = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.createdAt - a.createdAt);
-                if (comments.length === 0) { container.innerHTML = `<p class="text-[10px] text-gray-600 text-center py-4 italic">${translations[currentLang].noReview}</p>`; return; }
+                if (comments.length === 0) { container.innerHTML = `<p class="text-[10px] text-gray-600 text-center py-4 italic">No reviews yet.</p>`; return; }
                 container.innerHTML = comments.map(c => `
                     <div class="comment-item">
                         <div class="flex gap-3">
@@ -411,8 +424,8 @@
                                 </div>
                                 <p class="text-[11px] text-gray-300 leading-relaxed">${c.text}</p>
                                 <div class="flex gap-3 mt-2">
-                                    <div onclick="window.handleVote('${c.id}', 'like', '${c.uid}', 'comments')" class="vote-btn ${userVotes[c.id] === 'like' ? 'active' : ''}">👍 <span class="vote-count">${c.likes||0}</span></div>
-                                    <div onclick="window.handleVote('${c.id}', 'dislike', '${c.uid}', 'comments')" class="vote-btn ${userVotes[c.id] === 'dislike' ? 'active' : ''}">👎 <span class="vote-count">${c.dislikes||0}</span></div>
+                                    <div onclick="window.handleVote('${c.id}', 'like', '${c.uid}', 'comments')" class="vote-btn ${userVotes[c.id] === 'like' ? 'active' : ''}">👍 ${c.likes||0}</div>
+                                    <div onclick="window.handleVote('${c.id}', 'dislike', '${c.uid}', 'comments')" class="vote-btn ${userVotes[c.id] === 'dislike' ? 'active' : ''}">👎 ${c.dislikes||0}</div>
                                 </div>
                             </div>
                         </div>
@@ -429,12 +442,11 @@
             renderAreaButtons();
             let filtered = allData.filter(g => g.area === currentArea);
             let frontList = filtered.filter(g => g.isHidden !== true);
-            const dynamicCups = ['All', ...new Set(frontList.map(g => g.cup))].sort();
-            renderFilters(['All', ...new Set(filtered.map(g => g.nation))], dynamicCups);
+            renderFilters(['All', ...new Set(filtered.map(g => g.nation))], ['All', ...new Set(frontList.map(g => g.cup))].sort());
             if(currentNation !== 'All') frontList = frontList.filter(g => g.nation === currentNation);
             if(currentCup !== 'All') frontList = frontList.filter(g => g.cup === currentCup);
             if(frontSearchKeyword) frontList = frontList.filter(g => (g.name || "").toLowerCase().includes(frontSearchKeyword.toLowerCase()));
-            document.getElementById('area-count').innerText = `${translations[currentLang].total}: ${frontList.length}`;
+            document.getElementById('area-count').innerText = `Total: ${frontList.length}`;
             renderMain([...frontList].sort((a, b) => b.clicks - a.clicks));
             renderAdmin(adminSearchKeyword ? allData.filter(g => (g.name || "").toLowerCase().includes(adminSearchKeyword.toLowerCase())) : filtered);
             checkCheckInStatus();
@@ -443,18 +455,13 @@
         function renderMain(data) {
             document.getElementById('displayList').innerHTML = data.map((g, index) => `
                 <div class="card">
-                    ${index < 3 && g.clicks > 0 ? `<div class="hot-badge"><span>🔥</span><span>${translations[currentLang].hot} #${index+1}</span></div>` : ''}
+                    ${index < 3 && g.clicks > 0 ? `<div class="hot-badge">🔥 #${index+1}</div>` : ''}
                     <div class="relative" onclick="window.showDetail('${g.id}')">
                         <img src="${g.photo}" class="card-img">
                     </div>
                     <div class="p-2 flex-grow relative" onclick="window.showDetail('${g.id}')">
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="white-name truncate">${g.name}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span>
-                            <span class="nation-tag">${g.nation}</span>
-                        </div>
+                        <div class="flex justify-between items-center mb-1"><span class="white-name truncate">${g.name}</span></div>
+                        <div class="flex justify-between items-center"><span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span><span class="nation-tag">${g.nation}</span></div>
                         <div class="card-votes" onclick="event.stopPropagation()">
                             <div onclick="window.handleVote('${g.id}', 'like', null, 'girls')" class="mini-vote ${userVotes[g.id] === 'like' ? 'active' : ''}">👍 ${g.likes||0}</div>
                             <div onclick="window.handleVote('${g.id}', 'dislike', null, 'girls')" class="mini-vote ${userVotes[g.id] === 'dislike' ? 'active' : ''}">👎 ${g.dislikes||0}</div>
@@ -470,14 +477,13 @@
                 <div class="text-left px-2">
                     <h1 class="text-2xl font-bold text-white mb-1">${g.name} <span class="nation-tag">${g.nation}</span></h1>
                     <p class="gold-text text-sm mb-6">${g.age}Y | ${g.cup} | ${g.height}</p>
-                    <div class="grid grid-cols-2 gap-2 mb-2"><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1Shot</span><span class="gold-text">RM ${g.p1}</span></div><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>2Shot</span><span class="gold-text">RM ${g.p2}</span></div></div>
-                    <div class="grid grid-cols-2 gap-2 mb-6"><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot</span><span class="gold-text">RM ${g.p3}</span></div><div class="bg-[#1a1100] border border-[#d4af37]/30 p-3 rounded-lg flex justify-between"><span class="font-bold">Overnight</span><span class="gold-text font-bold">RM ${g.povn || '??'}</span></div></div>
+                    <div class="grid grid-cols-2 gap-2 mb-6"><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1Shot</span><span class="gold-text">RM ${g.p1}</span></div><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>Overnight</span><span class="gold-text">RM ${g.povn || '??'}</span></div></div>
                     <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-gold">${g.desc}</div>
-                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center">${translations[currentLang].booking}</a>
+                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center">WHATSAPP BOOKING</a>
                     <div class="comment-section">
-                        <h3 class="text-xs font-bold gold-text mb-4 uppercase tracking-widest">${translations[currentLang].reviewTitle}</h3>
+                        <h3 class="text-xs font-bold gold-text mb-4 uppercase tracking-widest">Reviews & Experience</h3>
                         <textarea id="commentText" class="comment-input" placeholder="Share your experience..."></textarea>
-                        <button onclick="window.submitComment('${g.id}')" class="btn-gold !text-[10px] !py-2 !mt-2">${translations[currentLang].post}</button>
+                        <button onclick="window.submitComment('${g.id}')" class="btn-gold !text-[10px] !py-2 !mt-2">POST REVIEW</button>
                         <div id="commentsList" class="mt-6 space-y-4"></div>
                     </div>
                 </div>`;
@@ -503,24 +509,22 @@
             document.getElementById('editId').value = g.id; document.getElementById('gName').value = g.name; document.getElementById('gAge').value = g.age; document.getElementById('gNation').value = g.nation; document.getElementById('gCup').value = g.cup; document.getElementById('gHeight').value = g.height; document.getElementById('gPrice1').value = g.p1; document.getElementById('gPrice2').value = g.p2; document.getElementById('gPrice3').value = g.p3; document.getElementById('gPriceOvn').value = g.povn || ""; document.getElementById('gArea').value = g.area; document.getElementById('gStatus').value = g.status; document.getElementById('gIsHidden').value = g.isHidden ? "true" : "false"; document.getElementById('gPhoto').value = g.photo; document.getElementById('gWhatsapp').value = g.whatsapp; document.getElementById('gDesc').value = g.desc;
         };
         window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
-        function renderAdmin(data) { document.getElementById('adminList').innerHTML = data.map(g => `<div class="admin-item"><div class="flex items-center gap-3 w-[65%]"><img src="${g.photo}" class="w-9 h-9 rounded-md object-cover"><div class="text-xs truncate text-white"><b class="${g.isHidden ? 'opacity-40' : ''}">${g.name}</b> ${g.isHidden ? '<span class="hidden-badge">HIDDEN</span>' : ''}<div class="text-[9px] text-gray-500">🔥 ${g.clicks} clicks</div></div></div><div class="flex gap-1"><button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[9px] font-bold px-2 py-1.5 bg-blue-900/20 rounded">EDIT</button><button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1.5 bg-red-900/20 rounded">DEL</button></div></div>`).join(''); }
+        function renderAdmin(data) { document.getElementById('adminList').innerHTML = data.map(g => `<div class="admin-item"><div class="flex items-center gap-3 w-[65%]"><img src="${g.photo}" class="w-9 h-9 rounded-md object-cover text-white text-[8px]"><div class="text-xs truncate text-white"><b class="${g.isHidden ? 'opacity-40' : ''}">${g.name}</b><div class="text-[9px] text-gray-500">🔥 ${g.clicks} clicks</div></div></div><div class="flex gap-1"><button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[9px] font-bold px-2 py-1.5 bg-blue-900/20 rounded">EDIT</button><button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1.5 bg-red-900/20 rounded">DEL</button></div></div>`).join(''); }
         function renderAreaButtons() { const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh']; const btnHtml = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join(''); document.getElementById('areaButtons').innerHTML = btnHtml; document.getElementById('adminAreaButtons').innerHTML = btnHtml; }
         window.selectArea = a => { currentArea = a; window.renderEverything(); };
-        function renderFilters(nations, cups) { document.getElementById('nationFilter').innerHTML = nations.map(n => `<option value="${n}">${n === 'All' ? translations[currentLang].allNations : n}</option>`).join(''); document.getElementById('cupFilter').innerHTML = cups.map(c => `<option value="${c}">${c === 'All' ? translations[currentLang].allCups : c}</option>`).join(''); }
+        function renderFilters(nations, cups) { document.getElementById('nationFilter').innerHTML = nations.map(n => `<option value="${n}">${n}</option>`).join(''); document.getElementById('cupFilter').innerHTML = cups.map(c => `<option value="${c}">${c}</option>`).join(''); }
         window.selectNation = n => { currentNation = n; window.renderEverything(); };
         window.selectCup = c => { currentCup = c; window.renderEverything(); };
         window.setPrice = base => { document.getElementById('gPrice1').value = base; document.getElementById('gPrice2').value = base*2; document.getElementById('gPrice3').value = base*3; document.getElementById('gPriceOvn').value = base===250?800:900; };
         document.getElementById('userAvatarInput').addEventListener('change', async (e) => { const file = e.target.files[0]; if (!file || !auth.currentUser) return; const formData = new FormData(); formData.append('image', file); try { const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData }); const r = await res.json(); if (r.success) await updateDoc(doc(db, "users", auth.currentUser.uid), { avatar: r.data.url }); } catch (err) {} });
         document.getElementById('fileInput').addEventListener('change', async (e) => { const file = e.target.files[0]; if (!file) return; const formData = new FormData(); formData.append('image', file); try { const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData }); const r = await res.json(); if (r.success) { document.getElementById('gPhoto').value = r.data.url; document.getElementById('uploadStatus').innerText = "Success!"; } } catch (err) {} });
         window.handleCheckIn = async () => { const today = new Date().toISOString().split('T')[0]; if(currentUserData && currentUserData.lastCheckIn !== today) await updateDoc(doc(db, "users", auth.currentUser.uid), { points: increment(10), lastCheckIn: today }); };
-        function checkCheckInStatus() { const today = new Date().toISOString().split('T')[0]; const btn = document.getElementById('btn-checkin-action'); if(btn && currentUserData && currentUserData.lastCheckIn === today) { btn.disabled = true; btn.innerText = translations[currentLang].alreadyCheckin; } else if(btn) { btn.disabled = false; btn.innerText = translations[currentLang].checkin; } }
-        window.confirmChangeName = async () => { const newName = document.getElementById('updatedUsername').value.trim(); if(!newName || (currentUserData.points||0) < 100) { alert(translations[currentLang].insufficient); return; } await updateDoc(doc(db, "users", auth.currentUser.uid), { username: newName, points: increment(-100) }); document.getElementById('changeNameModal').classList.remove('active'); };
+        function checkCheckInStatus() { const today = new Date().toISOString().split('T')[0]; const btn = document.getElementById('btn-checkin-action'); if(btn && currentUserData && currentUserData.lastCheckIn === today) { btn.disabled = true; btn.innerText = "Already Checked In"; } else if(btn) { btn.disabled = false; btn.innerText = "Daily Check In"; } }
+        window.confirmChangeName = async () => { const newName = document.getElementById('updatedUsername').value.trim(); if(!newName || (currentUserData.points||0) < 100) { alert("Insufficient points!"); return; } await updateDoc(doc(db, "users", auth.currentUser.uid), { username: newName, points: increment(-100) }); document.getElementById('changeNameModal').classList.remove('active'); };
         window.openChangeNameModal = () => { document.getElementById('updatedUsername').value = currentUserData.username; document.getElementById('changeNameModal').classList.add('active'); };
-        
         window.handleFrontSearch = (val) => { frontSearchKeyword = val; window.renderEverything(); };
         window.handleAdminSearch = (val) => { adminSearchKeyword = val; window.renderEverything(); };
         window.clearSearch = (type) => { if(type==='front') { document.getElementById('frontSearch').value=''; frontSearchKeyword=''; } else { document.getElementById('adminSearch').value=''; adminSearchKeyword=''; } window.renderEverything(); };
-
         updateTexts();
     </script>
 
