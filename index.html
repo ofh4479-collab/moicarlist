@@ -177,7 +177,7 @@
                 
                 <div class="point-box">
                     <div class="text-left">
-                        <p class="text-[9px] font-bold uppercase tracking-wider opacity-80">POINTS</p>
+                        <p class="text-[9px] font-bold uppercase tracking-wider opacity-80">My Wallet</p>
                         <p id="profile-points" class="text-3xl font-black text-black">0</p>
                     </div>
                     <div class="text-2xl">🪙</div>
@@ -263,7 +263,7 @@
             <input type="email" id="authEmail" placeholder="Email">
             <input type="password" id="authPassword" placeholder="Password">
             <button onclick="window.processAuth()" id="authSubmitBtn" class="btn-gold">Proceed</button>
-            <p onclick="window.toggleAuthMode()" class="text-[10px] text-gray-500 mt-4 cursor-pointer underline">Switch Login / Register</p>
+            <p id="authToggleText" onclick="window.toggleAuthMode()" class="text-[10px] text-gray-500 mt-4 cursor-pointer underline">Switch to Register</p>
             <button onclick="window.closeAuthModal()" class="mt-4 text-xs opacity-50">CANCEL</button>
         </div>
     </div>
@@ -271,8 +271,9 @@
     <div id="usernameModal" class="modal">
         <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-gold text-center">
             <h3 class="gold-text font-bold mb-4">Set Your Identity</h3>
+            <p class="text-[10px] text-gray-400 mb-4">Welcome! Please set a nickname for your account.</p>
             <input type="text" id="newUsername" placeholder="Set Your Username">
-            <button onclick="window.saveUsername()" class="btn-gold mt-4">Confirm</button>
+            <button onclick="window.saveUsername()" class="btn-gold mt-4">Confirm & Start</button>
         </div>
     </div>
 
@@ -322,7 +323,13 @@
                             listenToAllComments();
                         }
                         checkCheckInStatus();
-                    } else { document.getElementById('usernameModal').classList.add('active'); }
+                        // 登录成功后隐藏所有弹窗
+                        document.getElementById('authModal').classList.remove('active');
+                        document.getElementById('usernameModal').classList.remove('active');
+                    } else { 
+                        // 新用户没设置名字时显示设置框
+                        document.getElementById('usernameModal').classList.add('active'); 
+                    }
                 });
                 onSnapshot(query(collection(db, "votes"), where("uid", "==", user.uid)), (snap) => {
                     userVotes = {};
@@ -332,6 +339,66 @@
             } else { userInfo.classList.add('hidden'); adminLink.classList.add('hidden'); authBtns.classList.remove('hidden'); currentUserData = null; userVotes = {}; }
         });
 
+        // 核心修复逻辑：增强的身份认证处理
+        window.processAuth = async () => {
+            const e = document.getElementById('authEmail').value.trim();
+            const p = document.getElementById('authPassword').value;
+            const btn = document.getElementById('authSubmitBtn');
+
+            if(!e || !p) { alert("Please fill in both email and password."); return; }
+            if(p.length < 6) { alert("Password must be at least 6 characters."); return; }
+
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+
+            try {
+                if (authMode === 'register') {
+                    await createUserWithEmailAndPassword(auth, e, p);
+                    // 注册成功后，onAuthStateChanged 会触发并显示 usernameModal
+                } else {
+                    await signInWithEmailAndPassword(auth, e, p);
+                    window.closeAuthModal();
+                }
+            } catch (err) {
+                console.error("Auth Error:", err.code);
+                let msg = "Error: " + err.message;
+                if(err.code === 'auth/email-already-in-use') msg = "This email is already registered. Please login.";
+                if(err.code === 'auth/wrong-password') msg = "Incorrect password.";
+                if(err.code === 'auth/user-not-found') msg = "No account found with this email.";
+                if(err.code === 'auth/invalid-email') msg = "Invalid email format.";
+                alert(msg);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Proceed";
+            }
+        };
+
+        window.toggleAuthMode = () => {
+            authMode = (authMode === 'login' ? 'register' : 'login');
+            document.getElementById('authTitle').innerText = authMode.toUpperCase();
+            document.getElementById('authToggleText').innerText = (authMode === 'login' ? "Switch to Register" : "Switch to Login");
+        };
+
+        window.saveUsername = async () => { 
+            const n = document.getElementById('newUsername').value.trim(); 
+            if(!n) { alert("Please enter a nickname."); return; }
+            if(!auth.currentUser) return;
+
+            try {
+                await setDoc(doc(db, "users", auth.currentUser.uid), { 
+                    username: n, 
+                    isAdmin: false, 
+                    points: 10, // 给新用户10分奖励
+                    lastCheckIn: "", 
+                    avatar: "" 
+                }, {merge:true}); 
+                document.getElementById('usernameModal').classList.remove('active');
+            } catch (err) {
+                alert("Database Error: " + err.message);
+            }
+        };
+
+        // ... 其他原有逻辑保持不变 ...
         function listenToAllComments() {
             const q = query(collection(db, "comments"), orderBy("createdAt", "desc"), limit(50));
             onSnapshot(q, (snapshot) => {
@@ -446,7 +513,7 @@
             if(currentNation !== 'All') frontList = frontList.filter(g => g.nation === currentNation);
             if(currentCup !== 'All') frontList = frontList.filter(g => g.cup === currentCup);
             if(frontSearchKeyword) frontList = frontList.filter(g => (g.name || "").toLowerCase().includes(frontSearchKeyword.toLowerCase()));
-            document.getElementById('area-count').innerText = `Total: ${frontList.length}`;
+            const areaCount = document.getElementById('area-count'); if(areaCount) areaCount.innerText = `Total: ${frontList.length}`;
             renderMain([...frontList].sort((a, b) => b.clicks - a.clicks));
             renderAdmin(adminSearchKeyword ? allData.filter(g => (g.name || "").toLowerCase().includes(adminSearchKeyword.toLowerCase())) : filtered);
             checkCheckInStatus();
@@ -457,7 +524,7 @@
                 <div class="card">
                     ${index < 3 && g.clicks > 0 ? `<div class="hot-badge">🔥 #${index+1}</div>` : ''}
                     <div class="relative" onclick="window.showDetail('${g.id}')">
-                        <img src="${g.photo}" class="card-img">
+                        <img src="${g.photo}" class="card-img" onerror="this.src='https://via.placeholder.com/220/222222/d4af37?text=No+Photo'">
                     </div>
                     <div class="p-2 flex-grow relative" onclick="window.showDetail('${g.id}')">
                         <div class="flex justify-between items-center mb-1"><span class="white-name truncate">${g.name}</span></div>
@@ -473,13 +540,13 @@
         window.showDetail = async id => {
             const g = allData.find(x => x.id === id); await updateDoc(doc(db, "girls", id), { clicks: increment(1) }); navigateTo('detailPage'); listenToComments(id);
             document.getElementById('detailContent').innerHTML = `
-                <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-xl">
+                <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-xl" onerror="this.src='https://via.placeholder.com/400/222222/d4af37?text=No+Photo'">
                 <div class="text-left px-2">
                     <h1 class="text-2xl font-bold text-white mb-1">${g.name} <span class="nation-tag">${g.nation}</span></h1>
                     <p class="gold-text text-sm mb-6">${g.age}Y | ${g.cup} | ${g.height}</p>
                     <div class="grid grid-cols-2 gap-2 mb-6"><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1Shot</span><span class="gold-text">RM ${g.p1}</span></div><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>Overnight</span><span class="gold-text">RM ${g.povn || '??'}</span></div></div>
                     <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-gold">${g.desc}</div>
-                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center">WHATSAPP BOOKING</a>
+                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center uppercase tracking-widest">Whatsapp Booking</a>
                     <div class="comment-section">
                         <h3 class="text-xs font-bold gold-text mb-4 uppercase tracking-widest">Reviews & Experience</h3>
                         <textarea id="commentText" class="comment-input" placeholder="Share your experience..."></textarea>
@@ -490,15 +557,7 @@
         };
 
         window.handleLogout = () => signOut(auth).then(() => navigateTo('home'));
-        window.processAuth = async () => {
-            const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
-            try { authMode === 'register' ? await createUserWithEmailAndPassword(auth, e, p) : await signInWithEmailAndPassword(auth, e, p); window.closeAuthModal(); } catch(err) { alert(err.message); }
-        };
-        window.saveUsername = async () => { 
-            const n = document.getElementById('newUsername').value; if(!n) return;
-            await setDoc(doc(db, "users", auth.currentUser.uid), { username: n, isAdmin: false, points: 0, lastCheckIn: "", avatar: "" }, {merge:true}); 
-            location.reload(); 
-        };
+
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
             const data = { name: document.getElementById('gName').value, age: document.getElementById('gAge').value, nation: document.getElementById('gNation').value, cup: document.getElementById('gCup').value, height: document.getElementById('gHeight').value, p1: document.getElementById('gPrice1').value, p2: document.getElementById('gPrice2').value, p3: document.getElementById('gPrice3').value, povn: document.getElementById('gPriceOvn').value, area: document.getElementById('gArea').value, status: document.getElementById('gStatus').value, photo: document.getElementById('gPhoto').value, whatsapp: document.getElementById('gWhatsapp').value, desc: document.getElementById('gDesc').value, isHidden: document.getElementById('gIsHidden').value === "true" };
@@ -516,15 +575,63 @@
         window.selectNation = n => { currentNation = n; window.renderEverything(); };
         window.selectCup = c => { currentCup = c; window.renderEverything(); };
         window.setPrice = base => { document.getElementById('gPrice1').value = base; document.getElementById('gPrice2').value = base*2; document.getElementById('gPrice3').value = base*3; document.getElementById('gPriceOvn').value = base===250?800:900; };
-        document.getElementById('userAvatarInput').addEventListener('change', async (e) => { const file = e.target.files[0]; if (!file || !auth.currentUser) return; const formData = new FormData(); formData.append('image', file); try { const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData }); const r = await res.json(); if (r.success) await updateDoc(doc(db, "users", auth.currentUser.uid), { avatar: r.data.url }); } catch (err) {} });
-        document.getElementById('fileInput').addEventListener('change', async (e) => { const file = e.target.files[0]; if (!file) return; const formData = new FormData(); formData.append('image', file); try { const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData }); const r = await res.json(); if (r.success) { document.getElementById('gPhoto').value = r.data.url; document.getElementById('uploadStatus').innerText = "Success!"; } } catch (err) {} });
-        window.handleCheckIn = async () => { const today = new Date().toISOString().split('T')[0]; if(currentUserData && currentUserData.lastCheckIn !== today) await updateDoc(doc(db, "users", auth.currentUser.uid), { points: increment(10), lastCheckIn: today }); };
-        function checkCheckInStatus() { const today = new Date().toISOString().split('T')[0]; const btn = document.getElementById('btn-checkin-action'); if(btn && currentUserData && currentUserData.lastCheckIn === today) { btn.disabled = true; btn.innerText = "Already Checked In"; } else if(btn) { btn.disabled = false; btn.innerText = "Daily Check In"; } }
-        window.confirmChangeName = async () => { const newName = document.getElementById('updatedUsername').value.trim(); if(!newName || (currentUserData.points||0) < 100) { alert("Insufficient points!"); return; } await updateDoc(doc(db, "users", auth.currentUser.uid), { username: newName, points: increment(-100) }); document.getElementById('changeNameModal').classList.remove('active'); };
-        window.openChangeNameModal = () => { document.getElementById('updatedUsername').value = currentUserData.username; document.getElementById('changeNameModal').classList.add('active'); };
+        
+        document.getElementById('userAvatarInput').addEventListener('change', async (e) => { 
+            const file = e.target.files[0]; if (!file || !auth.currentUser) return; 
+            const formData = new FormData(); formData.append('image', file); 
+            try { 
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData }); 
+                const r = await res.json(); 
+                if (r.success) await updateDoc(doc(db, "users", auth.currentUser.uid), { avatar: r.data.url }); 
+            } catch (err) { console.error("Avatar Upload Error:", err); } 
+        });
+
+        document.getElementById('fileInput').addEventListener('change', async (e) => { 
+            const file = e.target.files[0]; if (!file) return; 
+            const formData = new FormData(); formData.append('image', file); 
+            try { 
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData }); 
+                const r = await res.json(); 
+                if (r.success) { document.getElementById('gPhoto').value = r.data.url; document.getElementById('uploadStatus').innerText = "Success!"; } 
+            } catch (err) { console.error("Photo Upload Error:", err); } 
+        });
+
+        window.handleCheckIn = async () => { 
+            const today = new Date().toISOString().split('T')[0]; 
+            if(currentUserData && currentUserData.lastCheckIn !== today) {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { points: increment(10), lastCheckIn: today }); 
+            }
+        };
+
+        function checkCheckInStatus() { 
+            const today = new Date().toISOString().split('T')[0]; 
+            const btn = document.getElementById('btn-checkin-action'); 
+            if(btn && currentUserData && currentUserData.lastCheckIn === today) { 
+                btn.disabled = true; btn.innerText = "Already Checked In"; 
+            } else if(btn) { 
+                btn.disabled = false; btn.innerText = "Daily Check In"; 
+            } 
+        }
+
+        window.confirmChangeName = async () => { 
+            const newName = document.getElementById('updatedUsername').value.trim(); 
+            if(!newName || (currentUserData.points||0) < 100) { alert("Insufficient points or empty name!"); return; } 
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { username: newName, points: increment(-100) }); 
+            document.getElementById('changeNameModal').classList.remove('active'); 
+        };
+
+        window.openChangeNameModal = () => { 
+            document.getElementById('updatedUsername').value = currentUserData.username; 
+            document.getElementById('changeNameModal').classList.add('active'); 
+        };
+
         window.handleFrontSearch = (val) => { frontSearchKeyword = val; window.renderEverything(); };
         window.handleAdminSearch = (val) => { adminSearchKeyword = val; window.renderEverything(); };
-        window.clearSearch = (type) => { if(type==='front') { document.getElementById('frontSearch').value=''; frontSearchKeyword=''; } else { document.getElementById('adminSearch').value=''; adminSearchKeyword=''; } window.renderEverything(); };
+        window.clearSearch = (type) => { 
+            if(type==='front') { document.getElementById('frontSearch').value=''; frontSearchKeyword=''; } 
+            else { document.getElementById('adminSearch').value=''; adminSearchKeyword=''; } 
+            window.renderEverything(); 
+        };
         updateTexts();
     </script>
 
@@ -532,9 +639,13 @@
         function navigateTo(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
         function openModal(isEdit = false) { if(!isEdit) { document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; document.getElementById('gName').value = ""; if(typeof window.setPrice === 'function') window.setPrice(270); } document.getElementById('girlModal').classList.add('active'); }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
-        window.openAuthModal = m => { authMode = m; document.getElementById('authTitle').innerText = m.toUpperCase(); document.getElementById('authModal').classList.add('active'); };
+        window.openAuthModal = m => { 
+            authMode = m; 
+            document.getElementById('authTitle').innerText = m.toUpperCase(); 
+            document.getElementById('authToggleText').innerText = (m === 'login' ? "Switch to Register" : "Switch to Login");
+            document.getElementById('authModal').classList.add('active'); 
+        };
         window.closeAuthModal = () => document.getElementById('authModal').classList.remove('active');
-        window.toggleAuthMode = () => window.openAuthModal(authMode==='login'?'register':'login');
     </script>
 </body>
 </html>
