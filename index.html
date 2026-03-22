@@ -37,7 +37,7 @@
         .hot-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #d4af37; font-size: 10px; padding: 3px 7px; border-radius: 20px; border: 1px solid #d4af37; font-weight: bold; display: flex; items-center; gap: 3px; z-index: 10; }
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; padding: 15px; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; padding: 15px; }
         .modal.active { display: flex; }
         input, select, textarea { background: #111; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 6px; width: 100%; margin: 4px 0; font-size: 14px; outline: none; }
         input:focus { border-color: var(--gold); }
@@ -45,8 +45,9 @@
         .admin-item { background: #0a0a0a; border-bottom: 1px solid #222; padding: 10px 8px; display: flex; align-items: center; justify-content: space-between; }
         .count-pill { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-size: 10px; padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3); }
         .search-container { background: #111; border: 1px solid #222; border-radius: 20px; padding: 5px 15px; display: flex; align-items: center; margin-bottom: 15px; }
-        .search-input { background: transparent; border: none; margin: 0; padding: 5px; font-size: 13px; width: 100%; }
+        .search-input { background: transparent; border: none; margin: 0; padding: 5px; font-size: 13px; width: 100%; color: #fff; }
         .hidden-badge { background: #440000; color: #ff6666; font-size: 8px; padding: 1px 4px; border-radius: 3px; margin-left: 5px; border: 1px solid #660000; }
+        .btn-gold { background: var(--gold); color: #000; font-weight: bold; padding: 12px; border-radius: 8px; width: 100%; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -84,11 +85,15 @@
             <div class="gold-text text-xl cursor-pointer font-bold" onclick="navigateTo('home')">MoiCarList</div>
             <div class="flex gap-4 items-center">
                 <a id="nav-home" onclick="navigateTo('home')" class="nav-link">HOME</a>
+                <div id="user-info" class="hidden flex items-center gap-3">
+                    <span id="user-display" class="text-[10px] text-gold font-bold">User</span>
+                    <a id="admin-link" onclick="navigateTo('adminPage')" class="nav-link hidden text-blue-400">ADMIN</a>
+                    <a onclick="window.handleLogout()" class="nav-link text-[9px] text-red-500">OUT</a>
+                </div>
+                <div id="auth-buttons">
+                    <a onclick="window.openAuthModal('login')" class="nav-link">Login</a>
+                </div>
                 <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle">EN</button>
-                <a href="#" onclick="window.open('https://t.me/MoiCarList', '_blank'); return false;" class="text-[#0088cc]">
-                    <svg style="width:22px;height:22px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.12 7.14-.14.72-.41.96-.66.98-.56.05-1-.38-1.54-.74-.83-.57-1.3-1.07-2.12-1.6-.94-.61-.33-.95.21-1.5.14-.14 2.53-2.32 2.58-2.52.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.48.94-4.18 2.76-.39.27-.75.4-1.07.39-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.28-.36.77-.55 3.02-1.31 5.03-2.18 6.04-2.6.96-.4 1.99-.48 2.65-.48.14 0 .47.03.68.16.19.11.26.27.28.42.02.16.02.32.01.48z"/></svg>
-                </a>
-                <a onclick="showAdmin()" class="nav-link">ADMIN</a>
             </div>
         </div>
     </nav>
@@ -120,17 +125,34 @@
         </div>
     </div>
 
+    <div id="authModal" class="modal">
+        <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-[#222] text-center">
+            <h3 id="authTitle" class="gold-text font-bold mb-6">LOGIN</h3>
+            <input type="email" id="authEmail" placeholder="Email">
+            <input type="password" id="authPassword" placeholder="Password">
+            <button onclick="window.processAuth()" id="authSubmitBtn" class="btn-gold">Proceed</button>
+            <p onclick="window.toggleAuthMode()" class="text-[10px] text-gray-500 mt-4 cursor-pointer underline">Switch Login / Register</p>
+            <button onclick="window.closeAuthModal()" class="mt-4 text-xs opacity-50">CANCEL</button>
+        </div>
+    </div>
+
+    <div id="usernameModal" class="modal">
+        <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-gold text-center">
+            <h3 class="gold-text font-bold mb-4">Set Your Identity</h3>
+            <input type="text" id="newUsername" placeholder="Set Your Username">
+            <button onclick="window.saveUsername()" class="btn-gold mt-4">Confirm</button>
+        </div>
+    </div>
+
     <div id="detailPage" class="page"><div class="max-w-2xl mx-auto p-4 pb-20"><div id="back-btn-text" class="mb-4 gold-text font-bold cursor-pointer" onclick="navigateTo('home')">← BACK</div><div id="detailContent"></div></div></div>
 
     <div id="adminPage" class="page bg-[#050505]">
         <div class="max-w-4xl mx-auto p-4">
             <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold gold-text">Admin Panel</h2><button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add New</button></div>
-            
             <div class="search-container">
                 <span class="mr-2 opacity-50">🔍</span>
                 <input type="text" id="adminSearch" class="search-input" placeholder="Search by name (A-Z sorted)..." oninput="window.handleAdminSearch(this.value)">
             </div>
-
             <div id="site-stats-container"></div>
             <div id="adminList" class="space-y-1"></div>
         </div>
@@ -141,74 +163,30 @@
             <h3 id="modalTitle" class="gold-text font-bold mb-4">Profile Info</h3>
             <input type="hidden" id="editId">
             <input type="text" id="gName" placeholder="Name (A-Z sorted)">
-            
             <div class="grid grid-cols-2 gap-2">
                 <input type="number" id="gAge" placeholder="Age">
-                <input type="text" id="gNation" placeholder="Nation" id="gNation">
+                <select id="gNation">
+                    <option>Vietnam</option>
+                    <option>Thailand</option>
+                    <option>Malaysia</option>
+                    <option>Indonesia</option>
+                    <option>Laos</option>
+                    <option>China</option>
+                </select>
             </div>
-            <div class="flex gap-1 mb-3 overflow-x-auto pb-1 mt-1">
-                <button type="button" onclick="document.getElementById('gNation').value='Vietnam'" class="btn-preset">VN 🇻🇳</button>
-                <button type="button" onclick="document.getElementById('gNation').value='Thailand'" class="btn-preset">TH 🇹🇭</button>
-                <button type="button" onclick="document.getElementById('gNation').value='China'" class="btn-preset">CN 🇨🇳</button>
-                <button type="button" onclick="document.getElementById('gNation').value='Malaysia'" class="btn-preset">MY 🇲🇾</button>
-                <button type="button" onclick="document.getElementById('gNation').value='Indonesia'" class="btn-preset">ID 🇮🇩</button>
-            </div>
-
+            <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup Size"><input type="text" id="gHeight" placeholder="Height"></div>
+            <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
             <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="gCup" placeholder="Cup Size">
-                <input type="text" id="gHeight" placeholder="Height">
+                <div><label class="text-[10px] text-gray-500 block ml-1">STATUS</label><select id="gStatus"><option value="available">Available</option><option value="busy">Busy</option><option value="stop">Stop</option></select></div>
+                <div><label class="text-[10px] text-gray-500 block ml-1">VISIBILITY</label><select id="gIsHidden"><option value="false">Show on Front</option><option value="true">Hide from Front</option></select></div>
             </div>
-            
-            <select id="gArea">
-                <option>Alor Setar</option>
-                <option>Sungei Petani</option>
-                <option>Bukit Mertajam</option>
-                <option>Penang</option>
-                <option>Ipoh</option>
-            </select>
-            
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-[10px] text-gray-500 block ml-1">STATUS</label>
-                    <select id="gStatus">
-                        <option value="available">Available</option>
-                        <option value="busy">Busy</option>
-                        <option value="stop">Stop</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 block ml-1">VISIBILITY</label>
-                    <select id="gIsHidden">
-                        <option value="false">Show on Front</option>
-                        <option value="true">Hide from Front</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="flex gap-2 my-2">
-                <button type="button" onclick="window.setPrice(250)" class="btn-preset">Set RM250</button>
-                <button type="button" onclick="window.setPrice(270)" class="btn-preset">Set RM270</button>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-2">
-                <input type="number" id="gPrice1" placeholder="1 Shot">
-                <input type="number" id="gPrice2" placeholder="2 Shot">
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-                <input type="number" id="gPrice3" placeholder="3 Shot">
-                <input type="number" id="gPriceOvn" placeholder="Overnight">
-            </div>
-
-            <div class="mt-2 flex gap-2">
-                <input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1">
-                <input type="file" id="fileInput" class="hidden" accept="image/*">
-                <button type="button" onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button>
-            </div>
+            <div class="flex gap-2 my-2"><button onclick="setPrice(250)" class="btn-preset">Set RM250</button><button onclick="setPrice(270)" class="btn-preset">Set RM270</button></div>
+            <div class="grid grid-cols-2 gap-2"><input type="number" id="gPrice1" placeholder="1 Shot"><input type="number" id="gPrice2" placeholder="2 Shot"></div>
+            <div class="grid grid-cols-2 gap-2"><input type="number" id="gPrice3" placeholder="3 Shot"><input type="number" id="gPriceOvn" placeholder="Overnight"></div>
+            <div class="mt-2 flex gap-2"><input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1"><input type="file" id="fileInput" class="hidden" accept="image/*"><button onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button></div>
             <div id="uploadStatus" class="text-[10px] text-gray-500 mb-2">Ready</div>
-            
             <input type="text" id="gWhatsapp" placeholder="WhatsApp (60xxx)" value="601117917032">
             <textarea id="gDesc" placeholder="Bio" rows="2"></textarea>
-            
             <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-lg mt-4 text-sm uppercase">Save Profile</button>
             <button onclick="closeModal()" class="w-full text-gray-500 mt-3 text-xs">CANCEL</button>
         </div>
@@ -217,10 +195,12 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, increment, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCK8dhWPA2pd04gzVxmkOgQuMpFfFPyXxs", authDomain: "girlcarlist-db.firebaseapp.com", projectId: "girlcarlist-db", storageBucket: "girlcarlist-db.firebasestorage.app", messagingSenderId: "418933639880", appId: "1:418933639880:web:a993e1c3e71f2e8d18f3fd" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
         const colRef = collection(db, "girls");
         
         let allData = [];
@@ -229,8 +209,32 @@
         let currentCup = 'All';
         let frontSearchKeyword = "";
         let adminSearchKeyword = "";
+        let authMode = 'login';
 
-        // GA4 统计
+        // 🔐 用户认证监听
+        onAuthStateChanged(auth, async (user) => {
+            const adminLink = document.getElementById('admin-link');
+            const userInfo = document.getElementById('user-info');
+            const authBtns = document.getElementById('auth-buttons');
+            
+            if(user) {
+                userInfo.classList.remove('hidden');
+                authBtns.classList.add('hidden');
+                const uDoc = await getDoc(doc(db, "users", user.uid));
+                if(uDoc.exists()) {
+                    document.getElementById('user-display').innerText = uDoc.data().username;
+                    if(uDoc.data().isAdmin === true) adminLink.classList.remove('hidden');
+                } else { 
+                    document.getElementById('usernameModal').classList.add('active'); 
+                }
+            } else {
+                userInfo.classList.add('hidden');
+                adminLink.classList.add('hidden');
+                authBtns.classList.remove('hidden');
+            }
+        });
+
+        // 📊 GA4 统计
         async function trackVisitor() {
             try {
                 const statsRef = doc(db, "site_stats", "overall");
@@ -242,7 +246,7 @@
         }
         trackVisitor();
 
-        // 图片上传逻辑
+        // 图片上传 (ImgBB)
         const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b"; 
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0]; if (!file) return;
@@ -258,13 +262,14 @@
             } catch (err) { status.innerText = "Error!"; status.style.color = "#ff453a"; }
         });
 
+        // 核心数据监听 (同步 A-Z 排序)
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ 
                 id: d.id, 
                 ...d.data(), 
                 clicks: d.data().clicks || 0,
                 isHidden: d.data().isHidden === "true" || d.data().isHidden === true
-            })).sort((a, b) => a.name.localeCompare(b.name));
+            })).sort((a, b) => (a.name || "").localeCompare(b.name || ""));
             window.renderEverything();
         });
 
@@ -275,7 +280,7 @@
             if(currentNation !== 'All') frontList = frontList.filter(g => g.nation === currentNation);
             if(currentCup !== 'All') frontList = frontList.filter(g => g.cup === currentCup);
             if(frontSearchKeyword) {
-                frontList = frontList.filter(g => g.name.toLowerCase().includes(frontSearchKeyword.toLowerCase()));
+                frontList = frontList.filter(g => (g.name || "").toLowerCase().includes(frontSearchKeyword.toLowerCase()));
             }
             document.getElementById('area-count').innerText = `${translations[currentLang].total}: ${frontList.length}`;
             const nations = ['All', ...new Set(filtered.map(g => g.nation))];
@@ -285,12 +290,37 @@
             renderMain(sortedFront);
             let adminDisplayData = allData;
             if(adminSearchKeyword) {
-                adminDisplayData = allData.filter(g => g.name.toLowerCase().includes(adminSearchKeyword.toLowerCase()));
+                adminDisplayData = allData.filter(g => (g.name || "").toLowerCase().includes(adminSearchKeyword.toLowerCase()));
             }
             renderAdmin(adminDisplayData);
             document.getElementById('back-btn-text').innerText = translations[currentLang].back;
         };
 
+        // 用户功能
+        window.openAuthModal = (m) => { authMode = m; document.getElementById('authTitle').innerText = m.toUpperCase(); document.getElementById('authModal').classList.add('active'); };
+        window.closeAuthModal = () => document.getElementById('authModal').classList.remove('active');
+        window.toggleAuthMode = () => window.openAuthModal(authMode==='login'?'register':'login');
+        
+        window.processAuth = async () => {
+            const e = document.getElementById('authEmail').value; 
+            const p = document.getElementById('authPassword').value;
+            try { 
+                if(authMode === 'register') await createUserWithEmailAndPassword(auth, e, p); 
+                else await signInWithEmailAndPassword(auth, e, p); 
+                window.closeAuthModal(); 
+            } catch(err) { alert(err.message); }
+        };
+
+        window.saveUsername = async () => { 
+            const n = document.getElementById('newUsername').value; 
+            if(!n) return;
+            await setDoc(doc(db, "users", auth.currentUser.uid), {username: n, isAdmin: false}, {merge:true}); 
+            location.reload(); 
+        };
+
+        window.handleLogout = () => signOut(auth);
+
+        // 原有逻辑保持
         window.handleFrontSearch = (val) => { frontSearchKeyword = val; window.renderEverything(); };
         window.handleAdminSearch = (val) => { adminSearchKeyword = val; window.renderEverything(); };
 
@@ -359,8 +389,7 @@
         };
 
         window.handleEdit = (id) => {
-            const g = allData.find(x => x.id === id); 
-            openModal(true); // 传入 true 表示是编辑模式
+            const g = allData.find(x => x.id === id); openModal(true);
             document.getElementById('editId').value = g.id; document.getElementById('gName').value = g.name; 
             document.getElementById('gAge').value = g.age; document.getElementById('gNation').value = g.nation; 
             document.getElementById('gCup').value = g.cup; document.getElementById('gHeight').value = g.height; 
@@ -426,26 +455,16 @@
             document.getElementById(id).classList.add('active'); window.scrollTo(0,0);
             if(id === 'adminPage' && window.updateSiteStats) window.updateSiteStats();
         }
-        function showAdmin() { if(prompt("Enter Admin Pass") === "KAR#1999") navigateTo('adminPage'); }
-        
-        // 核心功能：打开 Modal 并恢复默认值
         function openModal(isEdit = false) { 
             if(!isEdit) { 
-                document.getElementById('editId').value = ""; 
-                document.getElementById('gPhoto').value = ""; 
-                document.getElementById('gName').value = ""; 
-                document.getElementById('gDesc').value = ""; 
-                
-                // 恢复你要求的默认值
-                document.getElementById('gNation').value = "Vietnam"; 
-                if(window.setPrice) window.setPrice(270);
-                
-                document.getElementById('gStatus').value = "available"; 
-                document.getElementById('gIsHidden').value = "false";
-                document.getElementById('uploadStatus').innerText = "Ready"; 
-                document.getElementById('uploadStatus').style.color = "#666";
-            } 
-            document.getElementById('girlModal').classList.add('active'); 
+                document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; 
+                document.getElementById('gName').value = ""; document.getElementById('gDesc').value = ""; 
+                document.getElementById('gStatus').value = "available"; document.getElementById('gIsHidden').value = "false";
+                document.getElementById('uploadStatus').innerText = "Ready"; document.getElementById('uploadStatus').style.color = "#666";
+                // 默认值逻辑
+                document.getElementById('gNation').value = "Vietnam";
+                if(typeof window.setPrice === 'function') window.setPrice(270);
+            } document.getElementById('girlModal').classList.add('active'); 
         }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
     </script>
