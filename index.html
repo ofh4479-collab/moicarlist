@@ -18,9 +18,9 @@
         :root { --gold: #d4af37; --whatsapp: #25D366; }
         body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; margin:0; }
         nav { background: rgba(20, 20, 20, 0.98); padding: 12px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; }
-        .nav-link { cursor: pointer; color: #aaa; font-size: 11px; font-weight: 600; text-transform: uppercase; transition: color 0.3s; }
+        .nav-link { cursor: pointer; color: #aaa; font-size: 11px; font-weight: 600; text-transform: uppercase; transition: color 0.3s; line-height: 1; display: flex; align-items: center; }
         .nav-link:hover { color: var(--gold); }
-        .lang-toggle { color: var(--gold); font-size: 12px; font-weight: bold; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; background: #111; min-width: 40px; }
+        .lang-toggle { color: var(--gold); font-size: 12px; font-weight: bold; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; background: #111; min-width: 40px; height: 24px; display: flex; align-items: center; justify-content: center; }
         .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 35px 20px; text-align: center; border-bottom: 1px solid #222; }
         .area-button { background: #111; border: 1px solid var(--gold); transition: 0.2s; cursor: pointer; font-size: 12px; padding: 8px 4px; border-radius: 8px; color: #fff; }
         .area-button.active { background: var(--gold); color: #000; font-weight: bold; }
@@ -122,7 +122,7 @@
     <nav>
         <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
             <div class="gold-text text-xl cursor-pointer font-bold" onclick="navigateTo('home')">MoiCarList</div>
-            <div class="flex gap-4 items-center">
+            <div class="flex gap-4 items-center h-full">
                 <a id="nav-home" onclick="navigateTo('home')" class="nav-link">HOME</a>
                 <div id="user-info" class="hidden flex items-center gap-3 bg-[#111] px-2 py-1 rounded-full border border-[#222]">
                     <div onclick="navigateTo('userPage')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
@@ -132,7 +132,9 @@
                     <a id="admin-link" onclick="navigateTo('adminPage')" class="nav-link hidden text-blue-400 text-[9px] border-l border-[#333] pl-2">ADMIN</a>
                     <a onclick="window.handleLogout()" class="nav-link text-[9px] text-red-500 border-l border-[#333] pl-2">OUT</a>
                 </div>
-                <div id="auth-buttons"><a onclick="window.openAuthModal('login')" class="nav-link">Login</a></div>
+                <div id="auth-buttons" class="flex items-center">
+                    <a onclick="window.openAuthModal('login')" class="nav-link">Login</a>
+                </div>
                 <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle">EN</button>
             </div>
         </div>
@@ -261,10 +263,10 @@
 
     <div id="authModal" class="modal">
         <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-[#222] text-center">
-            <h3 id="authTitle" class="gold-text font-bold mb-6">LOGIN</h3>
+            <h3 id="authTitle" class="gold-text font-bold mb-6 text-sm uppercase">LOGIN</h3>
             <input type="email" id="authEmail" placeholder="Email">
             <input type="password" id="authPassword" placeholder="Password">
-            <button onclick="window.processAuth()" class="btn-gold">Proceed</button>
+            <button id="authBtn" onclick="window.processAuth()" class="btn-gold uppercase">Login</button>
             <p id="authToggleText" onclick="window.toggleAuthMode()" class="text-[10px] text-gray-500 mt-4 cursor-pointer underline">Switch to Register</p>
             <button onclick="window.closeAuthModal()" class="mt-4 text-xs opacity-50">CANCEL</button>
         </div>
@@ -336,9 +338,25 @@
             } else { userInfo.classList.add('hidden'); adminLink.classList.add('hidden'); authBtns.classList.remove('hidden'); currentUserData = null; userVotes = {}; }
         });
 
+        // 修复图三：确保 processAuth 根据 authMode 执行正确动作
         window.processAuth = async () => {
             const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
-            try { authMode === 'register' ? await createUserWithEmailAndPassword(auth, e, p) : await signInWithEmailAndPassword(auth, e, p); window.closeAuthModal(); } catch(err) { alert(err.message); }
+            if(!e || !p) { alert("Please fill all fields."); return; }
+            try { 
+                if (authMode === 'register') {
+                    await createUserWithEmailAndPassword(auth, e, p);
+                } else {
+                    await signInWithEmailAndPassword(auth, e, p);
+                }
+                window.closeAuthModal(); 
+            } catch(err) { alert(err.message); }
+        };
+
+        window.toggleAuthMode = () => {
+            authMode = authMode === 'login' ? 'register' : 'login';
+            document.getElementById('authTitle').innerText = authMode.toUpperCase();
+            document.getElementById('authBtn').innerText = authMode === 'login' ? 'Login' : 'Register';
+            document.getElementById('authToggleText').innerText = authMode === 'login' ? "Switch to Register" : "Switch to Login";
         };
 
         window.saveUsername = async () => { 
@@ -392,61 +410,33 @@
             }
         };
 
-        // --- 修复评论逻辑：添加冷却和内容限制 ---
         window.submitComment = async (girlId) => {
             if (!auth.currentUser) { window.openAuthModal('login'); return; }
             const text = document.getElementById('commentText').value.trim();
             if (!text) return;
-
-            // 1. 限制内容（邮箱和连续6位数字/电话）
-            if (text.includes('@')) {
-                alert("Security Alert: Email addresses are not allowed.");
-                return;
-            }
-            const phoneRegex = /\d{6,}/; 
-            if (phoneRegex.test(text)) {
-                alert("Security Alert: Sharing phone numbers or sequences is not allowed.");
-                return;
-            }
-
-            // 2. 冷却时间逻辑 (3分钟 = 180000 毫秒)
-            const COOL_DOWN = 3 * 60 * 1000;
             const now = Date.now();
-            
-            // 从本地检查
+            const COOL_DOWN = 3 * 60 * 1000;
             const lastTimeLocal = localStorage.getItem(`lastPost_${auth.currentUser.uid}`);
             if (lastTimeLocal && (now - lastTimeLocal < COOL_DOWN)) {
                 const wait = Math.ceil((COOL_DOWN - (now - lastTimeLocal)) / 60000);
                 alert(`Please wait ${wait} more minute(s) before posting again.`);
                 return;
             }
-
-            // 从数据库检查（双重保险）
             if (currentUserData.lastCommentAt && (now - currentUserData.lastCommentAt < COOL_DOWN)) {
                 const wait = Math.ceil((COOL_DOWN - (now - currentUserData.lastCommentAt)) / 60000);
                 alert(`System: Please wait ${wait} minute(s).`);
                 return;
             }
-
+            if (text.includes('@') || /\d{6,}/.test(text)) {
+                alert("Security Alert: Personal contact info not allowed.");
+                return;
+            }
             try {
-                // 发布评论
-                await addDoc(collection(db, "comments"), { 
-                    girlId, 
-                    uid: auth.currentUser.uid, 
-                    username: currentUserData.username, 
-                    avatar: currentUserData.avatar || "", 
-                    text, 
-                    likes: 0, 
-                    dislikes: 0, 
-                    createdAt: now 
-                });
-
-                // 更新限制时间
+                await addDoc(collection(db, "comments"), { girlId, uid: auth.currentUser.uid, username: currentUserData.username, avatar: currentUserData.avatar || "", text, likes: 0, dislikes: 0, createdAt: now });
                 localStorage.setItem(`lastPost_${auth.currentUser.uid}`, now);
                 await updateDoc(doc(db, "users", auth.currentUser.uid), { lastCommentAt: now });
-
                 document.getElementById('commentText').value = "";
-                alert("Review posted successfully!");
+                alert("Review posted!");
             } catch (err) { console.error(err); }
         };
 
@@ -577,75 +567,47 @@
             const file = e.target.files[0]; if (!file) return; 
             const container = document.getElementById('avatarContainer');
             const overlayText = document.getElementById('avatarOverlayText');
-            container.classList.add('uploading');
-            overlayText.innerText = "UPLOADING...";
+            container.classList.add('uploading'); overlayText.innerText = "UPLOADING...";
             const formData = new FormData(); formData.append('image', file); 
             try { 
                 const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData }); 
-                const r = await res.json(); 
-                if (r.success) { 
-                    await updateDoc(doc(db, "users", auth.currentUser.uid), { avatar: r.data.url }); 
-                } 
-            } catch (err) { 
-                console.error(err);
-                alert("Upload failed.");
-            } finally {
-                container.classList.remove('uploading');
-                overlayText.innerText = "CHANGE";
-            }
+                const r = await res.json(); if (r.success) { await updateDoc(doc(db, "users", auth.currentUser.uid), { avatar: r.data.url }); } 
+            } catch (err) { console.error(err); alert("Upload failed."); } finally { container.classList.remove('uploading'); overlayText.innerText = "CHANGE"; }
         });
 
         document.getElementById('fileInput').addEventListener('change', async (e) => { 
             const file = e.target.files[0]; if (!file) return; 
-            const status = document.getElementById('uploadStatus');
-            status.innerText = "Uploading...";
+            const status = document.getElementById('uploadStatus'); status.innerText = "Uploading...";
             const formData = new FormData(); formData.append('image', file); 
             try { 
                 const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData }); 
-                const r = await res.json(); 
-                if (r.success) { 
-                    document.getElementById('gPhoto').value = r.data.url; 
-                    status.innerText = "Success!"; 
-                } 
+                const r = await res.json(); if (r.success) { document.getElementById('gPhoto').value = r.data.url; status.innerText = "Success!"; } 
             } catch (err) { status.innerText = "Error!"; } 
         });
 
         window.handleCheckIn = async () => { 
             const today = new Date().toISOString().split('T')[0]; 
-            if(currentUserData && currentUserData.lastCheckIn !== today) {
-                await updateDoc(doc(db, "users", auth.currentUser.uid), { points: increment(10), lastCheckIn: today }); 
-            }
+            if(currentUserData && currentUserData.lastCheckIn !== today) { await updateDoc(doc(db, "users", auth.currentUser.uid), { points: increment(10), lastCheckIn: today }); }
         };
 
         function checkCheckInStatus() { 
             const today = new Date().toISOString().split('T')[0]; 
             const btn = document.getElementById('btn-checkin-action'); 
-            if(btn && currentUserData && currentUserData.lastCheckIn === today) { 
-                btn.disabled = true; btn.innerText = "Already Checked In"; 
-            } else if(btn) { 
-                btn.disabled = false; btn.innerText = "Daily Check In"; 
-            } 
+            if(btn && currentUserData && currentUserData.lastCheckIn === today) { btn.disabled = true; btn.innerText = "Already Checked In"; } 
+            else if(btn) { btn.disabled = false; btn.innerText = "Daily Check In"; } 
         }
 
         window.confirmChangeName = async () => { 
             const newName = document.getElementById('updatedUsername').value.trim(); 
-            if(!newName || (currentUserData.points||0) < 100) { alert("Insufficient points or empty name!"); return; } 
+            if(!newName || (currentUserData.points||0) < 100) { alert("Insufficient points!"); return; } 
             await updateDoc(doc(db, "users", auth.currentUser.uid), { username: newName, points: increment(-100) }); 
             document.getElementById('changeNameModal').classList.remove('active'); 
         };
 
-        window.openChangeNameModal = () => { 
-            document.getElementById('updatedUsername').value = currentUserData.username; 
-            document.getElementById('changeNameModal').classList.add('active'); 
-        };
-
+        window.openChangeNameModal = () => { document.getElementById('updatedUsername').value = currentUserData.username; document.getElementById('changeNameModal').classList.add('active'); };
         window.handleFrontSearch = (val) => { frontSearchKeyword = val; window.renderEverything(); };
         window.handleAdminSearch = (val) => { adminSearchKeyword = val; window.renderEverything(); };
-        window.clearSearch = (type) => { 
-            if(type==='front') { document.getElementById('frontSearch').value=''; frontSearchKeyword=''; } 
-            else { document.getElementById('adminSearch').value=''; adminSearchKeyword=''; } 
-            window.renderEverything(); 
-        };
+        window.clearSearch = (type) => { if(type==='front') { document.getElementById('frontSearch').value=''; frontSearchKeyword=''; } else { document.getElementById('adminSearch').value=''; adminSearchKeyword=''; } window.renderEverything(); };
         updateTexts();
     </script>
 
@@ -653,14 +615,16 @@
         function navigateTo(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
         function openModal(isEdit = false) { if(!isEdit) { document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; document.getElementById('gName').value = ""; if(typeof window.setPrice === 'function') window.setPrice(270); } document.getElementById('girlModal').classList.add('active'); }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
+        
+        // 修复图二：打开模态框时重置文字和模式
         window.openAuthModal = m => { 
             authMode = m; 
             document.getElementById('authTitle').innerText = m.toUpperCase(); 
+            document.getElementById('authBtn').innerText = m === 'login' ? 'Login' : 'Register';
             document.getElementById('authToggleText').innerText = (m === 'login' ? "Switch to Register" : "Switch to Login");
             document.getElementById('authModal').classList.add('active'); 
         };
         window.closeAuthModal = () => document.getElementById('authModal').classList.remove('active');
-        window.toggleAuthMode = () => window.openAuthModal(authMode==='login'?'register':'login');
     </script>
 </body>
 </html>
