@@ -11,7 +11,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoiCarList | Professional Services</title>
+    <title>MoiCarList | Luxury Directory</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -20,121 +20,128 @@
         nav { background: rgba(20, 20, 20, 0.98); padding: 12px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; }
         .nav-link { cursor: pointer; color: #aaa; font-size: 11px; font-weight: 600; text-transform: uppercase; transition: color 0.3s; }
         .nav-link:hover { color: var(--gold); }
-        .lang-toggle { color: var(--gold); font-size: 12px; font-weight: bold; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; background: #111; }
-        .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 35px 20px; text-align: center; border-bottom: 1px solid #222; }
-        .area-button { background: #111; border: 1px solid var(--gold); transition: 0.2s; cursor: pointer; font-size: 12px; padding: 8px 4px; border-radius: 8px; color: #fff; }
-        .area-button.active { background: var(--gold); color: #000; font-weight: bold; }
-        .card { background: #0a0a0a; border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: transform 0.3s ease; }
-        .card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .card-img { width: 100%; height: 220px; object-fit: contain; background: #000; border-bottom: 1px solid #111; }
         .gold-text { color: var(--gold); font-weight: 600; }
-        .status-mini { font-size: 9px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
-        .available { background: var(--whatsapp); color: #fff; }
-        .busy { background: #ff453a; color: #fff; }
-        .stop { background: #555; color: #fff; }
-        .search-container { background: #111; border: 1px solid #222; border-radius: 20px; padding: 5px 15px; display: flex; align-items: center; margin-bottom: 15px; }
-        .search-input { background: transparent; border: none; margin: 0; padding: 5px; font-size: 13px; width: 100%; color: white; outline: none; }
+        .card { background: #0a0a0a; border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: 0.3s; cursor:pointer; }
+        .card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .card-img { width: 100%; height: 240px; object-fit: contain; background: #000; }
+        .status-pill { font-size: 9px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+        .available { background: var(--whatsapp); } .busy { background: #ff453a; } .stop { background: #555; }
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
-        input { background: #111; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; width: 100%; margin: 8px 0; outline: none; }
+        input, select, textarea { background: #111; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; width: 100%; margin: 5px 0; }
         .btn-gold { background: var(--gold); color: #000; font-weight: bold; padding: 12px; border-radius: 8px; width: 100%; text-transform: uppercase; }
         #user-display { font-size: 11px; color: var(--gold); font-weight: bold; border-right: 1px solid #333; padding-right: 10px; }
         .divider { position: relative; margin: 20px 0; text-align: center; border-top: 1px solid #222; }
-        .divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #111; padding: 0 10px; color: #555; font-size: 10px; }
+        .divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #000; padding: 0 10px; color: #555; font-size: 10px; }
     </style>
 </head>
 <body>
 
     <script>
+        // 1. 恢复多语言完整字典
         const translations = {
-            en: { welcome: "Welcome to MoiCarList", available: "✨ Available Today", search: "Search name...", booking: "WHATSAPP BOOKING", ovn: "Overnight", back: "← BACK" },
-            cn: { welcome: "欢迎来到 MoiCarList", available: "✨ 今日在线", search: "搜索名字...", booking: "WHATSAPP 预约", ovn: "包夜", back: "← 返回" },
-            bm: { welcome: "Selamat Datang", available: "✨ Tersedia Hari Ini", search: "Cari nama...", booking: "TEMPAHAN WHATSAPP", ovn: "Bermalam", back: "← KEMBALI" }
+            en: { welcome: "Welcome", search: "Search name...", available: "Available Today", booking: "WHATSAPP BOOKING", back: "← BACK", age: "Age", p1: "1 Shot", p2: "2 Shots", p3: "3 Shots", ovn: "Overnight", view: "Views", nation: "Nation" },
+            cn: { welcome: "欢迎", search: "搜索名字...", available: "今日在线", booking: "WHATSAPP 预约", back: "← 返回", age: "年龄", p1: "1发", p2: "2发", p3: "3发", ovn: "包夜", view: "人气", nation: "国籍" },
+            bm: { welcome: "Selamat Datang", search: "Cari nama...", available: "Tersedia Hari Ini", booking: "TEMPAHAN WHATSAPP", back: "← KEMBALI", age: "Umur", p1: "1 Kali", p2: "2 Kali", p3: "3 Kali", ovn: "Bermalam", view: "Paparan", nation: "Negara" }
         };
         let currentLang = 'en';
         function toggleLang() {
             currentLang = currentLang === 'en' ? 'cn' : (currentLang === 'cn' ? 'bm' : 'en');
-            document.getElementById('btn-lang-toggle').innerText = currentLang.toUpperCase();
-            updateTexts();
-        }
-        function updateTexts() {
-            const t = translations[currentLang];
-            document.getElementById('hero-title').innerText = t.welcome;
-            document.getElementById('section-title').innerText = t.available;
-            document.getElementById('frontSearch').placeholder = t.search;
-            if(window.renderEverything) window.renderEverything();
+            document.getElementById('langBtn').innerText = currentLang.toUpperCase();
+            window.renderEverything();
         }
     </script>
 
     <nav>
         <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
-            <div class="gold-text text-xl font-bold cursor-pointer" onclick="navigateTo('home')">MoiCarList</div>
+            <div class="gold-text text-xl font-bold" onclick="navigateTo('home')">MoiCarList</div>
             <div class="flex gap-3 items-center">
                 <div id="user-info" class="hidden flex items-center gap-2">
                     <span id="user-display">老板</span>
-                    <a onclick="handleLogout()" class="nav-link" style="font-size: 9px; color: #ff453a;">Logout</a>
+                    <a onclick="handleLogout()" class="nav-link text-[9px] text-red-500">Logout</a>
                 </div>
-                <div id="auth-buttons">
-                    <a onclick="openAuthModal('login')" class="nav-link">Login</a>
-                </div>
-                <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle">EN</button>
+                <div id="auth-buttons"><a onclick="openAuthModal('login')" class="nav-link">Login</a></div>
+                <button id="langBtn" onclick="toggleLang()" class="gold-text text-xs border border-gray-700 px-2 py-1 rounded">EN</button>
                 <a onclick="showAdmin()" class="nav-link">Admin</a>
             </div>
         </div>
     </nav>
 
     <div id="home" class="page active">
-        <div class="hero-section">
-            <h1 id="hero-title" class="text-2xl md:text-4xl font-bold text-[#d4af37] mb-2">MoiCarList</h1>
-            <p class="text-gray-400 text-xs">Premium Service Directory</p>
+        <div class="hero-section text-center py-10 bg-[#0a0a0a] border-b border-[#111]">
+            <h1 class="text-3xl font-bold gold-text mb-2 tracking-widest">MoiCarList</h1>
+            <p class="text-gray-500 text-[10px] uppercase">Alor Setar • Sungei Petani • Penang • Ipoh</p>
         </div>
         <div class="max-w-6xl mx-auto px-4 py-6">
-            <div id="areaButtons" class="grid grid-cols-3 md:grid-cols-5 gap-2 mb-6"></div>
-            <div class="search-container">
-                <input type="text" id="frontSearch" class="search-input" placeholder="Search name..." oninput="window.renderEverything()">
-            </div>
-            <h2 id="section-title" class="text-lg font-bold gold-text mb-4">✨ Available Today</h2>
-            <div id="displayList" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+            <div id="areaButtons" class="flex flex-wrap gap-2 mb-6 justify-center"></div>
+            <input type="text" id="frontSearch" class="search-input w-full bg-[#111] border border-[#222] p-3 rounded-full text-sm mb-6 outline-none" placeholder="Search name..." oninput="window.renderEverything()">
+            <h2 class="gold-text mb-4 text-sm font-bold uppercase tracking-widest">✨ <span id="text-available">Available Today</span></h2>
+            <div id="displayList" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
         </div>
     </div>
 
     <div id="detailPage" class="page">
         <div class="max-w-2xl mx-auto p-4 pb-20">
-            <div id="back-text" class="mb-4 gold-text font-bold cursor-pointer" onclick="navigateTo('home')">← BACK</div>
+            <div onclick="navigateTo('home')" class="mb-4 gold-text font-bold cursor-pointer">← BACK</div>
             <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <div id="adminPage" class="page">
+        <div class="max-w-4xl mx-auto p-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold gold-text">ADMIN PANEL</h2>
+                <button onclick="navigateTo('home')" class="text-xs bg-gray-800 px-3 py-1 rounded">EXIT</button>
+            </div>
+            <div class="bg-[#111] p-4 rounded-xl mb-8 border border-gray-800">
+                <h3 class="font-bold mb-4">Add New Entry</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    <input id="in-name" placeholder="Name">
+                    <input id="in-age" placeholder="Age">
+                    <input id="in-nation" placeholder="Nation">
+                    <input id="in-p1" placeholder="Price 1">
+                    <input id="in-p2" placeholder="Price 2">
+                    <input id="in-p3" placeholder="Price 3">
+                    <input id="in-povn" placeholder="Price Overnight">
+                    <input id="in-whatsapp" placeholder="WhatsApp (e.g. 6012xxx)">
+                    <select id="in-area"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
+                </div>
+                <textarea id="in-desc" placeholder="Description" class="mt-2 w-full"></textarea>
+                <input id="in-photo" placeholder="Photo URL" class="mt-2">
+                <button onclick="window.addGirl()" class="btn-gold mt-4">Save To Database</button>
+            </div>
+            <div id="adminList" class="space-y-2"></div>
         </div>
     </div>
 
     <div id="authModal" class="modal">
         <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-[#222]">
-            <h3 id="authTitle" class="gold-text font-bold mb-6 text-center text-xl">WELCOME</h3>
-            <button onclick="loginWithGoogle()" class="w-full bg-white text-black font-bold py-3 rounded-lg flex items-center justify-center gap-3 text-sm mb-2">
-                <img src="https://www.google.com/favicon.ico" class="w-4 h-4"> Continue with Google
-            </button>
-            <div class="divider"><span>Or Email</span></div>
+            <h3 id="authTitle" class="gold-text font-bold mb-6 text-center text-lg uppercase tracking-widest">Login</h3>
+            <button onclick="loginWithGoogle()" class="w-full bg-white text-black font-bold py-3 rounded-lg flex items-center justify-center gap-3 text-sm mb-2"><img src="https://www.google.com/favicon.ico" class="w-4 h-4"> Continue with Google</button>
+            <div class="divider"><span>Or</span></div>
             <input type="email" id="authEmail" placeholder="Email">
-            <input type="password" id="authPassword" placeholder="Password">
-            <button onclick="processAuth()" class="btn-gold mt-4">Submit</button>
-            <p id="authSwitch" onclick="toggleAuthMode()" class="text-center text-[10px] text-gray-500 mt-6 cursor-pointer underline">No account? Register</p>
-            <button onclick="closeModal('authModal')" class="w-full text-gray-600 mt-4 text-xs">CLOSE</button>
+            <input type="password" id="authPassword" placeholder="Password (min 6 chars)">
+            <button onclick="processAuth()" class="btn-gold mt-4">Proceed</button>
+            <p id="authSwitch" onclick="toggleAuthMode()" class="text-center text-[10px] text-gray-400 mt-6 cursor-pointer underline">New here? Create account</p>
+            <button onclick="closeModal('authModal')" class="w-full text-gray-700 mt-4 text-xs">CANCEL</button>
         </div>
     </div>
 
     <div id="usernameModal" class="modal">
         <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-gold text-center">
-            <h3 class="gold-text font-bold mb-2">Pick A Unique Name</h3>
-            <p class="text-[10px] text-gray-500 mb-6">Everyone will see this name in comments.</p>
-            <input type="text" id="newUsername" placeholder="e.g. Boss99 / 小王">
-            <p id="usernameError" class="text-red-500 text-[10px] mt-1 hidden"></p>
-            <button onclick="saveUsername()" class="btn-gold mt-6">Confirm</button>
+            <h3 class="gold-text font-bold mb-2">Set Your Username</h3>
+            <p class="text-[10px] text-gray-500 mb-6 uppercase">One-time setting. Must be unique!</p>
+            <input type="text" id="newUsername" placeholder="Enter name (e.g. 小王)">
+            <p id="usernameError" class="text-red-500 text-[10px] mt-2 hidden"></p>
+            <button onclick="saveUsername()" class="btn-gold mt-6">Confirm Name</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, increment, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = { 
@@ -145,15 +152,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-
+        
         let currentUser = null;
-        let authMode = 'login';
         let allData = [];
         let currentArea = 'Alor Setar';
+        let authMode = 'login';
 
         // --- AUTH ---
-        window.openAuthModal = (mode) => { authMode = mode; document.getElementById('authModal').classList.add('active'); };
-        window.toggleAuthMode = () => { authMode = authMode === 'login' ? 'register' : 'login'; document.getElementById('authTitle').innerText = authMode.toUpperCase(); };
+        window.openAuthModal = (m) => { authMode = m; document.getElementById('authTitle').innerText = m.toUpperCase(); document.getElementById('authModal').classList.add('active'); };
+        window.toggleAuthMode = () => { authMode = authMode==='login'?'register':'login'; openAuthModal(authMode); };
         window.loginWithGoogle = async () => { try { await signInWithPopup(auth, new GoogleAuthProvider()); closeModal('authModal'); } catch(e){alert(e.message)} };
         window.processAuth = async () => {
             const e = document.getElementById('authEmail').value; const p = document.getElementById('authPassword').value;
@@ -166,9 +173,9 @@
             if(user) {
                 document.getElementById('auth-buttons').classList.add('hidden');
                 document.getElementById('user-info').classList.remove('hidden');
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if(userDoc.exists() && userDoc.data().username) {
-                    document.getElementById('user-display').innerText = userDoc.data().username;
+                const uDoc = await getDoc(doc(db, "users", user.uid));
+                if(uDoc.exists() && uDoc.data().username) {
+                    document.getElementById('user-display').innerText = uDoc.data().username;
                 } else { document.getElementById('usernameModal').classList.add('active'); }
             } else {
                 document.getElementById('auth-buttons').classList.remove('hidden');
@@ -180,22 +187,27 @@
             const name = document.getElementById('newUsername').value.trim();
             const err = document.getElementById('usernameError');
             const check = await getDoc(doc(db, "usernames", name.toLowerCase()));
-            if(check.exists()){ err.innerText="Name Taken!"; err.classList.remove('hidden'); return; }
+            if(check.exists()){ err.innerText="Username Already Taken!"; err.classList.remove('hidden'); return; }
             await setDoc(doc(db, "usernames", name.toLowerCase()), {uid: currentUser.uid});
             await setDoc(doc(db, "users", currentUser.uid), {username: name, points:0}, {merge:true});
             document.getElementById('user-display').innerText = name;
             document.getElementById('usernameModal').classList.remove('active');
         };
 
-        // --- DATA ---
+        // --- 核心业务逻辑 (恢复点击统计和管理功能) ---
         onSnapshot(collection(db, "girls"), (snap) => {
-            allData = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b)=>a.name.localeCompare(b.name));
+            allData = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b)=> (a.name||"").localeCompare(b.name||""));
             window.renderEverything();
+            window.renderAdmin();
         });
 
         window.renderEverything = () => {
+            const t = translations[currentLang];
             const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
-            document.getElementById('areaButtons').innerHTML = areas.map(a => `<button class="area-button ${currentArea===a?'active':''}" onclick="window.selectArea('${a}')">${a}</button>`).join('');
+            document.getElementById('text-available').innerText = t.available;
+            document.getElementById('frontSearch').placeholder = t.search;
+            
+            document.getElementById('areaButtons').innerHTML = areas.map(a => `<button onclick="window.setArea('${a}')" class="px-4 py-2 rounded-full text-xs font-bold border ${currentArea===a?'bg-[#d4af37] text-black border-gold':'border-gray-800 text-gray-500'}">${a}</button>`).join('');
             
             let list = allData.filter(g => g.area === currentArea && !g.isHidden);
             const s = document.getElementById('frontSearch').value.toLowerCase();
@@ -204,42 +216,82 @@
             document.getElementById('displayList').innerHTML = list.map(g => `
                 <div class="card" onclick="window.showDetail('${g.id}')">
                     <img src="${g.photo}" class="card-img">
-                    <div class="p-2">
-                        <div class="flex justify-between items-center mb-1"><span class="font-bold text-sm">${g.name}</span><span class="status-mini ${g.status}">${g.status}</span></div>
-                        <div class="text-[10px] gold-text">${g.age}Y | ${g.cup} | ${g.nation}</div>
+                    <div class="p-3">
+                        <div class="flex justify-between items-center mb-1"><span class="font-bold text-sm">${g.name}</span><span class="status-pill ${g.status}">${g.status}</span></div>
+                        <div class="flex justify-between text-[10px] gold-text opacity-70"><span>${g.age}Y | ${g.nation}</span><span>🔥 ${g.clicks || 0}</span></div>
                     </div>
                 </div>`).join('');
         };
 
-        window.selectArea = (a) => { currentArea = a; window.renderEverything(); };
-
-        window.showDetail = (id) => {
+        window.showDetail = async (id) => {
             const g = allData.find(x => x.id === id);
             const t = translations[currentLang];
+            // 2. 恢复点击统计功能
+            await updateDoc(doc(db, "girls", id), { clicks: increment(1) });
+            
             navigateTo('detailPage');
-            document.getElementById('back-text').innerText = t.back;
             document.getElementById('detailContent').innerHTML = `
-                <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-lg">
-                <h1 class="text-2xl font-bold">${g.name} <span class="text-xs gold-text ml-2">${g.nation}</span></h1>
-                <p class="gold-text text-sm mb-6">${g.age}Y | ${g.cup} | ${g.height}</p>
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <div class="bg-[#111] p-3 rounded flex justify-between text-xs"><span>1Shot</span><span class="gold-text">RM${g.p1}</span></div>
-                    <div class="bg-[#111] p-3 rounded flex justify-between text-xs"><span>2Shot</span><span class="gold-text">RM${g.p2}</span></div>
+                <img src="${g.photo}" class="w-full rounded-2xl mb-4 border border-[#222]">
+                <div class="flex justify-between items-start">
+                    <div><h1 class="text-3xl font-bold">${g.name}</h1><p class="gold-text uppercase tracking-widest text-xs">${g.nation} • ${g.area}</p></div>
+                    <div class="text-right"><span class="status-pill ${g.status} block mb-1">${g.status}</span><span class="text-[10px] text-gray-500">${t.view}: ${g.clicks || 0}</span></div>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mb-6">
-                    <div class="bg-[#111] p-3 rounded flex justify-between text-xs"><span>3Shot</span><span class="gold-text">RM${g.p3}</span></div>
-                    <div class="bg-[#1a1100] border border-gold/30 p-3 rounded flex justify-between text-xs font-bold"><span>${t.ovn}</span><span class="gold-text">RM${g.povn||'??'}</span></div>
+                <div class="grid grid-cols-4 gap-2 my-6 text-center">
+                    <div class="bg-[#111] p-2 rounded"><div class="text-[9px] text-gray-500">${t.age}</div><div class="text-sm font-bold">${g.age}</div></div>
+                    <div class="bg-[#111] p-2 rounded"><div class="text-[9px] text-gray-500">Cup</div><div class="text-sm font-bold">${g.cup}</div></div>
+                    <div class="bg-[#111] p-2 rounded"><div class="text-[9px] text-gray-500">Height</div><div class="text-sm font-bold">${g.height}cm</div></div>
+                    <div class="bg-[#111] p-2 rounded"><div class="text-[9px] text-gray-500">Weight</div><div class="text-sm font-bold">${g.weight}kg</div></div>
                 </div>
-                <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-gold italic mb-6">"${g.desc}"</div>
-                <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-4 rounded-xl text-center shadow-lg">${t.booking}</a>
+                <div class="space-y-2 mb-6">
+                    <div class="flex justify-between bg-[#111] p-3 rounded-lg text-sm"><span>${t.p1}</span><span class="gold-text font-bold">RM${g.p1}</span></div>
+                    <div class="flex justify-between bg-[#111] p-3 rounded-lg text-sm"><span>${t.p2}</span><span class="gold-text font-bold">RM${g.p2}</span></div>
+                    <div class="flex justify-between bg-[#111] p-3 rounded-lg text-sm"><span>${t.p3}</span><span class="gold-text font-bold">RM${g.p3}</span></div>
+                    <div class="flex justify-between bg-[#1a1100] border border-gold/20 p-3 rounded-lg text-sm"><span>🌙 ${t.ovn}</span><span class="gold-text font-bold">RM${g.povn}</span></div>
+                </div>
+                <div class="bg-[#111] p-4 rounded-xl text-gray-400 text-sm italic mb-6 border-l-4 border-gold">"${g.desc}"</div>
+                <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-4 rounded-xl text-center shadow-lg uppercase tracking-widest">${t.booking}</a>
             `;
         };
+
+        // --- ADMIN 功能恢复 ---
+        window.addGirl = async () => {
+            const data = {
+                name: document.getElementById('in-name').value, age: document.getElementById('in-age').value,
+                nation: document.getElementById('in-nation').value, p1: document.getElementById('in-p1').value,
+                p2: document.getElementById('in-p2').value, p3: document.getElementById('in-p3').value,
+                povn: document.getElementById('in-povn').value, whatsapp: document.getElementById('in-whatsapp').value,
+                area: document.getElementById('in-area').value, desc: document.getElementById('in-desc').value,
+                photo: document.getElementById('in-photo').value, status: 'available', clicks: 0, isHidden: false
+            };
+            await addDoc(collection(db, "girls"), data);
+            alert("Added!");
+        };
+
+        window.renderAdmin = () => {
+            document.getElementById('adminList').innerHTML = allData.map(g => `
+                <div class="bg-[#111] p-3 rounded flex justify-between items-center border border-gray-900">
+                    <div class="text-sm font-bold">${g.name} <span class="text-[10px] text-gray-600">(${g.area})</span></div>
+                    <div class="flex gap-2">
+                        <button onclick="window.updateStatus('${g.id}', 'available')" class="bg-green-900 text-[9px] px-2 py-1 rounded">AVAIL</button>
+                        <button onclick="window.updateStatus('${g.id}', 'busy')" class="bg-red-900 text-[9px] px-2 py-1 rounded">BUSY</button>
+                        <button onclick="window.updateStatus('${g.id}', 'stop')" class="bg-gray-800 text-[9px] px-2 py-1 rounded">STOP</button>
+                        <button onclick="window.toggleHide('${g.id}', ${g.isHidden})" class="bg-blue-900 text-[9px] px-2 py-1 rounded">${g.isHidden?'SHOW':'HIDE'}</button>
+                        <button onclick="window.delGirl('${g.id}')" class="text-red-500 font-bold ml-2">×</button>
+                    </div>
+                </div>`).join('');
+        };
+
+        window.updateStatus = (id, s) => updateDoc(doc(db,"girls",id), {status:s});
+        window.toggleHide = (id, h) => updateDoc(doc(db,"girls",id), {isHidden:!h});
+        window.delGirl = (id) => confirm("Delete?") && deleteDoc(doc(db,"girls",id));
+        window.setArea = (a) => { currentArea = a; window.renderEverything(); };
+
+        window.showAdmin = () => { if(prompt("Pass")==="KAR#1999") navigateTo('adminPage'); };
     </script>
 
     <script>
         function navigateTo(id) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function showAdmin() { if(prompt("Pass") === "KAR#1999") alert("Admin login success!"); }
     </script>
 </body>
 </html>
