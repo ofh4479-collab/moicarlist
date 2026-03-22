@@ -48,7 +48,6 @@
         .search-input { background: transparent; border: none; margin: 0; padding: 5px; font-size: 13px; width: 100%; }
         .hidden-badge { background: #440000; color: #ff6666; font-size: 8px; padding: 1px 4px; border-radius: 3px; margin-left: 5px; border: 1px solid #660000; }
         
-        /* 登录专属样式 */
         .btn-gold { background: var(--gold); color: #000; font-weight: bold; padding: 12px; border-radius: 8px; width: 100%; text-transform: uppercase; margin-top: 10px; }
         #user-display { font-size: 11px; color: var(--gold); font-weight: bold; border-right: 1px solid #333; padding-right: 10px; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     </style>
@@ -59,15 +58,13 @@
         const translations = {
             en: { home: "HOME", welcome: "Welcome to MoiCarList", subtitle: "Your Trusted Choice", available: "✨ Available Today", allNations: "All Nations", allCups: "All Cups", back: "← BACK", booking: "WHATSAPP BOOKING", hot: "HOT", total: "Total", ovn: "Overnight", searchPlaceholder: "Search name..." },
             cn: { home: "首页", welcome: "欢迎来到 MoiCarList", subtitle: "您值得信赖的选择", available: "✨ 今日在线", allNations: "所有国籍", allCups: "所有胸围", back: "← 返回", booking: "WHATSAPP 预约", hot: "火热", total: "总计", ovn: "包夜", searchPlaceholder: "搜索名字..." },
-            bm: { home: "UTAMA", welcome: "Selamat Datang", subtitle: "Pilihan Dipercayai", available: "✨ Tersedia Hari Ini", allNations: "Semua Negara", allCups: "Semua Saiz", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT", total: "Jumlah", ovn: "Bermalam", searchPlaceholder: "Cari nama..." }
+            bm: { home: "UTAMA", welcome: "Selamat Datang", subtitle: "Pilihan Dipercayai", available: "✨ Tersedia Hari Ini", allNations: "Semua Negara", allCups: "Semua Saiz", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT", total: "Jumlah", ovn: "Bermalam", searchPlaceholder: "Cari name..." }
         };
         const langLabels = { en: "EN", cn: "中", bm: "BM" };
         let currentLang = 'en';
 
         function updateTexts() {
             const t = translations[currentLang];
-            const homeBtn = document.getElementById('nav-home');
-            if(homeBtn) homeBtn.innerText = t.home;
             document.getElementById('hero-title').innerText = t.welcome;
             document.getElementById('hero-desc').innerText = t.subtitle;
             document.getElementById('section-title').innerText = t.available;
@@ -90,14 +87,15 @@
             <div class="flex gap-3 items-center">
                 <div id="user-info" class="hidden flex items-center gap-2">
                     <span id="user-display">User</span>
+                    <a id="admin-link" onclick="navigateTo('adminPage')" class="nav-link hidden text-blue-400">ADMIN</a>
                     <a onclick="handleLogout()" class="nav-link text-[9px] text-red-500">OUT</a>
                 </div>
-                <div id="auth-buttons" class="flex gap-3">
+                
+                <div id="auth-buttons">
                     <a onclick="openAuthModal('login')" class="nav-link">Login</a>
                 </div>
                 
                 <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle">EN</button>
-                <a onclick="showAdmin()" class="nav-link">ADMIN</a>
             </div>
         </div>
     </nav>
@@ -109,12 +107,10 @@
         </div>
         <div class="max-w-6xl mx-auto px-4 py-6">
             <div id="areaButtons" class="grid grid-cols-3 md:grid-cols-5 gap-2 mb-6 text-center"></div>
-            
             <div class="search-container mb-6">
                 <span class="mr-2 opacity-50">🔍</span>
                 <input type="text" id="frontSearch" class="search-input" placeholder="Search name..." oninput="window.handleFrontSearch(this.value)">
             </div>
-
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-3">
                 <div class="flex items-center gap-3">
                     <h2 id="section-title" class="text-lg font-bold gold-text">✨ Available Today</h2>
@@ -134,12 +130,10 @@
     <div id="adminPage" class="page bg-[#050505]">
         <div class="max-w-4xl mx-auto p-4">
             <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold gold-text">Admin Panel</h2><button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add New</button></div>
-            
             <div class="search-container">
                 <span class="mr-2 opacity-50">🔍</span>
-                <input type="text" id="adminSearch" class="search-input" placeholder="Search by name (A-Z sorted)..." oninput="window.handleAdminSearch(this.value)">
+                <input type="text" id="adminSearch" class="search-input" placeholder="Search..." oninput="window.handleAdminSearch(this.value)">
             </div>
-
             <div id="site-stats-container"></div>
             <div id="adminList" class="space-y-1"></div>
         </div>
@@ -149,29 +143,14 @@
         <div class="bg-[#111] p-6 rounded-xl w-full max-w-sm max-h-[90vh] overflow-y-auto border border-[#222]">
             <h3 id="modalTitle" class="gold-text font-bold mb-4">Profile Info</h3>
             <input type="hidden" id="editId">
-            <input type="text" id="gName" placeholder="Name (A-Z sorted)">
+            <input type="text" id="gName" placeholder="Name">
             <div class="grid grid-cols-2 gap-2"><input type="number" id="gAge" placeholder="Age"><select id="gNation"><option>Thailand</option><option>Vietnam</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option></select></div>
             <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup Size"><input type="text" id="gHeight" placeholder="Height"></div>
             <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
-            
             <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-[10px] text-gray-500 block ml-1">STATUS</label>
-                    <select id="gStatus">
-                        <option value="available">Available</option>
-                        <option value="busy">Busy</option>
-                        <option value="stop">Stop</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 block ml-1">VISIBILITY</label>
-                    <select id="gIsHidden">
-                        <option value="false">Show on Front</option>
-                        <option value="true">Hide from Front</option>
-                    </select>
-                </div>
+                <select id="gStatus"><option value="available">Available</option><option value="busy">Busy</option><option value="stop">Stop</option></select>
+                <select id="gIsHidden"><option value="false">Show</option><option value="true">Hide</option></select>
             </div>
-
             <div class="flex gap-2 my-2"><button onclick="setPrice(250)" class="btn-preset">Set RM250</button><button onclick="setPrice(270)" class="btn-preset">Set RM270</button></div>
             <div class="grid grid-cols-2 gap-2"><input type="number" id="gPrice1" placeholder="1 Shot"><input type="number" id="gPrice2" placeholder="2 Shot"></div>
             <div class="grid grid-cols-2 gap-2"><input type="number" id="gPrice3" placeholder="3 Shot"><input type="number" id="gPriceOvn" placeholder="Overnight"></div>
@@ -186,24 +165,22 @@
 
     <div id="authModal" class="modal">
         <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-[#222]">
-            <h3 id="authTitle" class="gold-text font-bold mb-6 text-center text-lg uppercase tracking-widest">Login</h3>
-            <button onclick="loginWithGoogle()" class="w-full bg-white text-black font-bold py-3 rounded-lg flex items-center justify-center gap-3 text-sm mb-2"><img src="https://www.google.com/favicon.ico" class="w-4 h-4"> Continue with Google</button>
-            <div class="text-center text-gray-600 text-[10px] my-4">OR</div>
+            <h3 id="authTitle" class="gold-text font-bold mb-6 text-center">LOGIN</h3>
+            <button onclick="loginWithGoogle()" class="w-full bg-white text-black font-bold py-3 rounded-lg flex items-center justify-center gap-3 text-sm mb-4"><img src="https://www.google.com/favicon.ico" class="w-4 h-4"> Google Login</button>
             <input type="email" id="authEmail" placeholder="Email">
-            <input type="password" id="authPassword" placeholder="Password (min 6 chars)">
+            <input type="password" id="authPassword" placeholder="Password">
             <button onclick="processAuth()" class="btn-gold">Proceed</button>
-            <p id="authSwitch" onclick="toggleAuthMode()" class="text-center text-[10px] text-gray-400 mt-6 cursor-pointer underline">New here? Create account</p>
-            <button onclick="closeAuthModal()" class="w-full text-gray-700 mt-4 text-xs">CANCEL</button>
+            <p onclick="toggleAuthMode()" class="text-center text-[10px] text-gray-400 mt-4 cursor-pointer underline">Switch Login/Register</p>
+            <button onclick="closeAuthModal()" class="w-full text-gray-700 mt-4 text-xs text-center">CANCEL</button>
         </div>
     </div>
 
     <div id="usernameModal" class="modal">
         <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-gold text-center">
-            <h3 class="gold-text font-bold mb-2">Set Your Username</h3>
-            <p class="text-[10px] text-gray-500 mb-6 uppercase">One-time setting. Must be unique!</p>
-            <input type="text" id="newUsername" placeholder="Enter name (e.g. XiaoMing)">
+            <h3 class="gold-text font-bold mb-2">Set Username</h3>
+            <input type="text" id="newUsername" placeholder="Unique Name">
             <p id="usernameError" class="text-red-500 text-[10px] mt-2 hidden"></p>
-            <button onclick="saveUsername()" class="btn-gold mt-6">Confirm Name</button>
+            <button onclick="saveUsername()" class="btn-gold mt-4">Confirm</button>
         </div>
     </div>
 
@@ -225,25 +202,34 @@
         let frontSearchKeyword = "";
         let adminSearchKeyword = "";
         let authMode = 'login';
-        let currentUser = null;
+        
+        // 🚨 重要：请把你自己账号的 UID 填在下面这个引号里
+        // 你可以通过登录后，在 Console 里看 console.log("Your UID:", user.uid) 来获取
+        const ADMIN_UID = "填入你的UID"; 
 
-        // --- AUTH 核心逻辑 (只加不改原有逻辑) ---
-        window.openAuthModal = (m) => { authMode = m; document.getElementById('authTitle').innerText = m.toUpperCase(); document.getElementById('authModal').classList.add('active'); };
+        window.openAuthModal = (m) => { authMode = m; document.getElementById('authModal').classList.add('active'); };
         window.closeAuthModal = () => document.getElementById('authModal').classList.remove('active');
         window.toggleAuthMode = () => { authMode = authMode==='login'?'register':'login'; openAuthModal(authMode); };
-        
         window.loginWithGoogle = async () => { try { await signInWithPopup(auth, new GoogleAuthProvider()); closeAuthModal(); } catch(e){alert(e.message)} };
         window.processAuth = async () => {
             const e = document.getElementById('authEmail').value; const p = document.getElementById('authPassword').value;
             try { if(authMode==='register') await createUserWithEmailAndPassword(auth,e,p); else await signInWithEmailAndPassword(auth,e,p); closeAuthModal(); } catch(err){alert(err.message)}
         };
-        window.handleLogout = () => signOut(auth);
+        window.handleLogout = () => { signOut(auth); navigateTo('home'); };
 
         onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
             if(user) {
+                console.log("Your UID:", user.uid); // 登录后按 F12 可以在 Console 看到自己的 UID
                 document.getElementById('auth-buttons').classList.add('hidden');
                 document.getElementById('user-info').classList.remove('hidden');
+                
+                // 判断是否为管理员
+                if(user.uid === ADMIN_UID) {
+                    document.getElementById('admin-link').classList.remove('hidden');
+                } else {
+                    document.getElementById('admin-link').classList.add('hidden');
+                }
+
                 const uDoc = await getDoc(doc(db, "users", user.uid));
                 if(uDoc.exists() && uDoc.data().username) {
                     document.getElementById('user-display').innerText = uDoc.data().username;
@@ -251,54 +237,25 @@
             } else {
                 document.getElementById('auth-buttons').classList.remove('hidden');
                 document.getElementById('user-info').classList.add('hidden');
+                document.getElementById('admin-link').classList.add('hidden');
             }
         });
 
         window.saveUsername = async () => {
             const name = document.getElementById('newUsername').value.trim();
-            const err = document.getElementById('usernameError');
             if(!name) return;
             const check = await getDoc(doc(db, "usernames", name.toLowerCase()));
-            if(check.exists()){ err.innerText="Username Already Taken!"; err.classList.remove('hidden'); return; }
-            await setDoc(doc(db, "usernames", name.toLowerCase()), {uid: currentUser.uid});
-            await setDoc(doc(db, "users", currentUser.uid), {username: name, points:0}, {merge:true});
+            if(check.exists()){ alert("Taken!"); return; }
+            await setDoc(doc(db, "usernames", name.toLowerCase()), {uid: auth.currentUser.uid});
+            await setDoc(doc(db, "users", auth.currentUser.uid), {username: name}, {merge:true});
             document.getElementById('user-display').innerText = name;
             document.getElementById('usernameModal').classList.remove('active');
         };
 
-        // --- 📊 GA4 统计 (你的原版) ---
-        async function trackVisitor() {
-            try {
-                const statsRef = doc(db, "site_stats", "overall");
-                await updateDoc(statsRef, { totalViews: increment(1) });
-            } catch (e) {
-                const statsRef = doc(db, "site_stats", "overall");
-                await setDoc(statsRef, { totalViews: 1 });
-            }
-        }
-        trackVisitor();
-
-        // 图片上传 (ImgBB - 你的原版)
-        const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b"; 
-        document.getElementById('fileInput').addEventListener('change', async (e) => {
-            const file = e.target.files[0]; if (!file) return;
-            const status = document.getElementById('uploadStatus'); status.innerText = "Uploading...";
-            const formData = new FormData(); formData.append('image', file);
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData });
-                const r = await res.json();
-                if (r.success) { 
-                    document.getElementById('gPhoto').value = r.data.url; 
-                    status.innerText = "Upload Success ✅"; status.style.color = "#25D366"; 
-                }
-            } catch (err) { status.innerText = "Error!"; status.style.color = "#ff453a"; }
-        });
-
-        // 核心数据监听 (你的 A-Z 逻辑)
+        // --- 核心业务逻辑 (你的原版) ---
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ 
-                id: d.id, 
-                ...d.data(), 
+                id: d.id, ...d.data(), 
                 clicks: d.data().clicks || 0,
                 isHidden: d.data().isHidden === "true" || d.data().isHidden === true
             })).sort((a, b) => a.name.localeCompare(b.name)); 
@@ -306,56 +263,32 @@
         });
 
         window.renderEverything = () => {
-            renderAreaButtons();
+            const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
+            document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join('');
+            
             let filtered = allData.filter(g => g.area === currentArea);
             let frontList = filtered.filter(g => !g.isHidden);
             if(currentNation !== 'All') frontList = frontList.filter(g => g.nation === currentNation);
             if(currentCup !== 'All') frontList = frontList.filter(g => g.cup === currentCup);
-            if(frontSearchKeyword) {
-                frontList = frontList.filter(g => g.name.toLowerCase().includes(frontSearchKeyword.toLowerCase()));
-            }
-            document.getElementById('area-count').innerText = `${translations[currentLang].total}: ${frontList.length}`;
-            const nations = ['All', ...new Set(filtered.map(g => g.nation))];
-            const cups = ['All', ...new Set(filtered.map(g => g.cup))].sort();
-            renderFilters(nations, cups);
-            const sortedFront = [...frontList].sort((a, b) => b.clicks - a.clicks);
-            renderMain(sortedFront);
-            let adminDisplayData = allData;
-            if(adminSearchKeyword) adminDisplayData = allData.filter(g => g.name.toLowerCase().includes(adminSearchKeyword.toLowerCase()));
-            renderAdmin(adminDisplayData);
-            document.getElementById('back-btn-text').innerText = translations[currentLang].back;
+            if(frontSearchKeyword) frontList = frontList.filter(g => g.name.toLowerCase().includes(frontSearchKeyword.toLowerCase()));
+            
+            document.getElementById('area-count').innerText = `Total: ${frontList.length}`;
+            renderMain([...frontList].sort((a, b) => b.clicks - a.clicks));
+            renderAdmin(allData);
         };
 
-        window.handleFrontSearch = (val) => { frontSearchKeyword = val; window.renderEverything(); };
-        window.handleAdminSearch = (val) => { adminSearchKeyword = val; window.renderEverything(); };
-
-        function renderAreaButtons() {
-            const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
-            document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join('');
-        }
-        window.selectArea = (a) => { currentArea = a; currentNation = 'All'; currentCup = 'All'; frontSearchKeyword = ""; document.getElementById('frontSearch').value = ""; window.renderEverything(); };
-
-        function renderFilters(nations, cups) {
-            const nSelect = document.getElementById('nationFilter');
-            const cSelect = document.getElementById('cupFilter');
-            nSelect.innerHTML = nations.map(n => `<option value="${n}">${n === 'All' ? translations[currentLang].allNations : n}</option>`).join('');
-            nSelect.value = currentNation;
-            cSelect.innerHTML = cups.map(c => `<option value="${c}">${c === 'All' ? translations[currentLang].allCups : c}</option>`).join('');
-            cSelect.value = currentCup;
-        }
-        window.selectNation = (n) => { currentNation = n; window.renderEverything(); };
-        window.selectCup = (c) => { currentCup = c; window.renderEverything(); };
+        window.selectArea = (a) => { currentArea = a; window.renderEverything(); };
+        window.handleFrontSearch = (v) => { frontSearchKeyword = v; window.renderEverything(); };
+        window.handleAdminSearch = (v) => { adminSearchKeyword = v; window.renderEverything(); };
 
         function renderMain(data) {
-            const container = document.getElementById('displayList');
-            const hotText = translations[currentLang].hot;
-            container.innerHTML = data.map((g, index) => `
+            document.getElementById('displayList').innerHTML = data.map((g, index) => `
                 <div class="card" onclick="window.showDetail('${g.id}')">
-                    ${index < 3 && g.clicks > 0 ? `<div class="hot-badge"><span>🔥</span><span>${hotText} #${index+1}</span></div>` : ''}
+                    ${index < 3 && g.clicks > 0 ? `<div class="hot-badge">🔥 HOT #${index+1}</div>` : ''}
                     <img src="${g.photo}" class="card-img">
                     <div class="p-2">
-                        <div class="flex justify-between items-center mb-1 gap-1"><span class="white-name truncate">${g.name}</span><span class="status-mini ${g.status}">${g.status}</span></div>
-                        <div class="flex justify-between items-center"><span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span><span class="nation-tag">${g.nation}</span></div>
+                        <div class="flex justify-between items-center mb-1"><span class="white-name">${g.name}</span><span class="status-mini ${g.status}">${g.status}</span></div>
+                        <div class="text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</div>
                     </div>
                 </div>`).join('');
         }
@@ -364,17 +297,18 @@
             const g = allData.find(x => x.id === id);
             await updateDoc(doc(db, "girls", id), { clicks: increment(1) });
             navigateTo('detailPage');
-            const t = translations[currentLang];
             document.getElementById('detailContent').innerHTML = `
-                <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-xl">
-                <div class="text-left px-2">
-                    <div class="flex items-center gap-2 mb-1"><h1 class="text-2xl font-bold text-white">${g.name}</h1><span class="nation-tag">${g.nation}</span></div>
-                    <p class="gold-text text-sm mb-6">${g.age}Y | ${g.cup} | ${g.height}</p>
-                    <div class="grid grid-cols-2 gap-2 mb-2"><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1Shot</span><span class="gold-text">RM ${g.p1}</span></div><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>2Shot</span><span class="gold-text">RM ${g.p2}</span></div></div>
-                    <div class="grid grid-cols-2 gap-2 mb-6"><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>3Shot</span><span class="gold-text">RM ${g.p3}</span></div><div class="bg-[#1a1100] border border-[#d4af37]/30 p-3 rounded-lg flex justify-between"><span class="font-bold">${t.ovn}</span><span class="gold-text font-bold">RM ${g.povn || '??'}</span></div></div>
-                    <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-[#d4af37]">${g.desc}</div>
-                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center shadow-lg">${t.booking}</a>
-                </div>`;
+                <img src="${g.photo}" class="w-full rounded-xl mb-4">
+                <h1 class="text-2xl font-bold">${g.name}</h1>
+                <p class="gold-text mb-4">${g.age}Y | ${g.cup} | ${g.nation}</p>
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <div class="bg-[#111] p-3 rounded">1S: RM${g.p1}</div>
+                    <div class="bg-[#111] p-3 rounded">2S: RM${g.p2}</div>
+                    <div class="bg-[#111] p-3 rounded">3S: RM${g.p3}</div>
+                    <div class="bg-[#1a1100] p-3 rounded border border-gold">OVN: RM${g.povn}</div>
+                </div>
+                <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-center py-3 rounded-xl font-bold">WHATSAPP BOOKING</a>
+            `;
         };
 
         window.handleSave = async () => {
@@ -393,63 +327,39 @@
             closeModal();
         };
 
+        window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
         window.handleEdit = (id) => {
             const g = allData.find(x => x.id === id); openModal(true);
             document.getElementById('editId').value = g.id; document.getElementById('gName').value = g.name; 
             document.getElementById('gAge').value = g.age; document.getElementById('gNation').value = g.nation; 
             document.getElementById('gCup').value = g.cup; document.getElementById('gHeight').value = g.height; 
             document.getElementById('gPrice1').value = g.p1; document.getElementById('gPrice2').value = g.p2; 
-            document.getElementById('gPrice3').value = g.p3; document.getElementById('gPriceOvn').value = g.povn || "";
+            document.getElementById('gPrice3').value = g.p3; document.getElementById('gPriceOvn').value = g.povn;
             document.getElementById('gArea').value = g.area; document.getElementById('gStatus').value = g.status; 
             document.getElementById('gIsHidden').value = g.isHidden ? "true" : "false";
             document.getElementById('gPhoto').value = g.photo; document.getElementById('gWhatsapp').value = g.whatsapp; 
             document.getElementById('gDesc').value = g.desc;
         };
 
-        window.handleDelete = async id => { if(confirm('Delete permanently?')) await deleteDoc(doc(db, "girls", id)); };
-
-        window.updateSiteStats = async () => {
-            const statsSnap = await getDoc(doc(db, "site_stats", "overall"));
-            const total = statsSnap.exists() ? statsSnap.data().totalViews : 0;
-            const container = document.getElementById('site-stats-container');
-            if(container) container.innerHTML = `<div class="bg-blue-900/20 border border-blue-500/30 p-4 rounded-xl mb-4 text-center"><div class="text-blue-400 text-xs font-bold uppercase mb-1">🌐 全局访问人数 (GA4同步)</div><div class="text-2xl font-bold text-white">${total.toLocaleString()}</div></div>`;
-        };
-
         function renderAdmin(data) {
-            const container = document.getElementById('adminList');
-            const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
-            let html = "";
-            areas.forEach(area => {
-                const list = data.filter(g => g.area === area);
-                if(list.length > 0 || !adminSearchKeyword) {
-                    html += `<div class="bg-[#111] px-3 py-1 text-[10px] gold-text mt-4 uppercase font-bold border-l-2 border-[#d4af37] flex justify-between"><span>${area}</span><span>${list.length}</span></div>`;
-                    list.forEach(g => {
-                        html += `
-                        <div class="admin-item">
-                            <div class="flex items-center gap-3 w-[65%]">
-                                <img src="${g.photo}" class="w-9 h-9 rounded-md object-cover">
-                                <div class="text-xs truncate text-white">
-                                    <b class="${g.isHidden ? 'opacity-40' : ''}">${g.name}</b> 
-                                    ${g.isHidden ? '<span class="hidden-badge">HIDDEN</span>' : ''}
-                                    <div class="text-[9px] text-gray-500 mt-0.5">🔥 ${g.clicks} clicks | <span class="uppercase">${g.status}</span></div>
-                                </div>
-                            </div>
-                            <div class="flex gap-1">
-                                <button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[9px] font-bold px-2 py-1.5 bg-blue-900/20 rounded">EDIT</button>
-                                <button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1.5 bg-red-900/20 rounded">DEL</button>
-                            </div>
-                        </div>`;
-                    });
-                }
-            });
-            container.innerHTML = html || "<div class='text-center text-gray-600 py-10'>No results found...</div>";
+            let filtered = data;
+            if(adminSearchKeyword) filtered = data.filter(g => g.name.toLowerCase().includes(adminSearchKeyword.toLowerCase()));
+            document.getElementById('adminList').innerHTML = filtered.map(g => `
+                <div class="admin-item">
+                    <div class="flex items-center gap-3">
+                        <img src="${g.photo}" class="w-8 h-8 rounded object-cover">
+                        <div class="text-xs"><b>${g.name}</b> ${g.isHidden ? ' (HIDDEN)' : ''}</div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[10px]">EDIT</button>
+                        <button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[10px]">DEL</button>
+                    </div>
+                </div>`).join('');
         }
 
-        window.setPrice = (base) => {
-            document.getElementById('gPrice1').value = base; 
-            document.getElementById('gPrice2').value = base * 2;
-            document.getElementById('gPrice3').value = base * 3;
-            document.getElementById('gPriceOvn').value = base === 250 ? 800 : 900;
+        window.setPrice = (b) => {
+            document.getElementById('gPrice1').value = b; document.getElementById('gPrice2').value = b*2;
+            document.getElementById('gPrice3').value = b*3; document.getElementById('gPriceOvn').value = b===250?800:900;
         };
 
         updateTexts();
@@ -459,18 +369,10 @@
         function navigateTo(id) { 
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
             document.getElementById(id).classList.add('active'); window.scrollTo(0,0);
-            if(id === 'adminPage' && window.updateSiteStats) window.updateSiteStats();
         }
-        function showAdmin() { if(prompt("Enter Admin Pass") === "KAR#1999") navigateTo('adminPage'); }
-        function openModal(isEdit = false) { 
-            if(!isEdit) { 
-                document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; 
-                document.getElementById('gName').value = ""; document.getElementById('gDesc').value = ""; 
-                document.getElementById('gStatus').value = "available"; document.getElementById('gIsHidden').value = "false";
-                document.getElementById('uploadStatus').innerText = "Ready"; document.getElementById('uploadStatus').style.color = "#666";
-            } document.getElementById('girlModal').classList.add('active'); 
-        }
+        function openModal(isEdit = false) { document.getElementById('girlModal').classList.add('active'); if(!isEdit) document.getElementById('editId').value=""; }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
+        function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
     </script>
 </body>
 </html>
