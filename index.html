@@ -29,10 +29,6 @@
         .card-img { width: 100%; height: 220px; object-fit: contain; background: #000; border-bottom: 1px solid #111; }
         .gold-text { color: var(--gold); font-weight: 600; }
         .white-name { color: #ffffff; font-weight: 700; font-size: 15px; } 
-        .status-mini { font-size: 9px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
-        .available { background: var(--whatsapp); color: #fff; }
-        .busy { background: #ff453a; color: #fff; }
-        .stop { background: #555; color: #fff; }
         .nation-tag { font-size: 9px; background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.3); }
         .hot-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #d4af37; font-size: 10px; padding: 3px 7px; border-radius: 20px; border: 1px solid #d4af37; font-weight: bold; display: flex; items-center; gap: 3px; z-index: 10; }
         .page { display: none; min-height: 100vh; }
@@ -44,8 +40,10 @@
         .btn-preset { background: #222; font-size: 10px; padding: 5px 8px; border-radius: 4px; color: var(--gold); border: 1px solid #444; }
         .admin-item { background: #0a0a0a; border-bottom: 1px solid #222; padding: 10px 8px; display: flex; align-items: center; justify-content: space-between; }
         .count-pill { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-size: 10px; padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3); }
-        .search-container { background: #111; border: 1px solid #222; border-radius: 20px; padding: 5px 15px; display: flex; align-items: center; margin-bottom: 15px; }
+        .search-container { background: #111; border: 1px solid #222; border-radius: 20px; padding: 5px 15px; display: flex; align-items: center; margin-bottom: 15px; position: relative; }
         .search-input { background: transparent; border: none; margin: 0; padding: 5px; font-size: 13px; width: 100%; color: #fff; }
+        .clear-btn { position: absolute; right: 15px; color: #666; cursor: pointer; font-size: 18px; font-weight: bold; display: none; }
+        .search-container:hover .clear-btn { display: block; }
         .hidden-badge { background: #440000; color: #ff6666; font-size: 8px; padding: 1px 4px; border-radius: 3px; margin-left: 5px; border: 1px solid #660000; }
         .btn-gold { background: var(--gold); color: #000; font-weight: bold; padding: 12px; border-radius: 8px; width: 100%; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
     </style>
@@ -54,9 +52,9 @@
 
     <script>
         const translations = {
-            en: { home: "HOME", welcome: "Welcome to MoiCarList", subtitle: "Your Trusted Choice", available: "✨ Available Today", allNations: "All Nations", allCups: "All Cups", back: "← BACK", booking: "WHATSAPP BOOKING", hot: "HOT", total: "Total", ovn: "Overnight", searchPlaceholder: "Search name..." },
-            cn: { home: "首页", welcome: "欢迎来到 MoiCarList", subtitle: "您值得信赖的选择", available: "✨ 今日在线", allNations: "所有国籍", allCups: "所有胸围", back: "← 返回", booking: "WHATSAPP 预约", hot: "火热", total: "总计", ovn: "包夜", searchPlaceholder: "搜索名字..." },
-            bm: { home: "UTAMA", welcome: "Selamat Datang", subtitle: "Pilihan Dipercayai", available: "✨ Tersedia Hari Ini", allNations: "Semua Negara", allCups: "Semua Saiz", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT", total: "Jumlah", ovn: "Bermalam", searchPlaceholder: "Cari nama..." }
+            en: { home: "HOME", welcome: "Welcome to MoiCarList", subtitle: "Your Trusted Choice", available: "✨ Featured Listings", allNations: "All Nations", allCups: "All Cups", back: "← BACK", booking: "WHATSAPP BOOKING", hot: "HOT", total: "Total", ovn: "Overnight", searchPlaceholder: "Search name..." },
+            cn: { home: "首页", welcome: "欢迎来到 MoiCarList", subtitle: "您值得信赖的选择", available: "✨ 精选展示", allNations: "所有国籍", allCups: "所有胸围", back: "← 返回", booking: "WHATSAPP 预约", hot: "火热", total: "总计", ovn: "包夜", searchPlaceholder: "搜索名字..." },
+            bm: { home: "UTAMA", welcome: "Selamat Datang", subtitle: "Pilihan Dipercayai", available: "✨ Pilihan Utama", allNations: "Semua Negara", allCups: "Semua Saiz", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT", total: "Jumlah", ovn: "Bermalam", searchPlaceholder: "Cari nama..." }
         };
         const langLabels = { en: "EN", cn: "中", bm: "BM" };
         let currentLang = 'en';
@@ -90,9 +88,7 @@
                     <a id="admin-link" onclick="navigateTo('adminPage')" class="nav-link hidden text-blue-400">ADMIN</a>
                     <a onclick="window.handleLogout()" class="nav-link text-[9px] text-red-500">OUT</a>
                 </div>
-                <div id="auth-buttons">
-                    <a onclick="window.openAuthModal('login')" class="nav-link">Login</a>
-                </div>
+                <div id="auth-buttons"><a onclick="window.openAuthModal('login')" class="nav-link">Login</a></div>
                 <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle">EN</button>
             </div>
         </div>
@@ -109,11 +105,12 @@
             <div class="search-container mb-6">
                 <span class="mr-2 opacity-50">🔍</span>
                 <input type="text" id="frontSearch" class="search-input" placeholder="Search name..." oninput="window.handleFrontSearch(this.value)">
+                <span class="clear-btn" onclick="window.clearSearch('front')">&times;</span>
             </div>
 
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-3">
                 <div class="flex items-center gap-3">
-                    <h2 id="section-title" class="text-lg font-bold gold-text">✨ Available Today</h2>
+                    <h2 id="section-title" class="text-lg font-bold gold-text">✨ Featured Listings</h2>
                     <span id="area-count" class="count-pill">Total: 0</span>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
@@ -149,9 +146,13 @@
     <div id="adminPage" class="page bg-[#050505]">
         <div class="max-w-4xl mx-auto p-4">
             <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold gold-text">Admin Panel</h2><button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add New</button></div>
+            
+            <div id="adminAreaButtons" class="grid grid-cols-3 md:grid-cols-5 gap-2 mb-6 text-center"></div>
+
             <div class="search-container">
                 <span class="mr-2 opacity-50">🔍</span>
                 <input type="text" id="adminSearch" class="search-input" placeholder="Search by name (A-Z sorted)..." oninput="window.handleAdminSearch(this.value)">
+                <span class="clear-btn" onclick="window.clearSearch('admin')">&times;</span>
             </div>
             <div id="site-stats-container"></div>
             <div id="adminList" class="space-y-1"></div>
@@ -166,12 +167,7 @@
             <div class="grid grid-cols-2 gap-2">
                 <input type="number" id="gAge" placeholder="Age">
                 <select id="gNation">
-                    <option>Vietnam</option>
-                    <option>Thailand</option>
-                    <option>Malaysia</option>
-                    <option>Indonesia</option>
-                    <option>Laos</option>
-                    <option>China</option>
+                    <option>Vietnam</option><option>Thailand</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option>
                 </select>
             </div>
             <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup Size"><input type="text" id="gHeight" placeholder="Height"></div>
@@ -211,12 +207,10 @@
         let adminSearchKeyword = "";
         let authMode = 'login';
 
-        // 🔐 用户认证监听
         onAuthStateChanged(auth, async (user) => {
             const adminLink = document.getElementById('admin-link');
             const userInfo = document.getElementById('user-info');
             const authBtns = document.getElementById('auth-buttons');
-            
             if(user) {
                 userInfo.classList.remove('hidden');
                 authBtns.classList.add('hidden');
@@ -224,29 +218,21 @@
                 if(uDoc.exists()) {
                     document.getElementById('user-display').innerText = uDoc.data().username;
                     if(uDoc.data().isAdmin === true) adminLink.classList.remove('hidden');
-                } else { 
-                    document.getElementById('usernameModal').classList.add('active'); 
-                }
+                } else { document.getElementById('usernameModal').classList.add('active'); }
             } else {
-                userInfo.classList.add('hidden');
-                adminLink.classList.add('hidden');
-                authBtns.classList.remove('hidden');
+                userInfo.classList.add('hidden'); adminLink.classList.add('hidden'); authBtns.classList.remove('hidden');
             }
         });
 
-        // 📊 GA4 统计
         async function trackVisitor() {
             try {
                 const statsRef = doc(db, "site_stats", "overall");
                 await updateDoc(statsRef, { totalViews: increment(1) });
-            } catch (e) {
-                const statsRef = doc(db, "site_stats", "overall");
-                await setDoc(statsRef, { totalViews: 1 });
-            }
+            } catch (e) { await setDoc(doc(db, "site_stats", "overall"), { totalViews: 1 }); }
         }
         trackVisitor();
 
-        // 图片上传 (ImgBB)
+        // 图片上传
         const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b"; 
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0]; if (!file) return;
@@ -262,11 +248,9 @@
             } catch (err) { status.innerText = "Error!"; status.style.color = "#ff453a"; }
         });
 
-        // 核心数据监听 (同步 A-Z 排序)
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ 
-                id: d.id, 
-                ...d.data(), 
+                id: d.id, ...d.data(), 
                 clicks: d.data().clicks || 0,
                 isHidden: d.data().isHidden === "true" || d.data().isHidden === true
             })).sort((a, b) => (a.name || "").localeCompare(b.name || ""));
@@ -275,28 +259,38 @@
 
         window.renderEverything = () => {
             renderAreaButtons();
+            
+            // 地区过滤数据
             let filtered = allData.filter(g => g.area === currentArea);
+            
+            // 前台显示数据（排除隐藏的小姐）
             let frontList = filtered.filter(g => !g.isHidden);
+            
+            // 动态生成 Cup 选项（只显示当前地区且未隐藏的小姐的 Cup）
+            const dynamicCups = ['All', ...new Set(frontList.map(g => g.cup))].sort();
+            const nations = ['All', ...new Set(filtered.map(g => g.nation))];
+            renderFilters(nations, dynamicCups);
+
+            // 前台二级过滤
             if(currentNation !== 'All') frontList = frontList.filter(g => g.nation === currentNation);
             if(currentCup !== 'All') frontList = frontList.filter(g => g.cup === currentCup);
             if(frontSearchKeyword) {
                 frontList = frontList.filter(g => (g.name || "").toLowerCase().includes(frontSearchKeyword.toLowerCase()));
             }
+
             document.getElementById('area-count').innerText = `${translations[currentLang].total}: ${frontList.length}`;
-            const nations = ['All', ...new Set(filtered.map(g => g.nation))];
-            const cups = ['All', ...new Set(filtered.map(g => g.cup))].sort();
-            renderFilters(nations, cups);
             const sortedFront = [...frontList].sort((a, b) => b.clicks - a.clicks);
             renderMain(sortedFront);
-            let adminDisplayData = allData;
+
+            // 后台显示数据（按地区按钮过滤）
+            let adminList = filtered;
             if(adminSearchKeyword) {
-                adminDisplayData = allData.filter(g => (g.name || "").toLowerCase().includes(adminSearchKeyword.toLowerCase()));
+                adminList = allData.filter(g => (g.name || "").toLowerCase().includes(adminSearchKeyword.toLowerCase()));
             }
-            renderAdmin(adminDisplayData);
+            renderAdmin(adminList);
             document.getElementById('back-btn-text').innerText = translations[currentLang].back;
         };
 
-        // 用户功能
         window.openAuthModal = (m) => { authMode = m; document.getElementById('authTitle').innerText = m.toUpperCase(); document.getElementById('authModal').classList.add('active'); };
         window.closeAuthModal = () => document.getElementById('authModal').classList.remove('active');
         window.toggleAuthMode = () => window.openAuthModal(authMode==='login'?'register':'login');
@@ -312,23 +306,29 @@
         };
 
         window.saveUsername = async () => { 
-            const n = document.getElementById('newUsername').value; 
-            if(!n) return;
+            const n = document.getElementById('newUsername').value; if(!n) return;
             await setDoc(doc(db, "users", auth.currentUser.uid), {username: n, isAdmin: false}, {merge:true}); 
             location.reload(); 
         };
 
         window.handleLogout = () => signOut(auth);
 
-        // 原有逻辑保持
+        window.clearSearch = (type) => {
+            if(type === 'front') { frontSearchKeyword = ""; document.getElementById('frontSearch').value = ""; }
+            else { adminSearchKeyword = ""; document.getElementById('adminSearch').value = ""; }
+            window.renderEverything();
+        }
+
         window.handleFrontSearch = (val) => { frontSearchKeyword = val; window.renderEverything(); };
         window.handleAdminSearch = (val) => { adminSearchKeyword = val; window.renderEverything(); };
 
         function renderAreaButtons() {
             const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
-            document.getElementById('areaButtons').innerHTML = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join('');
+            const btnHtml = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join('');
+            document.getElementById('areaButtons').innerHTML = btnHtml;
+            document.getElementById('adminAreaButtons').innerHTML = btnHtml;
         }
-        window.selectArea = (a) => { currentArea = a; currentNation = 'All'; currentCup = 'All'; frontSearchKeyword = ""; document.getElementById('frontSearch').value = ""; window.renderEverything(); };
+        window.selectArea = (a) => { currentArea = a; currentNation = 'All'; currentCup = 'All'; frontSearchKeyword = ""; adminSearchKeyword = ""; document.getElementById('frontSearch').value = ""; document.getElementById('adminSearch').value = ""; window.renderEverything(); };
 
         function renderFilters(nations, cups) {
             const nSelect = document.getElementById('nationFilter');
@@ -349,7 +349,7 @@
                     ${index < 3 && g.clicks > 0 ? `<div class="hot-badge"><span>🔥</span><span>${hotText} #${index+1}</span></div>` : ''}
                     <img src="${g.photo}" class="card-img">
                     <div class="p-2">
-                        <div class="flex justify-between items-center mb-1 gap-1"><span class="white-name truncate">${g.name}</span><span class="status-mini ${g.status}">${g.status}</span></div>
+                        <div class="flex justify-between items-center mb-1 gap-1"><span class="white-name truncate">${g.name}</span></div>
                         <div class="flex justify-between items-center"><span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span><span class="nation-tag">${g.nation}</span></div>
                     </div>
                 </div>`).join('');
@@ -411,32 +411,25 @@
 
         function renderAdmin(data) {
             const container = document.getElementById('adminList');
-            const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh'];
             let html = "";
-            areas.forEach(area => {
-                const list = data.filter(g => g.area === area);
-                if(list.length > 0 || !adminSearchKeyword) {
-                    html += `<div class="bg-[#111] px-3 py-1 text-[10px] gold-text mt-4 uppercase font-bold border-l-2 border-[#d4af37] flex justify-between"><span>${area}</span><span>${list.length}</span></div>`;
-                    list.forEach(g => {
-                        html += `
-                        <div class="admin-item">
-                            <div class="flex items-center gap-3 w-[65%]">
-                                <img src="${g.photo}" class="w-9 h-9 rounded-md object-cover">
-                                <div class="text-xs truncate text-white">
-                                    <b class="${g.isHidden ? 'opacity-40' : ''}">${g.name}</b> 
-                                    ${g.isHidden ? '<span class="hidden-badge">HIDDEN</span>' : ''}
-                                    <div class="text-[9px] text-gray-500 mt-0.5">🔥 ${g.clicks} clicks | <span class="uppercase">${g.status}</span></div>
-                                </div>
-                            </div>
-                            <div class="flex gap-1">
-                                <button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[9px] font-bold px-2 py-1.5 bg-blue-900/20 rounded">EDIT</button>
-                                <button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1.5 bg-red-900/20 rounded">DEL</button>
-                            </div>
-                        </div>`;
-                    });
-                }
+            data.forEach(g => {
+                html += `
+                <div class="admin-item">
+                    <div class="flex items-center gap-3 w-[65%]">
+                        <img src="${g.photo}" class="w-9 h-9 rounded-md object-cover">
+                        <div class="text-xs truncate text-white">
+                            <b class="${g.isHidden ? 'opacity-40' : ''}">${g.name}</b> 
+                            ${g.isHidden ? '<span class="hidden-badge">HIDDEN</span>' : ''}
+                            <div class="text-[9px] text-gray-500 mt-0.5">🔥 ${g.clicks} clicks | <span class="uppercase">${g.status}</span></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-1">
+                        <button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[9px] font-bold px-2 py-1.5 bg-blue-900/20 rounded">EDIT</button>
+                        <button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1.5 bg-red-900/20 rounded">DEL</button>
+                    </div>
+                </div>`;
             });
-            container.innerHTML = html || "<div class='text-center text-gray-600 py-10'>No results found...</div>";
+            container.innerHTML = html || "<div class='text-center text-gray-600 py-10'>No results found in this area...</div>";
         }
 
         window.setPrice = (base) => {
@@ -461,7 +454,6 @@
                 document.getElementById('gName').value = ""; document.getElementById('gDesc').value = ""; 
                 document.getElementById('gStatus').value = "available"; document.getElementById('gIsHidden').value = "false";
                 document.getElementById('uploadStatus').innerText = "Ready"; document.getElementById('uploadStatus').style.color = "#666";
-                // 默认值逻辑
                 document.getElementById('gNation').value = "Vietnam";
                 if(typeof window.setPrice === 'function') window.setPrice(270);
             } document.getElementById('girlModal').classList.add('active'); 
