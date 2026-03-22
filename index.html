@@ -7,7 +7,641 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-MD8RMMY2TZ');
+    </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MD8RMMY2TZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MD8RMMY2TZ');
     </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoiCarList | Professional Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --gold: #d4af37; --whatsapp: #25D366; }
+        body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; margin:0; }
+        nav { background: rgba(20, 20, 20, 0.98); padding: 12px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; }
+        .nav-link { cursor: pointer; color: #aaa; font-size: 11px; font-weight: 600; text-transform: uppercase; transition: color 0.3s; }
+        .nav-link:hover { color: var(--gold); }
+        .lang-toggle { color: var(--gold); font-size: 12px; font-weight: bold; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; background: #111; min-width: 40px; }
+        .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); padding: 35px 20px; text-align: center; border-bottom: 1px solid #222; }
+        .area-button { background: #111; border: 1px solid var(--gold); transition: 0.2s; cursor: pointer; font-size: 12px; padding: 8px 4px; border-radius: 8px; color: #fff; }
+        .area-button.active { background: var(--gold); color: #000; font-weight: bold; }
+        .card { background: #0a0a0a; border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a; position: relative; transition: transform 0.3s ease; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .card-img { width: 100%; height: 220px; object-fit: contain; background: #000; border-bottom: 1px solid #111; }
+        .gold-text { color: var(--gold); font-weight: 600; }
+        .white-name { color: #ffffff; font-weight: 700; font-size: 15px; } 
+        .nation-tag { font-size: 9px; background: rgba(212, 175, 55, 0.1); color: var(--gold); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        .hot-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #d4af37; font-size: 10px; padding: 3px 7px; border-radius: 20px; border: 1px solid #d4af37; font-weight: bold; display: flex; items-center; gap: 3px; z-index: 10; }
+        .page { display: none; min-height: 100vh; }
+        .page.active { display: block; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; padding: 15px; }
+        .modal.active { display: flex; }
+        input, select, textarea { background: #111; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 6px; width: 100%; margin: 4px 0; font-size: 14px; outline: none; }
+        input:focus { border-color: var(--gold); }
+        .btn-preset { background: #222; font-size: 10px; padding: 5px 8px; border-radius: 4px; color: var(--gold); border: 1px solid #444; }
+        .admin-item { background: #0a0a0a; border-bottom: 1px solid #222; padding: 10px 8px; display: flex; align-items: center; justify-content: space-between; }
+        .count-pill { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-size: 10px; padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        .search-container { background: #111; border: 1px solid #222; border-radius: 20px; padding: 5px 15px; display: flex; align-items: center; margin-bottom: 15px; position: relative; }
+        .search-input { background: transparent; border: none; margin: 0; padding: 5px; font-size: 13px; width: 100%; color: #fff; }
+        .clear-btn { position: absolute; right: 15px; color: #666; cursor: pointer; font-size: 18px; font-weight: bold; display: none; }
+        .search-container:hover .clear-btn { display: block; }
+        .btn-gold { background: var(--gold); color: #000; font-weight: bold; padding: 12px; border-radius: 8px; width: 100%; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
+
+        /* --- 个人中心美化样式 --- */
+        .user-card { 
+            background: linear-gradient(145deg, #151515 0%, #050505 100%); 
+            border: 1px solid rgba(212, 175, 55, 0.3); 
+            border-radius: 24px; padding: 40px 20px; margin-top: 20px;
+        }
+        .avatar-container { 
+            position: relative; width: 100px; height: 100px; margin: 0 auto 15px; 
+            border: 2px solid var(--gold); border-radius: 50%; padding: 3px; cursor: pointer;
+            background: #111; overflow: hidden;
+        }
+        .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .avatar-overlay { 
+            position: absolute; inset: 0; background: rgba(0,0,0,0.5); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 10px; color: var(--gold); font-weight: bold; opacity: 0; transition: 0.2s; 
+        }
+        .avatar-container:hover .avatar-overlay { opacity: 1; }
+        .point-box {
+            background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+            border-radius: 15px; padding: 15px; color: #000; 
+            display: flex; justify-content: space-between; align-items: center; margin: 20px 0;
+        }
+        .btn-checkin { 
+            width: 100%; padding: 14px; border-radius: 12px; background: #fff; 
+            color: #000; font-size: 14px; font-weight: 700; transition: 0.2s; 
+        }
+        .btn-checkin:disabled { opacity: 0.5; background: #555; }
+        
+        .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .admin-tab-btn { color: #666; font-size: 12px; font-weight: bold; padding: 5px 15px; cursor: pointer; border-radius: 5px; }
+        .admin-tab-btn.active { color: var(--gold); background: rgba(212, 175, 55, 0.1); }
+        .comment-section { background: #0a0a0a; border: 1px solid #222; border-radius: 15px; padding: 15px; margin-top: 25px; }
+        .comment-input { background: #111; border: 1px solid #333; border-radius: 8px; padding: 10px; font-size: 12px; color: #fff; width: 100%; min-height: 70px; resize: none; outline: none; }
+        .comment-item { padding: 12px 0; border-bottom: 1px solid #1a1a1a; }
+        .vote-btn { cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 11px; padding: 4px 8px; border-radius: 4px; background: #111; border: 1px solid #222; transition: 0.2s; }
+        .vote-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212, 175, 55, 0.1); }
+        .card-votes { position: absolute; bottom: 38px; right: 8px; display: flex; flex-direction: column; gap: 4px; z-index: 20; }
+        .mini-vote { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; min-width: 42px; }
+        .mini-vote.active { border-color: var(--gold); color: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <script>
+        const translations = {
+            en: { home: "HOME", welcome: "Welcome to MoiCarList", subtitle: "Your Trusted Choice", available: "✨ Featured Listings", allNations: "All Nations", allCups: "All Cups", back: "← BACK", booking: "WHATSAPP BOOKING", hot: "HOT", total: "Total", ovn: "Overnight", searchPlaceholder: "Search name...", profile: "PROFILE", points: "Points", checkin: "Check In", alreadyCheckin: "Already Checked In", changeNameTitle: "Modify Name (100 pts)", insufficient: "Insufficient points!", reviewTitle: "Reviews & Experience", post: "POST REVIEW", noReview: "No reviews yet. Be the first!" },
+            cn: { home: "首页", welcome: "欢迎来到 MoiCarList", subtitle: "您值得信赖的选择", available: "✨ 精选展示", allNations: "所有国籍", allCups: "所有胸围", back: "← 返回", booking: "WHATSAPP 预约", hot: "火热", total: "总计", ovn: "包夜", searchPlaceholder: "搜索名字...", profile: "个人中心", points: "积分", checkin: "每日签到", alreadyCheckin: "今日已签到", changeNameTitle: "修改名字 (消耗100积分)", insufficient: "积分不足！", reviewTitle: "用户真实评价", post: "发布评论", noReview: "暂无评价，快来抢沙发！" },
+            bm: { home: "UTAMA", welcome: "Selamat Datang", subtitle: "Pilihan Dipercayai", available: "✨ Pilihan Utama", allNations: "Semua Negara", allCups: "Semua Saiz", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT", total: "Jumlah", ovn: "Bermalam", searchPlaceholder: "Cari nama...", profile: "PROFIL", points: "Mata", checkin: "Daftar Masuk", alreadyCheckin: "Sudah Daftar", changeNameTitle: "Tukar Nama (100 mata)", insufficient: "Mata tidak cukup!", reviewTitle: "Ulasan Pengguna", post: "HANTAR ULASAN", noReview: "Tiada ulasan lagi." }
+        };
+        const langLabels = { en: "EN", cn: "中", bm: "BM" };
+        let currentLang = 'en';
+
+        function updateTexts() {
+            const t = translations[currentLang];
+            const homeBtn = document.getElementById('nav-home'); if(homeBtn) homeBtn.innerText = t.home;
+            const heroT = document.getElementById('hero-title'); if(heroT) heroT.innerText = t.welcome;
+            const heroD = document.getElementById('hero-desc'); if(heroD) heroD.innerText = t.subtitle;
+            const sectT = document.getElementById('section-title'); if(sectT) sectT.innerText = t.available;
+            const langB = document.getElementById('btn-lang-toggle'); if(langB) langB.innerText = langLabels[currentLang];
+            const fSearch = document.getElementById('frontSearch'); if(fSearch) fSearch.placeholder = t.searchPlaceholder;
+            if (typeof window.renderEverything === "function") window.renderEverything();
+        }
+
+        function toggleLang() {
+            const keys = Object.keys(translations);
+            let idx = keys.indexOf(currentLang);
+            currentLang = keys[(idx + 1) % keys.length];
+            updateTexts();
+        }
+    </script>
+
+    <nav>
+        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+            <div class="gold-text text-xl cursor-pointer font-bold" onclick="navigateTo('home')">MoiCarList</div>
+            <div class="flex gap-4 items-center">
+                <a id="nav-home" onclick="navigateTo('home')" class="nav-link">HOME</a>
+                <div id="user-info" class="hidden flex items-center gap-3 bg-[#111] px-2 py-1 rounded-full border border-[#222]">
+                    <div onclick="navigateTo('userPage')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
+                        <img id="nav-avatar-img" src="https://via.placeholder.com/30/222222/d4af37?text=👤" class="w-7 h-7 rounded-full border border-gold object-cover">
+                        <span id="user-display" class="text-[10px] text-gold font-bold truncate max-w-[80px]">User</span>
+                    </div>
+                    <a id="admin-link" onclick="navigateTo('adminPage')" class="nav-link hidden text-blue-400 text-[9px] border-l border-[#333] pl-2">ADMIN</a>
+                    <a onclick="window.handleLogout()" class="nav-link text-[9px] text-red-500 border-l border-[#333] pl-2">OUT</a>
+                </div>
+                <div id="auth-buttons"><a onclick="window.openAuthModal('login')" class="nav-link">Login</a></div>
+                <button id="btn-lang-toggle" onclick="toggleLang()" class="lang-toggle">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="home" class="page active">
+        <div class="hero-section">
+            <h1 id="hero-title" class="text-2xl md:text-4xl font-bold text-[#d4af37] mb-2">Welcome to MoiCarList</h1>
+            <p id="hero-desc" class="text-gray-400 text-xs md:text-sm">Your Trusted Choice</p>
+        </div>
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div id="areaButtons" class="grid grid-cols-3 md:grid-cols-5 gap-2 mb-6 text-center"></div>
+            <div class="search-container mb-6">
+                <span class="mr-2 opacity-50">🔍</span>
+                <input type="text" id="frontSearch" class="search-input" placeholder="Search name..." oninput="window.handleFrontSearch(this.value)">
+                <span class="clear-btn" onclick="window.clearSearch('front')">&times;</span>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-3">
+                <div class="flex items-center gap-3">
+                    <h2 id="section-title" class="text-lg font-bold gold-text">✨ Featured Listings</h2>
+                    <span id="area-count" class="count-pill">Total: 0</span>
+                </div>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <select id="nationFilter" onchange="window.selectNation(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none flex-1"></select>
+                    <select id="cupFilter" onchange="window.selectCup(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none flex-1"></select>
+                </div>
+            </div>
+            <div id="displayList" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+        </div>
+    </div>
+
+    <div id="userPage" class="page">
+        <div class="max-w-md mx-auto p-6 text-center">
+            <h2 id="profile-title" class="text-xl font-bold gold-text mb-2">PROFILE</h2>
+            <div class="user-card">
+                <div class="avatar-container" onclick="document.getElementById('userAvatarInput').click()">
+                    <img id="user-avatar-img" src="https://via.placeholder.com/150/222222/d4af37?text=👤" class="avatar-img">
+                    <div class="avatar-overlay">CHANGE</div>
+                    <input type="file" id="userAvatarInput" class="hidden" accept="image/*">
+                </div>
+                
+                <h3 id="profile-name" class="text-lg font-bold text-white mb-1">---</h3>
+                <p id="profile-email" class="text-gray-500 text-[10px] mb-4">---</p>
+                
+                <div class="point-box">
+                    <div class="text-left">
+                        <p class="text-[9px] font-bold uppercase tracking-wider opacity-80">My Wallet</p>
+                        <p id="profile-points" class="text-3xl font-black text-black">0</p>
+                    </div>
+                    <div class="text-2xl">🪙</div>
+                </div>
+
+                <div class="space-y-3">
+                    <button id="btn-checkin-action" onclick="window.handleCheckIn()" class="btn-checkin">
+                        Daily Check In
+                    </button>
+                    <button onclick="window.openChangeNameModal()" class="w-full py-3 text-[11px] text-gold border border-gold/30 rounded-xl hover:bg-gold/10 transition">
+                        ✏️ Edit Username (100 pts)
+                    </button>
+                </div>
+            </div>
+            <button onclick="navigateTo('home')" class="mt-8 text-gray-400 text-xs hover:text-gold transition">← Back to Home</button>
+        </div>
+    </div>
+
+    <div id="adminPage" class="page bg-[#050505]">
+        <div class="max-w-4xl mx-auto p-4">
+            <h2 class="text-xl font-bold gold-text mb-6">Admin Control Center</h2>
+            
+            <div class="admin-tabs">
+                <div id="tab-list" class="admin-tab-btn active" onclick="switchAdminTab('list')">MANAGE PROFILES</div>
+                <div id="tab-reviews" class="admin-tab-btn" onclick="switchAdminTab('reviews')">MANAGE REVIEWS</div>
+            </div>
+
+            <div id="admin-list-view">
+                <div class="flex justify-between items-center mb-4"><h3 class="text-sm font-bold text-gray-400">Profiles</h3><button onclick="openModal()" class="bg-[#d4af37] text-black px-4 py-1 rounded-full font-bold text-sm">+ Add New</button></div>
+                <div id="adminAreaButtons" class="grid grid-cols-3 md:grid-cols-5 gap-2 mb-6 text-center"></div>
+                <div class="search-container">
+                    <span class="mr-2 opacity-50">🔍</span>
+                    <input type="text" id="adminSearch" class="search-input" placeholder="Search by name..." oninput="window.handleAdminSearch(this.value)">
+                    <span class="clear-btn" onclick="window.clearSearch('admin')">&times;</span>
+                </div>
+                <div id="adminList" class="space-y-1"></div>
+            </div>
+
+            <div id="admin-reviews-view" class="hidden">
+                <div class="flex justify-between items-center mb-4"><h3 class="text-sm font-bold text-gray-400">Recent Reviews</h3></div>
+                <div id="adminReviewsList" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="girlModal" class="modal">
+        <div class="bg-[#111] p-6 rounded-xl w-full max-w-sm max-h-[90vh] overflow-y-auto border border-[#222]">
+            <h3 id="modalTitle" class="gold-text font-bold mb-4">Profile Info</h3>
+            <input type="hidden" id="editId">
+            <input type="text" id="gName" placeholder="Name">
+            <div class="grid grid-cols-2 gap-2"><input type="number" id="gAge" placeholder="Age"><select id="gNation"><option>Vietnam</option><option>Thailand</option><option>Malaysia</option><option>Indonesia</option><option>Laos</option><option>China</option></select></div>
+            <div class="grid grid-cols-2 gap-2"><input type="text" id="gCup" placeholder="Cup Size"><input type="text" id="gHeight" placeholder="Height"></div>
+            <select id="gArea"><option>Alor Setar</option><option>Sungei Petani</option><option>Bukit Mertajam</option><option>Penang</option><option>Ipoh</option></select>
+            <div class="grid grid-cols-2 gap-2"><div><label class="text-[10px] text-gray-500 block ml-1">STATUS</label><select id="gStatus"><option value="available">Available</option><option value="busy">Busy</option><option value="stop">Stop</option></select></div><div><label class="text-[10px] text-gray-500 block ml-1">VISIBILITY</label><select id="gIsHidden"><option value="false">Show on Front</option><option value="true">Hide from Front</option></select></div></div>
+            <div class="flex gap-2 my-2"><button onclick="setPrice(250)" class="btn-preset">Set RM250</button><button onclick="setPrice(270)" class="btn-preset">Set RM270</button></div>
+            <div class="grid grid-cols-2 gap-2"><input type="number" id="gPrice1" placeholder="1 Shot"><input type="number" id="gPrice2" placeholder="2 Shot"></div>
+            <div class="grid grid-cols-2 gap-2"><input type="number" id="gPrice3" placeholder="3 Shot"><input type="number" id="gPriceOvn" placeholder="Overnight"></div>
+            <div class="mt-2 flex gap-2">
+                <input type="text" id="gPhoto" placeholder="Photo URL" class="m-0 flex-1">
+                <input type="file" id="fileInput" class="hidden" accept="image/*">
+                <button type="button" onclick="document.getElementById('fileInput').click()" class="bg-gray-700 px-3 py-2 rounded text-[10px] text-white">UPLOAD</button>
+            </div>
+            <div id="uploadStatus" class="text-[10px] text-gray-500 mb-2">Ready</div>
+            <input type="text" id="gWhatsapp" placeholder="WhatsApp (60xxx)" value="601117917032">
+            <textarea id="gDesc" placeholder="Bio" rows="2"></textarea>
+            <button onclick="handleSave()" class="w-full bg-[#d4af37] text-black font-bold py-3 rounded-lg mt-4 text-sm uppercase">Save Profile</button>
+            <button onclick="closeModal()" class="w-full text-gray-500 mt-3 text-xs">CANCEL</button>
+        </div>
+    </div>
+
+    <div id="changeNameModal" class="modal">
+        <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-gold text-center">
+            <h3 id="changeNameLabel" class="gold-text font-bold mb-4 text-sm">Modify Name (100 pts)</h3>
+            <input type="text" id="updatedUsername" placeholder="Enter New Name">
+            <button onclick="window.confirmChangeName()" class="btn-gold mt-4">Confirm & Pay 100 Pts</button>
+            <button onclick="document.getElementById('changeNameModal').classList.remove('active')" class="mt-4 text-xs opacity-50 block w-full">CANCEL</button>
+        </div>
+    </div>
+
+    <div id="authModal" class="modal">
+        <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-[#222] text-center">
+            <h3 id="authTitle" class="gold-text font-bold mb-6">LOGIN</h3>
+            <input type="email" id="authEmail" placeholder="Email">
+            <input type="password" id="authPassword" placeholder="Password">
+            <button onclick="window.processAuth()" class="btn-gold">Proceed</button>
+            <p id="authToggleText" onclick="window.toggleAuthMode()" class="text-[10px] text-gray-500 mt-4 cursor-pointer underline">Switch to Register</p>
+            <button onclick="window.closeAuthModal()" class="mt-4 text-xs opacity-50">CANCEL</button>
+        </div>
+    </div>
+
+    <div id="usernameModal" class="modal">
+        <div class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-gold text-center">
+            <h3 class="gold-text font-bold mb-4">Set Your Identity</h3>
+            <p class="text-[10px] text-gray-400 mb-4">Welcome! Please set a nickname for your account.</p>
+            <input type="text" id="newUsername" placeholder="Set Your Username">
+            <button onclick="window.saveUsername()" class="btn-gold mt-4">Confirm & Start</button>
+        </div>
+    </div>
+
+    <div id="detailPage" class="page"><div class="max-w-2xl mx-auto p-4 pb-20"><div id="back-btn-text" class="mb-4 gold-text font-bold cursor-pointer" onclick="navigateTo('home')">← BACK</div><div id="detailContent"></div></div></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, increment, getDoc, setDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyCK8dhWPA2pd04gzVxmkOgQuMpFfFPyXxs", authDomain: "girlcarlist-db.firebaseapp.com", projectId: "girlcarlist-db", storageBucket: "girlcarlist-db.firebasestorage.app", messagingSenderId: "418933639880", appId: "1:418933639880:web:a993e1c3e71f2e8d18f3fd" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const colRef = collection(db, "girls");
+        const MY_IMGBB_API_KEY = "3f8723989ab21d54c92cea20af39fa0b";
+        
+        let allData = [];
+        let currentArea = 'Alor Setar';
+        let currentUserData = null;
+        let userVotes = {};
+        let currentNation = 'All';
+        let currentCup = 'All';
+        let frontSearchKeyword = "";
+        let adminSearchKeyword = "";
+        let authMode = 'login';
+
+        onAuthStateChanged(auth, async (user) => {
+            const adminLink = document.getElementById('admin-link');
+            const userInfo = document.getElementById('user-info');
+            const authBtns = document.getElementById('auth-buttons');
+            
+            if(user) {
+                userInfo.classList.remove('hidden'); authBtns.classList.add('hidden');
+                onSnapshot(doc(db, "users", user.uid), (uDoc) => {
+                    if(uDoc.exists()) {
+                        currentUserData = { id: uDoc.id, ...uDoc.data() };
+                        document.getElementById('user-display').innerText = currentUserData.username;
+                        document.getElementById('profile-name').innerText = currentUserData.username;
+                        document.getElementById('profile-email').innerText = user.email;
+                        document.getElementById('profile-points').innerText = currentUserData.points || 0;
+                        document.getElementById('nav-avatar-img').src = currentUserData.avatar || `https://via.placeholder.com/30/222222/d4af37?text=${encodeURIComponent(currentUserData.username[0] || '👤')}`;
+                        document.getElementById('user-avatar-img').src = currentUserData.avatar || `https://via.placeholder.com/150/222222/d4af37?text=${encodeURIComponent(currentUserData.username[0] || '👤')}`;
+                        if(currentUserData.isAdmin === true) {
+                            adminLink.classList.remove('hidden');
+                            listenToAllComments();
+                        }
+                        checkCheckInStatus();
+                    } else { 
+                        document.getElementById('usernameModal').classList.add('active'); 
+                    }
+                });
+                onSnapshot(query(collection(db, "votes"), where("uid", "==", user.uid)), (snap) => {
+                    userVotes = {};
+                    snap.forEach(d => { userVotes[d.data().targetId] = d.data().type; });
+                    window.renderEverything();
+                });
+            } else { userInfo.classList.add('hidden'); adminLink.classList.add('hidden'); authBtns.classList.remove('hidden'); currentUserData = null; userVotes = {}; }
+        });
+
+        window.processAuth = async () => {
+            const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
+            try { authMode === 'register' ? await createUserWithEmailAndPassword(auth, e, p) : await signInWithEmailAndPassword(auth, e, p); window.closeAuthModal(); } catch(err) { alert(err.message); }
+        };
+
+        window.saveUsername = async () => { 
+            const n = document.getElementById('newUsername').value; if(!n) return;
+            await setDoc(doc(db, "users", auth.currentUser.uid), { username: n, isAdmin: false, points: 0, lastCheckIn: "", avatar: "" }, {merge:true}); 
+            document.getElementById('usernameModal').classList.remove('active');
+        };
+
+        function listenToAllComments() {
+            const q = query(collection(db, "comments"), orderBy("createdAt", "desc"), limit(50));
+            onSnapshot(q, (snapshot) => {
+                const list = document.getElementById('adminReviewsList');
+                if (!list) return;
+                const comments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                list.innerHTML = comments.map(c => {
+                    const girl = allData.find(g => g.id === c.girlId);
+                    return `
+                    <div class="admin-item !block">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center gap-2">
+                                <img src="${c.avatar || 'https://via.placeholder.com/20'}" class="w-5 h-5 rounded-full object-cover">
+                                <span class="text-[10px] font-bold text-gold">${c.username}</span>
+                                <span class="text-[9px] text-gray-600">to</span>
+                                <span class="text-[10px] text-white font-bold">${girl ? girl.name : 'Unknown'}</span>
+                            </div>
+                            <button onclick="window.handleDeleteComment('${c.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1 bg-red-900/10 rounded">DELETE</button>
+                        </div>
+                        <p class="text-[11px] text-gray-400 bg-[#111] p-2 rounded">${c.text}</p>
+                    </div>`;
+                }).join('');
+            });
+        }
+
+        window.handleDeleteComment = async (id) => {
+            if(confirm("Delete this review forever?")) {
+                try { await deleteDoc(doc(db, "comments", id)); } catch(e) { console.error(e); }
+            }
+        };
+
+        window.switchAdminTab = (tab) => {
+            const listTab = document.getElementById('tab-list');
+            const reviewTab = document.getElementById('tab-reviews');
+            const listView = document.getElementById('admin-list-view');
+            const reviewView = document.getElementById('admin-reviews-view');
+            if(tab === 'list') {
+                listTab.classList.add('active'); reviewTab.classList.remove('active');
+                listView.classList.remove('hidden'); reviewView.classList.add('hidden');
+            } else {
+                listTab.classList.remove('active'); reviewTab.classList.add('active');
+                listView.classList.add('hidden'); reviewView.classList.remove('hidden');
+            }
+        };
+
+        window.submitComment = async (girlId) => {
+            if (!auth.currentUser) { window.openAuthModal('login'); return; }
+            const text = document.getElementById('commentText').value.trim();
+            if (!text) return;
+
+            // --- BUG FIX: 限制 Email 和 6个连续号码 ---
+            if (text.includes('@')) {
+                alert("Security Alert: Email addresses are not allowed in reviews.");
+                return;
+            }
+            const phoneRegex = /\d{6,}/; 
+            if (phoneRegex.test(text)) {
+                alert("Security Alert: Sharing phone numbers or long digit sequences is not allowed.");
+                return;
+            }
+
+            // --- BUG FIX: 3分钟留言限制 ---
+            const lastPostKey = `lastPost_${auth.currentUser.uid}`;
+            const lastPostTime = localStorage.getItem(lastPostKey);
+            const now = Date.now();
+            const waitTime = 3 * 60 * 1000; // 3 minutes
+
+            if (lastPostTime && (now - lastPostTime < waitTime)) {
+                const remaining = Math.ceil((waitTime - (now - lastPostTime)) / 1000 / 60);
+                alert(`Please wait ${remaining} more minute(s) before posting another review.`);
+                return;
+            }
+
+            try {
+                // 后端额外安全检查（如果用户清空了localStorage，仍可从数据库检查）
+                if (currentUserData.lastCommentAt && (now - currentUserData.lastCommentAt < waitTime)) {
+                    alert("System: You are posting too frequently. Please wait 3 minutes.");
+                    return;
+                }
+
+                await addDoc(collection(db, "comments"), { 
+                    girlId, 
+                    uid: auth.currentUser.uid, 
+                    username: currentUserData.username, 
+                    avatar: currentUserData.avatar || "", 
+                    text, 
+                    likes: 0, 
+                    dislikes: 0, 
+                    createdAt: now 
+                });
+
+                // 更新本地和数据库时间限制
+                localStorage.setItem(lastPostKey, now);
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { lastCommentAt: now });
+
+                document.getElementById('commentText').value = "";
+                alert("Review posted successfully!");
+            } catch (err) { console.error(err); }
+        };
+
+        window.handleVote = async (targetId, type, authorUid, collectionName = "comments") => {
+            if (!auth.currentUser) { window.openAuthModal('login'); return; }
+            const voteDocId = `${auth.currentUser.uid}_${targetId}`;
+            const voteRef = doc(db, "votes", voteDocId);
+            const targetRef = doc(db, collectionName, targetId);
+            const existingVote = userVotes[targetId];
+            try {
+                if (existingVote === type) {
+                    await deleteDoc(voteRef);
+                    await updateDoc(targetRef, { [type === 'like' ? 'likes' : 'dislikes']: increment(-1) });
+                } else {
+                    if (existingVote) await updateDoc(targetRef, { [existingVote === 'like' ? 'likes' : 'dislikes']: increment(-1) });
+                    await setDoc(voteRef, { uid: auth.currentUser.uid, targetId: targetId, type: type });
+                    await updateDoc(targetRef, { [type === 'like' ? 'likes' : 'dislikes']: increment(1) });
+                }
+            } catch (e) { console.error(e); }
+        };
+
+        function listenToComments(girlId) {
+            const q = query(collection(db, "comments"), where("girlId", "==", girlId));
+            onSnapshot(q, (snapshot) => {
+                const container = document.getElementById('commentsList');
+                if (!container) return;
+                const comments = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.createdAt - a.createdAt);
+                if (comments.length === 0) { container.innerHTML = `<p class="text-[10px] text-gray-600 text-center py-4 italic">No reviews yet.</p>`; return; }
+                container.innerHTML = comments.map(c => `
+                    <div class="comment-item">
+                        <div class="flex gap-3">
+                            <img src="${c.avatar || 'https://via.placeholder.com/30/222/d4af37?text=👤'}" class="w-6 h-6 rounded-full border border-gold/20 object-cover">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-[10px] font-bold text-gold">${c.username}</span>
+                                    <span class="text-[8px] text-gray-600">${new Date(c.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <p class="text-[11px] text-gray-300 leading-relaxed">${c.text}</p>
+                                <div class="flex gap-3 mt-2">
+                                    <div onclick="window.handleVote('${c.id}', 'like', '${c.uid}', 'comments')" class="vote-btn ${userVotes[c.id] === 'like' ? 'active' : ''}">👍 ${c.likes||0}</div>
+                                    <div onclick="window.handleVote('${c.id}', 'dislike', '${c.uid}', 'comments')" class="vote-btn ${userVotes[c.id] === 'dislike' ? 'active' : ''}">👎 ${c.dislikes||0}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`).join('');
+            });
+        }
+
+        onSnapshot(colRef, (snapshot) => {
+            allData = snapshot.docs.map(d => ({ id: d.id, ...d.data(), clicks: d.data().clicks || 0, likes: d.data().likes || 0, dislikes: d.data().dislikes || 0, isHidden: d.data().isHidden === "true" || d.data().isHidden === true })).sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+            window.renderEverything();
+        });
+
+        window.renderEverything = () => {
+            renderAreaButtons();
+            let filtered = allData.filter(g => g.area === currentArea);
+            let frontList = filtered.filter(g => g.isHidden !== true);
+            renderFilters(['All', ...new Set(filtered.map(g => g.nation))], ['All', ...new Set(frontList.map(g => g.cup))].sort());
+            if(currentNation !== 'All') frontList = frontList.filter(g => g.nation === currentNation);
+            if(currentCup !== 'All') frontList = frontList.filter(g => g.cup === currentCup);
+            if(frontSearchKeyword) frontList = frontList.filter(g => (g.name || "").toLowerCase().includes(frontSearchKeyword.toLowerCase()));
+            const areaCount = document.getElementById('area-count'); if(areaCount) areaCount.innerText = `Total: ${frontList.length}`;
+            renderMain([...frontList].sort((a, b) => b.clicks - a.clicks));
+            renderAdmin(adminSearchKeyword ? allData.filter(g => (g.name || "").toLowerCase().includes(adminSearchKeyword.toLowerCase())) : filtered);
+            checkCheckInStatus();
+        };
+
+        function renderMain(data) {
+            document.getElementById('displayList').innerHTML = data.map((g, index) => `
+                <div class="card">
+                    ${index < 3 && g.clicks > 0 ? `<div class="hot-badge">🔥 #${index+1}</div>` : ''}
+                    <div class="relative" onclick="window.showDetail('${g.id}')">
+                        <img src="${g.photo}" class="card-img" onerror="this.src='https://via.placeholder.com/220/222222/d4af37?text=No+Photo'">
+                    </div>
+                    <div class="p-2 flex-grow relative" onclick="window.showDetail('${g.id}')">
+                        <div class="flex justify-between items-center mb-1"><span class="white-name truncate">${g.name}</span></div>
+                        <div class="flex justify-between items-center"><span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span><span class="nation-tag">${g.nation}</span></div>
+                        <div class="card-votes" onclick="event.stopPropagation()">
+                            <div onclick="window.handleVote('${g.id}', 'like', null, 'girls')" class="mini-vote ${userVotes[g.id] === 'like' ? 'active' : ''}">👍 ${g.likes||0}</div>
+                            <div onclick="window.handleVote('${g.id}', 'dislike', null, 'girls')" class="mini-vote ${userVotes[g.id] === 'dislike' ? 'active' : ''}">👎 ${g.dislikes||0}</div>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        window.showDetail = async id => {
+            const g = allData.find(x => x.id === id); await updateDoc(doc(db, "girls", id), { clicks: increment(1) }); navigateTo('detailPage'); listenToComments(id);
+            document.getElementById('detailContent').innerHTML = `
+                <img src="${g.photo}" class="w-full rounded-xl mb-4 shadow-xl" onerror="this.src='https://via.placeholder.com/400/222222/d4af37?text=No+Photo'">
+                <div class="text-left px-2">
+                    <h1 class="text-2xl font-bold text-white mb-1">${g.name} <span class="nation-tag">${g.nation}</span></h1>
+                    <p class="gold-text text-sm mb-6">${g.age}Y | ${g.cup} | ${g.height}</p>
+                    <div class="grid grid-cols-2 gap-2 mb-6"><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>1Shot</span><span class="gold-text">RM ${g.p1}</span></div><div class="bg-[#111] p-3 rounded-lg flex justify-between"><span>Overnight</span><span class="gold-text">RM ${g.povn || '??'}</span></div></div>
+                    <div class="bg-[#111] p-4 rounded-lg text-gray-400 text-xs border-l-2 border-gold">${g.desc}</div>
+                    <a href="https://wa.me/${g.whatsapp}" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-3 rounded-xl mt-6 text-center uppercase tracking-widest">Whatsapp Booking</a>
+                    <div class="comment-section">
+                        <h3 class="text-xs font-bold gold-text mb-4 uppercase tracking-widest">Reviews & Experience</h3>
+                        <textarea id="commentText" class="comment-input" placeholder="Share your experience..."></textarea>
+                        <button onclick="window.submitComment('${g.id}')" class="btn-gold !text-[10px] !py-2 !mt-2">POST REVIEW</button>
+                        <div id="commentsList" class="mt-6 space-y-4"></div>
+                    </div>
+                </div>`;
+        };
+
+        window.handleLogout = () => signOut(auth).then(() => navigateTo('home'));
+
+        window.handleSave = async () => {
+            const id = document.getElementById('editId').value;
+            const data = { name: document.getElementById('gName').value, age: document.getElementById('gAge').value, nation: document.getElementById('gNation').value, cup: document.getElementById('gCup').value, height: document.getElementById('gHeight').value, p1: document.getElementById('gPrice1').value, p2: document.getElementById('gPrice2').value, p3: document.getElementById('gPrice3').value, povn: document.getElementById('gPriceOvn').value, area: document.getElementById('gArea').value, status: document.getElementById('gStatus').value, photo: document.getElementById('gPhoto').value, whatsapp: document.getElementById('gWhatsapp').value, desc: document.getElementById('gDesc').value, isHidden: document.getElementById('gIsHidden').value === "true" };
+            id ? await updateDoc(doc(db, "girls", id), data) : await addDoc(colRef, { ...data, clicks: 0, likes: 0, dislikes: 0 }); closeModal();
+        };
+
+        window.handleEdit = id => {
+            const g = allData.find(x => x.id === id); openModal(true);
+            document.getElementById('editId').value = g.id; document.getElementById('gName').value = g.name; document.getElementById('gAge').value = g.age; document.getElementById('gNation').value = g.nation; document.getElementById('gCup').value = g.cup; document.getElementById('gHeight').value = g.height; document.getElementById('gPrice1').value = g.p1; document.getElementById('gPrice2').value = g.p2; document.getElementById('gPrice3').value = g.p3; document.getElementById('gPriceOvn').value = g.povn || ""; document.getElementById('gArea').value = g.area; document.getElementById('gStatus').value = g.status; document.getElementById('gIsHidden').value = g.isHidden ? "true" : "false"; document.getElementById('gPhoto').value = g.photo; document.getElementById('gWhatsapp').value = g.whatsapp; document.getElementById('gDesc').value = g.desc;
+        };
+
+        window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
+        function renderAdmin(data) { document.getElementById('adminList').innerHTML = data.map(g => `<div class="admin-item"><div class="flex items-center gap-3 w-[65%]"><img src="${g.photo}" class="w-9 h-9 rounded-md object-cover text-white text-[8px]"><div class="text-xs truncate text-white"><b class="${g.isHidden ? 'opacity-40' : ''}">${g.name}</b><div class="text-[9px] text-gray-500">🔥 ${g.clicks} clicks</div></div></div><div class="flex gap-1"><button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[9px] font-bold px-2 py-1.5 bg-blue-900/20 rounded">EDIT</button><button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1.5 bg-red-900/20 rounded">DEL</button></div></div>`).join(''); }
+        function renderAreaButtons() { const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh']; const btnHtml = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join(''); document.getElementById('areaButtons').innerHTML = btnHtml; document.getElementById('adminAreaButtons').innerHTML = btnHtml; }
+        window.selectArea = a => { currentArea = a; window.renderEverything(); };
+        function renderFilters(nations, cups) { document.getElementById('nationFilter').innerHTML = nations.map(n => `<option value="${n}">${n}</option>`).join(''); document.getElementById('cupFilter').innerHTML = cups.map(c => `<option value="${c}">${c}</option>`).join(''); }
+        window.selectNation = n => { currentNation = n; window.renderEverything(); };
+        window.selectCup = c => { currentCup = c; window.renderEverything(); };
+        window.setPrice = base => { document.getElementById('gPrice1').value = base; document.getElementById('gPrice2').value = base*2; document.getElementById('gPrice3').value = base*3; document.getElementById('gPriceOvn').value = base===250?800:900; };
+        
+        document.getElementById('fileInput').addEventListener('change', async (e) => { 
+            const file = e.target.files[0]; if (!file) return; 
+            const formData = new FormData(); formData.append('image', file); 
+            try { 
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${MY_IMGBB_API_KEY}`, { method: 'POST', body: formData }); 
+                const r = await res.json(); 
+                if (r.success) { document.getElementById('gPhoto').value = r.data.url; document.getElementById('uploadStatus').innerText = "Success!"; } 
+            } catch (err) { console.error("Photo Upload Error:", err); } 
+        });
+
+        window.handleCheckIn = async () => { 
+            const today = new Date().toISOString().split('T')[0]; 
+            if(currentUserData && currentUserData.lastCheckIn !== today) {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { points: increment(10), lastCheckIn: today }); 
+            }
+        };
+
+        function checkCheckInStatus() { 
+            const today = new Date().toISOString().split('T')[0]; 
+            const btn = document.getElementById('btn-checkin-action'); 
+            if(btn && currentUserData && currentUserData.lastCheckIn === today) { 
+                btn.disabled = true; btn.innerText = "Already Checked In"; 
+            } else if(btn) { 
+                btn.disabled = false; btn.innerText = "Daily Check In"; 
+            } 
+        }
+
+        window.confirmChangeName = async () => { 
+            const newName = document.getElementById('updatedUsername').value.trim(); 
+            if(!newName || (currentUserData.points||0) < 100) { alert("Insufficient points or empty name!"); return; } 
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { username: newName, points: increment(-100) }); 
+            document.getElementById('changeNameModal').classList.remove('active'); 
+        };
+
+        window.openChangeNameModal = () => { 
+            document.getElementById('updatedUsername').value = currentUserData.username; 
+            document.getElementById('changeNameModal').classList.add('active'); 
+        };
+
+        window.handleFrontSearch = (val) => { frontSearchKeyword = val; window.renderEverything(); };
+        window.handleAdminSearch = (val) => { adminSearchKeyword = val; window.renderEverything(); };
+        window.clearSearch = (type) => { 
+            if(type==='front') { document.getElementById('frontSearch').value=''; frontSearchKeyword=''; } 
+            else { document.getElementById('adminSearch').value=''; adminSearchKeyword=''; } 
+            window.renderEverything(); 
+        };
+        updateTexts();
+    </script>
+
+    <script>
+        function navigateTo(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+        function openModal(isEdit = false) { if(!isEdit) { document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; document.getElementById('gName').value = ""; if(typeof window.setPrice === 'function') window.setPrice(270); } document.getElementById('girlModal').classList.add('active'); }
+        function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
+        window.openAuthModal = m => { 
+            authMode = m; 
+            document.getElementById('authTitle').innerText = m.toUpperCase(); 
+            document.getElementById('authToggleText').innerText = (m === 'login' ? "Switch to Register" : "Switch to Login");
+            document.getElementById('authModal').classList.add('active'); 
+        };
+        window.closeAuthModal = () => document.getElementById('authModal').classList.remove('active');
+        window.toggleAuthMode = () => window.openAuthModal(authMode==='login'?'register':'login');
+    </script>
+</body>
+</html>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
