@@ -194,36 +194,54 @@
         // --- 请将你的 UID 粘贴到这里 ---
         const ADMIN_UID = "在这里填入UID"; 
 
-        onAuthStateChanged(auth, async (user) => {
-            const adminLink = document.getElementById('admin-link');
-            if(user) {
-                // 💡 登录后在这里看控制台找到你的 UID
-                console.log("%cYOUR UID: " + user.uid, "color: gold; font-size: 16px; font-weight: bold;");
-                
-                document.getElementById('user-info').classList.remove('hidden');
-                document.getElementById('auth-buttons').classList.add('hidden');
-                if(user.uid === ADMIN_UID) adminLink.classList.remove('hidden');
-                
-                const uDoc = await getDoc(doc(db, "users", user.uid));
-                if(uDoc.exists()) document.getElementById('user-display').innerText = uDoc.data().username;
-                else document.getElementById('usernameModal').classList.add('active');
+onAuthStateChanged(auth, async (user) => {
+    const adminLink = document.getElementById('admin-link');
+    const userInfo = document.getElementById('user-info');
+    const authBtns = document.getElementById('auth-buttons');
+
+    if(user) {
+        userInfo.classList.remove('hidden');
+        authBtns.classList.add('hidden');
+
+        // 🔍 去数据库查这个用户的权限
+        const userDocRef = doc(db, "users", user.uid);
+        const uDoc = await getDoc(userDocRef);
+
+        if(uDoc.exists()) {
+            const userData = uDoc.data();
+            document.getElementById('user-display').innerText = userData.username || "User";
+
+            // ⭐ 核心逻辑：如果数据库里 isAdmin 是 true，就显示后台入口
+            if(userData.isAdmin === true) {
+                adminLink.classList.remove('hidden');
+                console.log("%c👑 管理员已登录", "color: gold; font-weight: bold;");
             } else {
-                document.getElementById('user-info').classList.add('hidden');
                 adminLink.classList.add('hidden');
-                document.getElementById('auth-buttons').classList.remove('hidden');
             }
-        });
+        } else {
+            // 如果没资料（刚注册），弹窗填用户名，并初始化权限为 false
+            document.getElementById('usernameModal').classList.add('active');
+        }
+    } else {
+        userInfo.classList.add('hidden');
+        adminLink.classList.add('hidden');
+        authBtns.classList.remove('hidden');
+    }
+});
 
-        window.processAuth = async () => {
-            const e = document.getElementById('authEmail').value;
-            const p = document.getElementById('authPassword').value;
-            try {
-                if(authMode === 'register') await createUserWithEmailAndPassword(auth, e, p);
-                else await signInWithEmailAndPassword(auth, e, p);
-                closeAuthModal();
-            } catch(err) { alert(err.message); }
-        };
-
+// 注册后初始化用户资料的函数
+window.saveUsername = async () => {
+    const n = document.getElementById('newUsername').value;
+    if(!n) return;
+    
+    // 在数据库创建新用户，默认 isAdmin 为 false
+    await setDoc(doc(db, "users", auth.currentUser.uid), {
+        username: n,
+        isAdmin: false // 默认不是管理员
+    }, { merge: true });
+    
+    location.reload();
+};
         // --- 核心业务逻辑 (A-Z 排序 + 多重过滤) ---
         onSnapshot(colRef, (snapshot) => {
             allData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
