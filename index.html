@@ -338,7 +338,6 @@
             } else { userInfo.classList.add('hidden'); adminLink.classList.add('hidden'); authBtns.classList.remove('hidden'); currentUserData = null; userVotes = {}; }
         });
 
-        // 修复图三：确保 processAuth 根据 authMode 执行正确动作
         window.processAuth = async () => {
             const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
             if(!e || !p) { alert("Please fill all fields."); return; }
@@ -406,7 +405,7 @@
                 listView.classList.remove('hidden'); reviewView.classList.add('hidden');
             } else {
                 listTab.classList.remove('active'); reviewTab.classList.add('active');
-                listView.classList.add('hidden'); reviewView.classList.remove('hidden');
+                listView.classList.add('hidden'); reviewView.classList.add('hidden');
             }
         };
 
@@ -494,7 +493,9 @@
             renderAreaButtons();
             let filtered = allData.filter(g => g.area === currentArea);
             let frontList = filtered.filter(g => g.isHidden !== true);
+            
             renderFilters(['All', ...new Set(filtered.map(g => g.nation))], ['All', ...new Set(frontList.map(g => g.cup))].sort());
+            
             if(currentNation !== 'All') frontList = frontList.filter(g => g.nation === currentNation);
             if(currentCup !== 'All') frontList = frontList.filter(g => g.cup === currentCup);
             if(frontSearchKeyword) frontList = frontList.filter(g => (g.name || "").toLowerCase().includes(frontSearchKeyword.toLowerCase()));
@@ -554,11 +555,49 @@
             document.getElementById('editId').value = g.id; document.getElementById('gName').value = g.name; document.getElementById('gAge').value = g.age; document.getElementById('gNation').value = g.nation; document.getElementById('gCup').value = g.cup; document.getElementById('gHeight').value = g.height; document.getElementById('gPrice1').value = g.p1; document.getElementById('gPrice2').value = g.p2; document.getElementById('gPrice3').value = g.p3; document.getElementById('gPriceOvn').value = g.povn || ""; document.getElementById('gArea').value = g.area; document.getElementById('gStatus').value = g.status; document.getElementById('gIsHidden').value = g.isHidden ? "true" : "false"; document.getElementById('gPhoto').value = g.photo; document.getElementById('gWhatsapp').value = g.whatsapp; document.getElementById('gDesc').value = g.desc;
         };
 
+        window.handleToggleVisibility = async (id, currentStatus) => {
+            await updateDoc(doc(db, "girls", id), { isHidden: !currentStatus });
+        };
+
         window.handleDelete = async id => { if(confirm('Delete?')) await deleteDoc(doc(db, "girls", id)); };
-        function renderAdmin(data) { document.getElementById('adminList').innerHTML = data.map(g => `<div class="admin-item"><div class="flex items-center gap-3 w-[65%]"><img src="${g.photo}" class="w-9 h-9 rounded-md object-cover text-white text-[8px]"><div class="text-xs truncate text-white"><b class="${g.isHidden ? 'opacity-40' : ''}">${g.name}</b><div class="text-[9px] text-gray-500">🔥 ${g.clicks} clicks</div></div></div><div class="flex gap-1"><button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[9px] font-bold px-2 py-1.5 bg-blue-900/20 rounded">EDIT</button><button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1.5 bg-red-900/20 rounded">DEL</button></div></div>`).join(''); }
-        function renderAreaButtons() { const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh']; const btnHtml = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a}</div>`).join(''); document.getElementById('areaButtons').innerHTML = btnHtml; document.getElementById('adminAreaButtons').innerHTML = btnHtml; }
+        
+        function renderAdmin(data) { 
+            document.getElementById('adminList').innerHTML = data.map(g => `
+                <div class="admin-item">
+                    <div class="flex items-center gap-3 w-[55%]">
+                        <img src="${g.photo}" onclick="window.open('${g.photo}', '_blank')" class="w-10 h-10 rounded-md object-cover cursor-pointer border border-[#222] hover:border-gold transition">
+                        <div class="text-xs truncate text-white">
+                            <b class="${g.isHidden ? 'opacity-40 line-through' : ''}">${g.name}</b>
+                            <div class="text-[9px] text-gray-500">${g.isHidden ? '<span class="text-red-800">HIDDEN</span>' : '🔥 ' + g.clicks + ' clicks'}</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 items-center">
+                        <button onclick="window.handleToggleVisibility('${g.id}', ${g.isHidden})" class="text-[9px] font-bold px-2 py-1.5 rounded transition ${g.isHidden ? 'bg-green-900/30 text-green-500' : 'bg-gray-800 text-gray-400'}">
+                            ${g.isHidden ? 'SHOW' : 'HIDE'}
+                        </button>
+                        <button onclick="window.handleEdit('${g.id}')" class="text-blue-400 text-[9px] font-bold px-2 py-1.5 bg-blue-900/20 rounded">EDIT</button>
+                        <button onclick="window.handleDelete('${g.id}')" class="text-red-500 text-[9px] font-bold px-2 py-1.5 bg-red-900/20 rounded">DEL</button>
+                    </div>
+                </div>`).join(''); 
+        }
+
+        function renderAreaButtons() { 
+            const areas = ['Alor Setar', 'Sungei Petani', 'Bukit Mertajam', 'Penang', 'Ipoh']; 
+            const counts = {};
+            areas.forEach(a => { counts[a] = allData.filter(g => g.area === a).length; });
+
+            const btnHtml = areas.map(a => `<div class="area-button ${currentArea === a ? 'active' : ''}" onclick="window.selectArea('${a}')">${a} (${counts[a]})</div>`).join(''); 
+            document.getElementById('areaButtons').innerHTML = btnHtml; 
+            document.getElementById('adminAreaButtons').innerHTML = btnHtml; 
+        }
+
         window.selectArea = a => { currentArea = a; window.renderEverything(); };
-        function renderFilters(nations, cups) { document.getElementById('nationFilter').innerHTML = nations.map(n => `<option value="${n}">${n}</option>`).join(''); document.getElementById('cupFilter').innerHTML = cups.map(c => `<option value="${c}">${c}</option>`).join(''); }
+        
+        function renderFilters(nations, cups) { 
+            document.getElementById('nationFilter').innerHTML = nations.map(n => `<option value="${n}" ${n === currentNation ? 'selected' : ''}>${n}</option>`).join(''); 
+            document.getElementById('cupFilter').innerHTML = cups.map(c => `<option value="${c}" ${c === currentCup ? 'selected' : ''}>${c}</option>`).join(''); 
+        }
+
         window.selectNation = n => { currentNation = n; window.renderEverything(); };
         window.selectCup = c => { currentCup = c; window.renderEverything(); };
         window.setPrice = base => { document.getElementById('gPrice1').value = base; document.getElementById('gPrice2').value = base*2; document.getElementById('gPrice3').value = base*3; document.getElementById('gPriceOvn').value = base===250?800:900; };
@@ -616,7 +655,6 @@
         function openModal(isEdit = false) { if(!isEdit) { document.getElementById('editId').value = ""; document.getElementById('gPhoto').value = ""; document.getElementById('gName').value = ""; if(typeof window.setPrice === 'function') window.setPrice(270); } document.getElementById('girlModal').classList.add('active'); }
         function closeModal() { document.getElementById('girlModal').classList.remove('active'); }
         
-        // 修复图二：打开模态框时重置文字和模式
         window.openAuthModal = m => { 
             authMode = m; 
             document.getElementById('authTitle').innerText = m.toUpperCase(); 
