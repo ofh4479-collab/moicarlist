@@ -99,9 +99,9 @@
 
     <script>
         const translations = {
-            en: { home: "HOME", welcome: "Welcome to MoiCarList", subtitle: "Your Trusted Choice", available: "✨ Featured Listings", allNations: "All Nations", allCups: "All Cups", back: "← BACK", booking: "WHATSAPP BOOKING", hot: "HOT", total: "Total", ovn: "Overnight", searchPlaceholder: "Search name...", profile: "PROFILE", points: "Points", checkin: "Check In", alreadyCheckin: "Already Checked In", changeNameTitle: "Modify Name (100 pts)", insufficient: "Insufficient points!", reviewTitle: "Reviews & Experience", post: "POST REVIEW", noReview: "No reviews yet. Be the first!" },
-            cn: { home: "首页", welcome: "欢迎来到 MoiCarList", subtitle: "您值得信赖的选择", available: "✨ 精选展示", allNations: "所有国籍", allCups: "所有胸围", back: "← 返回", booking: "WHATSAPP 预约", hot: "火热", total: "总计", ovn: "包夜", searchPlaceholder: "搜索名字...", profile: "个人中心", points: "积分", checkin: "每日签到", alreadyCheckin: "今日已签到", changeNameTitle: "修改名字 (消耗100积分)", insufficient: "积分不足！", reviewTitle: "用户真实评价", post: "发布评论", noReview: "暂无评价，快来抢沙发！" },
-            bm: { home: "UTAMA", welcome: "Selamat Datang", subtitle: "Pilihan Dipercayai", available: "✨ Pilihan Utama", allNations: "Semua Negara", allCups: "Semua Saiz", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT", total: "Jumlah", ovn: "Bermalam", searchPlaceholder: "Cari nama...", profile: "PROFIL", points: "Mata", checkin: "Daftar Masuk", alreadyCheckin: "Sudah Daftar", changeNameTitle: "Tukar Nama (100 mata)", insufficient: "Mata tidak cukup!", reviewTitle: "Ulasan Pengguna", post: "HANTAR ULASAN", noReview: "Tiada ulasan lagi." }
+            en: { home: "HOME", welcome: "Welcome to MoiCarList", subtitle: "Your Trusted Choice", available: "✨ Featured Listings", allNations: "All Nations", allCups: "All Cups", allTypes: "All Types", newOnly: "NEW Only", hotOnly: "Hot Only", back: "← BACK", booking: "WHATSAPP BOOKING", hot: "HOT", total: "Total", ovn: "Overnight", searchPlaceholder: "Search name...", profile: "PROFILE", points: "Points", checkin: "Check In", alreadyCheckin: "Already Checked In", changeNameTitle: "Modify Name (100 pts)", insufficient: "Insufficient points!", reviewTitle: "Reviews & Experience", post: "POST REVIEW", noReview: "No reviews yet. Be the first!", clicks: "Clicks" },
+            cn: { home: "首页", welcome: "欢迎来到 MoiCarList", subtitle: "您值得信赖的选择", available: "✨ 精选展示", allNations: "所有国籍", allCups: "所有胸围", allTypes: "全部类型", newOnly: "NEW小姐", hotOnly: "人气小姐", back: "← 返回", booking: "WHATSAPP 预约", hot: "火热", total: "总计", ovn: "包夜", searchPlaceholder: "搜索名字...", profile: "个人中心", points: "积分", checkin: "每日签到", alreadyCheckin: "今日已签到", changeNameTitle: "修改名字 (消耗100积分)", insufficient: "积分不足！", reviewTitle: "用户真实评价", post: "发布评论", noReview: "暂无评价，快来抢沙发！", clicks: "查看次数" },
+            bm: { home: "UTAMA", welcome: "Selamat Datang", subtitle: "Pilihan Dipercayai", available: "✨ Pilihan Utama", allNations: "Semua Negara", allCups: "Semua Saiz", allTypes: "Semua Jenis", newOnly: "Pilihan Baru", hotOnly: "Pilihan Hangat", back: "← KEMBALI", booking: "TEMPAHAN WHATSAPP", hot: "HANGAT", total: "Jumlah", ovn: "Bermalam", searchPlaceholder: "Cari nama...", profile: "PROFIL", points: "Mata", checkin: "Daftar Masuk", alreadyCheckin: "Sudah Daftar", changeNameTitle: "Tukar Nama (100 mata)", insufficient: "Mata tidak cukup!", reviewTitle: "Ulasan Pengguna", post: "HANTAR ULASAN", noReview: "Tiada ulasan lagi.", clicks: "Klik" }
         };
         const langLabels = { en: "EN", cn: "中", bm: "BM" };
         let currentLang = 'en';
@@ -164,6 +164,7 @@
                     <span id="area-count" class="count-pill">Total: 0</span>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
+                    <select id="typeFilter" onchange="window.selectType(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none flex-1"></select>
                     <select id="nationFilter" onchange="window.selectNation(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none flex-1"></select>
                     <select id="cupFilter" onchange="window.selectCup(this.value)" class="bg-[#111] text-[#d4af37] border border-[#333] rounded px-2 py-1 text-[11px] outline-none flex-1"></select>
                 </div>
@@ -303,6 +304,7 @@
         let userVotes = {};
         let currentNation = 'All';
         let currentCup = 'All';
+        let currentType = 'All';
         let frontSearchKeyword = "";
         let adminSearchKeyword = "";
         let authMode = 'login';
@@ -414,19 +416,38 @@
 
         window.renderEverything = () => {
             renderAreaButtons();
-            let filtered = allData.filter(g => g.area === currentArea);
-            let frontList = filtered.filter(g => g.isHidden !== true);
-            
-            renderFilters(['All', ...new Set(filtered.map(g => g.nation))], ['All', ...new Set(frontList.map(g => g.cup))].sort());
-            
-            if(currentNation !== 'All') frontList = frontList.filter(g => g.nation === currentNation);
-            if(currentCup !== 'All') frontList = frontList.filter(g => g.cup === currentCup);
-            if(frontSearchKeyword) frontList = frontList.filter(g => (g.name || "").toLowerCase().includes(frontSearchKeyword.toLowerCase()));
-            
-            const areaCount = document.getElementById('area-count'); if(areaCount) areaCount.innerText = `Total: ${frontList.length}`;
-            renderMain([...frontList].sort((a, b) => b.clicks - a.clicks));
+            const now = Date.now();
+            const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
-            let adminResult = adminSearchKeyword ? allData.filter(g => (g.name || "").toLowerCase().includes(adminSearchKeyword.toLowerCase())) : filtered;
+            let baseList = allData.filter(g => g.area === currentArea && g.isHidden !== true);
+            renderFilters(['All', ...new Set(allData.filter(g=>g.area===currentArea).map(g => g.nation))], ['All', ...new Set(baseList.map(g => g.cup))].sort());
+            
+            let filtered = [...baseList];
+            if(currentNation !== 'All') filtered = filtered.filter(g => g.nation === currentNation);
+            if(currentCup !== 'All') filtered = filtered.filter(g => g.cup === currentCup);
+            if(frontSearchKeyword) filtered = filtered.filter(g => (g.name || "").toLowerCase().includes(frontSearchKeyword.toLowerCase()));
+            
+            filtered.sort((a, b) => {
+                const isANew = a.createdAt && (now - a.createdAt < THREE_DAYS_MS);
+                const isBNew = b.createdAt && (now - b.createdAt < THREE_DAYS_MS);
+                if (isANew && !isBNew) return -1;
+                if (!isANew && isBNew) return 1;
+                return b.clicks - a.clicks;
+            });
+
+            let finalDisplay = [...filtered];
+            if(currentType === 'New') {
+                finalDisplay = finalDisplay.filter(g => g.createdAt && (now - g.createdAt < THREE_DAYS_MS));
+            } else if(currentType === 'Hot') {
+                finalDisplay = finalDisplay.filter(g => g.clicks > 10);
+            }
+
+            const areaCount = document.getElementById('area-count'); if(areaCount) areaCount.innerText = `Total: ${finalDisplay.length}`;
+            
+            renderMain(finalDisplay);
+
+            let adminResult = allData.filter(g => g.area === currentArea);
+            if (adminSearchKeyword) adminResult = allData.filter(g => (g.name || "").toLowerCase().includes(adminSearchKeyword.toLowerCase()));
             
             if(adminSortBy === 'az') adminResult.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
             else if(adminSortBy === 'clicks') adminResult.sort((a, b) => b.clicks - a.clicks);
@@ -437,18 +458,29 @@
             checkCheckInStatus();
         };
 
-        function renderMain(data) {
-            const now = Date.now(); const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
-            document.getElementById('displayList').innerHTML = data.map((g, index) => {
+        function renderMain(displayData) {
+            const now = Date.now(); 
+            const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+            const t = translations[currentLang];
+            
+            document.getElementById('displayList').innerHTML = displayData.map((g) => {
                 const isNew = g.createdAt && (now - g.createdAt < THREE_DAYS_MS);
+
                 return `
                 <div class="card">
                     ${isNew ? `<div class="new-badge">NEW</div>` : ''}
-                    ${index < 3 && g.clicks > 0 ? `<div class="hot-badge">🔥 #${index+1}</div>` : ''}
-                    <div class="relative" onclick="window.showDetail('${g.id}')"><img src="${g.photo}" class="card-img" onerror="this.src='https://via.placeholder.com/220/222222/d4af37?text=No+Photo'"></div>
+                    <div class="relative" onclick="window.showDetail('${g.id}')">
+                        <img src="${g.photo}" class="card-img" onerror="this.src='https://via.placeholder.com/220/222222/d4af37?text=No+Photo'">
+                    </div>
                     <div class="p-2 flex-grow relative" onclick="window.showDetail('${g.id}')">
-                        <div class="flex justify-between items-center mb-1"><span class="white-name truncate">${g.name}<span class="area-tag">${g.area}</span></span></div>
-                        <div class="flex justify-between items-center"><span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span><span class="nation-tag">${g.nation}</span></div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="white-name truncate">${g.name}<span class="area-tag">${g.area}</span></span>
+                        </div>
+                        <div class="text-[9px] text-gray-500 mb-1 font-bold">🔥 ${t.clicks}: ${g.clicks || 0}</div>
+                        <div class="flex justify-between items-center">
+                            <span class="gold-text text-[10px] opacity-80">${g.age}Y | ${g.cup} | ${g.height}</span>
+                            <span class="nation-tag">${g.nation}</span>
+                        </div>
                         <div class="card-votes" onclick="event.stopPropagation()">
                             <div onclick="window.handleVote('${g.id}', 'like', null, 'girls')" class="mini-vote ${userVotes[g.id] === 'like' ? 'active' : ''}">👍 ${g.likes||0}</div>
                             <div onclick="window.handleVote('${g.id}', 'dislike', null, 'girls')" class="mini-vote ${userVotes[g.id] === 'dislike' ? 'active' : ''}">👎 ${g.dislikes||0}</div>
@@ -545,13 +577,25 @@
         }
 
         window.selectArea = a => { currentArea = a; window.renderEverything(); };
+        
         function renderFilters(nations, cups) { 
-            document.getElementById('nationFilter').innerHTML = nations.map(n => `<option value="${n}" ${n === currentNation ? 'selected' : ''}>${n}</option>`).join(''); 
-            document.getElementById('cupFilter').innerHTML = cups.map(c => `<option value="${c}" ${c === currentCup ? 'selected' : ''}>${c}</option>`).join(''); 
+            const t = translations[currentLang];
+            document.getElementById('nationFilter').innerHTML = nations.map(n => 
+                `<option value="${n}" ${n === currentNation ? 'selected' : ''}>${n === 'All' ? t.allNations : n}</option>`).join(''); 
+            
+            document.getElementById('cupFilter').innerHTML = cups.map(c => 
+                `<option value="${c}" ${c === currentCup ? 'selected' : ''}>${c === 'All' ? t.allCups : c}</option>`).join(''); 
+
+            document.getElementById('typeFilter').innerHTML = `
+                <option value="All" ${currentType === 'All' ? 'selected' : ''}>${t.allTypes}</option>
+                <option value="New" ${currentType === 'New' ? 'selected' : ''}>${t.newOnly}</option>
+                <option value="Hot" ${currentType === 'Hot' ? 'selected' : ''}>${t.hotOnly}</option>
+            `;
         }
 
         window.selectNation = n => { currentNation = n; window.renderEverything(); };
         window.selectCup = c => { currentCup = c; window.renderEverything(); };
+        window.selectType = t => { currentType = t; window.renderEverything(); };
         window.setPrice = base => { document.getElementById('gPrice1').value = base; document.getElementById('gPrice2').value = base*2; document.getElementById('gPrice3').value = base*3; document.getElementById('gPriceOvn').value = base===250?800:900; };
         
         document.getElementById('userAvatarInput').addEventListener('change', async (e) => { 
