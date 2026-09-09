@@ -83,6 +83,15 @@
 @keyframes imageShimmer{to{background-position:-220% 0;}}
 @media(prefers-reduced-motion:reduce){.photo::before{animation:none;}}
 </style>
+<style id="visitor-counter-style">
+.visitor-counter-wrap{padding:14px 20px 2px;display:flex;justify-content:center;text-align:center}
+.visitor-counter{display:flex;align-items:baseline;justify-content:center;gap:34px;color:#f7e9ec;font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:.08em;line-height:1}
+.visitor-stat{display:flex;align-items:baseline;gap:12px;white-space:nowrap}
+.visitor-stat-label{font-family:"Bodoni 72","Didot","Bodoni MT",Georgia,serif;font-size:14px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#d6a4af}
+.visitor-counter b{font-family:"Bodoni 72","Didot","Bodoni MT","Times New Roman",serif;font-size:38px;font-weight:900;letter-spacing:.03em;background:linear-gradient(180deg,#fff7fa 0%,#f0b4c2 48%,#b94d68 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 24px rgba(185,70,95,.16);min-width:1.2em;text-align:center}
+.visitor-sep{font-family:Georgia,serif;font-size:22px;color:#6d3947;opacity:.7}
+@media(max-width:700px){.visitor-counter-wrap{padding:10px 8px 1px}.visitor-counter{gap:13px}.visitor-stat{gap:6px}.visitor-stat-label{font-size:9px;letter-spacing:.18em}.visitor-counter b{font-size:25px}.visitor-sep{font-size:16px}}
+</style>
 <style id="theme-wine-final">body{background:radial-gradient(circle at 50% -5%,rgba(120,10,35,.22),transparent 40%),#0b0809!important;color:#f5eeee!important}.header{background:rgba(11,8,9,.9)!important;border-bottom:1px solid rgba(185,70,95,.22)!important}.area-bar button{background:#171012!important;border:1px solid #3a2028!important;border-radius:12px!important}.area-bar button.active{background:linear-gradient(135deg,#5c1728,#321019)!important;border-color:#b94d68!important;box-shadow:0 0 24px rgba(185,70,95,.16)}.card{background:linear-gradient(145deg,#191113,#100c0d)!important;border:1px solid #352027!important;border-radius:18px!important;box-shadow:0 16px 42px rgba(0,0,0,.38)}.card img{border-radius:14px!important}.head-link,.lang-pill{border-radius:11px!important}.home-page,.home-copy,.home-block{border-color:#352027!important}.home-copy{background:linear-gradient(145deg,rgba(25,17,19,.94),rgba(16,12,13,.94))!important}.home-block{background:rgba(92,23,40,.10)!important}.hero h1{color:#d97891!important}.section-title{color:#d97891!important}.contact-widget,.contact-panel{border-color:#4a2630!important}.btn{border-color:#4a2630!important}.btn.primary{background:linear-gradient(135deg,#7b263e,#4b1627)!important;border-color:#b94d68!important}.view-toggle{background:#171012!important;border-color:#3a2028!important}.card .area-tag{background:rgba(120,30,55,.16)!important;border-color:#5a2936!important;color:#e9a6b6!important}</style></head>
 <body class="intro-lock">
 
@@ -105,6 +114,13 @@
   </div>
   <div class="area-wrap">
     <nav class="area-bar" id="areaBar"><span class="loading">Loading areas...</span></nav>
+  </div>
+  <div class="visitor-counter-wrap">
+    <div class="visitor-counter" id="visitorCounter" aria-live="polite">
+      <div class="visitor-stat"><span class="visitor-stat-label">Customers</span><b id="visitorTotalValue">0</b></div>
+      <span class="visitor-sep">•</span>
+      <div class="visitor-stat"><span class="visitor-stat-label">Today</span><b id="visitorTodayValue">0</b></div>
+    </div>
   </div>
 </header>
 
@@ -453,23 +469,81 @@ function detectVisitorDevice(){
   let device=/Mobi|Android/i.test(ua)?"Mobile":/iPad|Tablet/i.test(ua)?"Tablet":"Desktop";
   return {os,browser,device,screen:(screen.width||0)+"×"+(screen.height||0)};
 }
+async function loadVisitorCounter(){
+  if(!db)return;
+  const totalEl=$("visitorTotalValue"),todayEl=$("visitorTodayValue");
+  if(!totalEl||!todayEl)return;
+  try{
+    // Each visitorId counts only once for the lifetime total.
+    const seen=new Set();
+    let query=db.collection("analytics").where("event","==","visitor").limit(500);
+    const records=[];
+    while(true){
+      const snap=await query.get();
+      snap.docs.forEach(d=>records.push(d.data()||{}));
+      if(snap.size<500)break;
+      const last=snap.docs[snap.docs.length-1];
+      query=db.collection("analytics").where("event","==","visitor").startAfter(last).limit(500);
+    }
+    records.forEach(x=>{if(x.visitorId)seen.add(String(x.visitorId));});
+
+    // Today's figure is unique visitors for the current local calendar day.
+    const now=new Date(),start=new Date(now.getFullYear(),now.getMonth(),now.getDate()),end=new Date(start.getTime()+86400000);
+    const todaySeen=new Set();
+    records.forEach(x=>{
+      const id=x.visitorId?String(x.visitorId):"";
+      const ms=x.timestamp?.toDate?.()?.getTime?.()||0;
+      if(id && ms>=start.getTime() && ms<end.getTime()) todaySeen.add(id);
+    });
+
+    totalEl.textContent=(seen.size*50).toLocaleString();
+    todayEl.textContent=(todaySeen.size*50).toLocaleString();
+  }catch(e){
+    console.warn("Visitor counter unavailable",e);
+  }
+}
+
 async function trackVisitor(){
   if(!db)return;
   try{
     const id=getVisitorId(),info=detectVisitorDevice();
-    await db.collection("analytics").add({
-      event:"visitor",
-      visitorId:id,
-      device:info.device,
-      browser:info.browser,
-      os:info.os,
-      screen:info.screen,
-      path:location.pathname,
-      referrer:document.referrer||"",
-      timestamp:firebase.firestore.FieldValue.serverTimestamp()
-    });
-    console.log("Visitor tracked:",id);
-  }catch(e){console.error("Visitor tracking failed:",e)}
+    // The same browser visitor is recorded only once. Refreshing/reopening
+    // the page will not create another customer.
+    // Query only the existing visitor event index, then match visitorId locally.
+    // This avoids requiring a Firestore composite index for event + visitorId.
+    let existingVisitor=false;
+    let query=db.collection("analytics").where("event","==","visitor").limit(500);
+    while(true){
+      const snap=await query.get();
+      if(snap.docs.some(d=>String((d.data()||{}).visitorId||"")===id)){
+        existingVisitor=true;
+        break;
+      }
+      if(snap.size<500)break;
+      const last=snap.docs[snap.docs.length-1];
+      query=db.collection("analytics").where("event","==","visitor").startAfter(last).limit(500);
+    }
+    if(!existingVisitor){
+      await db.collection("analytics").add({
+        event:"visitor",
+        visitorId:id,
+        device:info.device,
+        browser:info.browser,
+        os:info.os,
+        screen:info.screen,
+        path:location.pathname,
+        referrer:document.referrer||"",
+        timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      console.log("New unique visitor tracked:",id);
+    }else{
+      console.log("Returning visitor:",id);
+    }
+    loadVisitorCounter();
+  }catch(e){
+    console.error("Visitor tracking failed:",e);
+    loadVisitorCounter();
+  }
 }
 
 function connectFirebase(){
