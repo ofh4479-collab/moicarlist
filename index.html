@@ -468,10 +468,30 @@ function renderHomeFromSettings(){
     bookingBtn.setAttribute("aria-disabled",num?"false":"true");
     bookingBtn.style.pointerEvents=num?"auto":"none";
     bookingBtn.style.opacity=num?"1":".65";
+    bookingBtn.onclick=num?(()=>{ void trackBookingClick(); }):null;
   }
 
   const poster=$("homePoster");
   if(poster && settings.homeImageUrl) poster.src=String(settings.homeImageUrl);
+}
+
+async function trackBookingClick(){
+  if(!db)return;
+  try{
+    const info=detectVisitorDevice();
+    const visitorId=getVisitorId();
+    await db.collection("analytics").add({
+      event:"booking_click",
+      visitorId,
+      device:info.device,
+      browser:info.browser,
+      os:info.os,
+      screen:info.screen,
+      path:location.pathname,
+      referrer:document.referrer||"",
+      timestamp:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }catch(e){console.warn("Booking click tracking unavailable",e);}
 }
 
 function applyLanguage(){
