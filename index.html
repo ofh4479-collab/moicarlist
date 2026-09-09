@@ -24,7 +24,7 @@
 .home-block{padding:15px 0;border-top:1px solid #29292c;color:#eee;font-size:16px;line-height:1.75;font-weight:750}
 .home-block:first-of-type{border-top:0;padding-top:0}
 .home-label{display:block;color:var(--gold);font-size:19px;font-weight:950;margin-bottom:5px}
-.home-book{display:block;margin-top:18px;text-align:center;padding:14px 16px;border-radius:14px;border:1px solid #765b1b;background:rgba(228,182,46,.10);color:#ffd95a;font-size:16px;font-weight:950}
+.home-book{text-decoration:none;display:block;margin-top:18px;text-align:center;padding:14px 16px;border-radius:14px;border:1px solid #765b1b;background:rgba(228,182,46,.10);color:#ffd95a;font-size:16px;font-weight:950}
 @media(max-width:700px){.home-page{padding:12px 0 90px}.home-poster{border-radius:14px}.home-copy{padding:18px 16px;border-radius:15px}.home-copy h2{font-size:23px}.home-block{font-size:14px;line-height:1.7}.home-label{font-size:17px}.home-pill{padding-left:10px!important;padding-right:10px!important}}
 
 @media(max-width:1100px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.area-bar{grid-template-columns:repeat(4,minmax(0,1fr))}.filters select{min-width:120px}}
@@ -137,7 +137,7 @@
         <span class="home-label" data-home-payment>💵 𝐏𝐚𝐲𝐦𝐞𝐧𝐭</span>
         <span data-home-payment-detail>📌 Cash by hand❗️ / Bank Transfer / Qr</span>
       </div>
-      <div class="home-book" data-home-book>📩 𝐓𝐞𝐥𝐥 𝐮𝐬 𝐭𝐢𝐦𝐞 𝐭𝐨 𝐛𝐨𝐨𝐤</div>
+      <a class="home-book" id="homeBookingButton" data-home-book href="#" target="_blank" rel="noopener">📩 𝐓𝐞𝐥𝐥 𝐮𝐬 𝐭𝐢𝐦𝐞 𝐭𝐨 𝐛𝐨𝐨𝐤</a>
     </div>
   </section>
 
@@ -408,6 +408,7 @@ function renderHomeFromSettings(){
   const paymentTitle=pick("homePaymentTitleEn","homePaymentTitleZh","💵 Payment","💵 付款方式");
   const payment=pick("homePaymentEn","homePaymentZh","📌 Cash by hand❗️ / Bank Transfer / QR","📌 现金❗️ / 银行转账 / QR");
   const booking=pick("homeBookingEn","homeBookingZh","📩 Tell us time to book","📩 告诉我们预约时间");
+  const bookingNumber=String(settings.homeBookingWhatsapp||"").trim();
 
   const titleEls=document.querySelectorAll("[data-home-title]");
   titleEls.forEach(el=>el.textContent=title);
@@ -425,6 +426,16 @@ function renderHomeFromSettings(){
   paymentEls.forEach(el=>el.textContent=payment);
   const bookingEls=document.querySelectorAll("[data-home-book]");
   bookingEls.forEach(el=>el.textContent=booking);
+  const bookingBtn=$("homeBookingButton");
+  if(bookingBtn){
+    const fallbackWa=(Array.isArray(settings.contacts)?settings.contacts:[]).find(c=>String(c.type||"").toLowerCase()==="whatsapp");
+    const raw=bookingNumber || String(fallbackWa?.value||"").trim();
+    const num=raw.replace(/\D/g,"");
+    bookingBtn.href=num ? `https://wa.me/${num}` : "#";
+    bookingBtn.setAttribute("aria-disabled",num?"false":"true");
+    bookingBtn.style.pointerEvents=num?"auto":"none";
+    bookingBtn.style.opacity=num?"1":".65";
+  }
 
   const poster=$("homePoster");
   if(poster && settings.homeImageUrl) poster.src=String(settings.homeImageUrl);
